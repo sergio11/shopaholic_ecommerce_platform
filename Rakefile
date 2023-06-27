@@ -84,7 +84,7 @@ namespace :ecommerce do
 
 		desc "Start Platform NodeJS Containers"
 		task :start => [ :check_docker_task, :login, :check_deployment_file  ] do
-			puts "Stop Platform Containers"
+			puts "Start Platform Containers"
 			puts `docker-compose -f ./docker-compose.yml up -d 2>&1`
 		end
 
@@ -92,6 +92,17 @@ namespace :ecommerce do
 		task :stop => [ :check_docker_task, :login, :check_deployment_file  ] do
 			puts "Stop Platform Containers"
 			puts `docker-compose -f ./docker-compose.yml stop 2>&1`
+		end
+
+		desc "Build Docker Image"
+		task :build_image => [:check_docker_task, :login] do
+		    microservicesFolder = "./platform/backend"
+			apiServiceDockerImage = "ssanchez11/ecommerce_api_service:0.0.1"
+			puts "Build Docker Image #{apiServiceDockerImage}"
+			puts `docker build -t #{apiServiceDockerImage} -f #{microservicesFolder}/Dockerfile #{microservicesFolder}`
+			puts "Docker image #{apiServiceDockerImage} has been created! trying to upload it!"
+			puts `docker push #{apiServiceDockerImage}`
+			puts `docker images`
 		end
 
 	end

@@ -4,10 +4,7 @@ services:
 
   nestjs_service_1:
     container_name: nestjs_service_1
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: production
+    image: ssanchez11/ecommerce_api_service:0.0.1
     env_file:
         - .env
     volumes:
