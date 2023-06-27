@@ -1,0 +1,23 @@
+version: '3.6'
+
+services:
+
+  nestjs_service_1:
+    container_name: nestjs_service_1
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: production
+    env_file:
+        - .env
+    volumes:
+      - .:/usr/src/app
+    command: npm run start:prod
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+    ports:
+      - 3000:3000
+

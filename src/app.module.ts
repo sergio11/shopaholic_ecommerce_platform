@@ -9,11 +9,11 @@ import { RolesModule } from './roles/roles.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'password',
-      database: 'ecommerce_db',
+      host: process.env.MYSQL_HOST || "localhost",
+      port: parseInt(process.env.MYSQL_PORT) || 3306,
+      username: process.env.MYSQL_USER || "dev",
+      password: process.env.MYSQL_PASSWORD || "dev",
+      database: process.env.MYSQL_DATABASE || "ecommerce_db",
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),

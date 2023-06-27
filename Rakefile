@@ -23,6 +23,7 @@ namespace :ecommerce do
 	desc "Deploys Platform Containers and launches all services and daemons needed to properly work"
 	task :deploy => [
 		:cleaning_environment_task,
+		"galera:start",
 		"platform:start",
 		:status] do
 	    puts "Deploying services..."
@@ -70,6 +71,31 @@ namespace :ecommerce do
             end
 
 	end
+
+	## Deploy Platform
+	namespace :platform do
+
+		desc "Check Platform Deployment File"
+		task :check_deployment_file do
+			puts "Check Platform Deployment File ..."
+			raise "Deployment file not found, please check availability" unless File.file?("./docker-compose.yml")
+			puts "Platform Deployment File OK!"
+		end
+
+		desc "Start Platform NodeJS Containers"
+		task :start => [ :check_docker_task, :login, :check_deployment_file  ] do
+			puts "Stop Platform Containers"
+			puts `docker-compose -f ./docker-compose.yml up -d 2>&1`
+		end
+
+		desc "Stop Platform NodeJS Containers"
+		task :stop => [ :check_docker_task, :login, :check_deployment_file  ] do
+			puts "Stop Platform Containers"
+			puts `docker-compose -f ./docker-compose.yml stop 2>&1`
+		end
+
+	end
+
 
 	## Utils Functions
 
