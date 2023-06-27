@@ -13,26 +13,22 @@ export class UsersController {
 
     constructor(private usersService: UsersService) {}
 
-    // GET -> OBTENER
-    // POST -> CREAR
-    // PUT ' PATCH -> ACTUALIZAR
-    // DELETE ' => BORRAR
     
     @HasRoles(JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
-    @Get() // http://localhost/users -> GET
+    @Get()
     findAll() {
         return this.usersService.findAll();
     }
 
-    @Post() // http://localhost/users -> POST 
+    @Post()
     create(@Body() user: CreateUserDto) {
         return this.usersService.create(user);
     }
     
     @HasRoles(JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
-    @Put(':id') // http://192.168.1.15:3000/users/:id -> PUT 
+    @Put(':id')
     update(@Param('id', ParseIntPipe) id: number, @Body() user: UpdateUserDto) {
         return this.usersService.update(id, user);
     }

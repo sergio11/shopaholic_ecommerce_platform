@@ -15,7 +15,6 @@ export class AuthService {
     constructor(
         @InjectRepository(User) private usersRepository: Repository<User>,
         @InjectRepository(Rol) private rolesRepository: Repository<Rol>,
-
         private jwtService: JwtService
     ) {}
 
@@ -50,7 +49,7 @@ export class AuthService {
 
         const userSaved = await this.usersRepository.save(newUser);
 
-        const rolesString = userSaved.roles.map(rol => rol.id); //['CLIENT', 'ADMIN']
+        const rolesString = userSaved.roles.map(rol => rol.id);
         const payload = { id: userSaved.id, name: userSaved.name, roles: rolesString };
         const token = this.jwtService.sign(payload);
         const data = {
@@ -74,13 +73,11 @@ export class AuthService {
         
         const isPasswordValid = await compare(password, userFound.password);
         if (!isPasswordValid) {
-            console.log('PASSWORD INCORRECTO');
-            
             // 403 FORBITTEN access denied
             throw new HttpException('La contraseña es incorrecta', HttpStatus.FORBIDDEN);
         }
 
-        const rolesIds = userFound.roles.map(rol => rol.id); //['CLIENT', 'ADMIN']
+        const rolesIds = userFound.roles.map(rol => rol.id);
 
         const payload = { 
             id: userFound.id, 
