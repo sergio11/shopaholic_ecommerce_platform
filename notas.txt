@@ -1,0 +1,2 @@
+https://discourse.haproxy.org/t/haproxy-mysql-check-user-removal/6685
+https://severalnines.com/resources/whitepapers/mysql-load-balancing-with-haproxy/
