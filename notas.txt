@@ -1,2 +1,15 @@
 https://discourse.haproxy.org/t/haproxy-mysql-check-user-removal/6685
 https://severalnines.com/resources/whitepapers/mysql-load-balancing-with-haproxy/
+mysqlchk        9200/tcp                        # mysqlchk
+
+
+awk -v inserted=0 '/^[a-z]/ { if ($2 + 0 == 9200) { inserted=1 }; if (inserted == 0 && $2 + 0 > 9200) { print "mysqlchk\t\t9200/tcp"; inserted=1 }; print $0 }' /etc/services > /tmp/services && mv /tmp/services /etc/services
+
+
+apt-get install xinetd -y
+
+strace /etc/init.d/inetutils-inetd | tee log.txt
+
+apt-get install policycoreutils selinux-basics selinux-utils -y
+
+selinux-activate
