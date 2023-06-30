@@ -10,7 +10,7 @@ safeToBootStrap() {
     exit
 }
 
-signalListener() {
+startListener() {
     "$@" &
     #Trap SIGTERM
     trap 'safeToBootStrap' INT TERM
@@ -20,4 +20,4 @@ signalListener() {
     done
 }
 
-signalListener docker-entrypoint.sh "$@"
+startListener docker-entrypoint.sh "$@"

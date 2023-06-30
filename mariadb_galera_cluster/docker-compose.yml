@@ -11,7 +11,7 @@ services:
       context: ./graceful_shutdown_mariadb
     container_name: mariadb_master_1
     env_file:
-      - .env
+      - ./.env
     environment:
       - MARIADB_USER=${MARIADB_USER}
       - MARIADB_PASSWORD=${MARIADB_PASSWORD}
@@ -30,7 +30,7 @@ services:
       context: ./graceful_shutdown_mariadb
     container_name: mariadb_master_2
     env_file:
-      - .env
+      - ./.env
     environment:
       - MARIADB_USER=${MARIADB_USER}
       - MARIADB_PASSWORD=${MARIADB_PASSWORD}
@@ -55,7 +55,7 @@ services:
       context: ./graceful_shutdown_mariadb
     container_name: mariadb_master_3
     env_file:
-      - .env
+      - ./.env
     volumes:
       - ./mariadb_master_3/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
       - ./start_replicant_cluster_1.sh:/start_replicant_cluster_1.sh
@@ -80,7 +80,7 @@ services:
       context: ./graceful_shutdown_mariadb
     container_name: mariadb_slave_1
     env_file:
-      - .env
+      - ./.env
     volumes:
       - ./mariadb_slave_1/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
       - ./mariadb_slave_1/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -107,7 +107,7 @@ services:
       context: ./graceful_shutdown_mariadb
     container_name: mariadb_slave_2
     env_file:
-      - .env
+      - ./.env
     environment:
       - MARIADB_USER=${MARIADB_USER}
       - MARIADB_PASSWORD=${MARIADB_PASSWORD}
@@ -139,7 +139,7 @@ services:
       context: ./graceful_shutdown_mariadb
     container_name: mariadb_slave_3
     env_file:
-      - .env
+      - ./.env
     environment:
       - MARIADB_USER=${MARIADB_USER}
       - MARIADB_PASSWORD=${MARIADB_PASSWORD}

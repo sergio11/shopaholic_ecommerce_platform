@@ -9,7 +9,25 @@ awk -v inserted=0 '/^[a-z]/ { if ($2 + 0 == 9200) { inserted=1 }; if (inserted =
 apt-get install xinetd -y
 
 strace /etc/init.d/inetutils-inetd | tee log.txt
+strace /etc/init.d/xinetd | tee log.txt
 
 apt-get install policycoreutils selinux-basics selinux-utils -y
 
 selinux-activate
+/usr/sbin/xinetd -f /etc/xinetd.conf -d
+
+23/6/30@17:55:05: DEBUG: 324 {handle_includedir} Reading included configuration file: /etc/xinetd.d/mysqlchk [file=/etc/xinetd.d/mysqlchk] [line=14]
+ [file=/etc/xinetd.d/mysqlchk] [line=5]alue_list} Bad service flag: REUSE
+23/6/30@17:55:05: ERROR: 324 {identify_attribute} Error parsing attribute flags - DISABLING SERVICE [file=/etc/xinetd.d/mysqlchk] [line=5]
+ [file=/etc/xinetd.d/mysqlchk] [line=6]pe_parser} Bad socket type: stream
+23/6/30@17:55:05: ERROR: 324 {identify_attribute} Error parsing attribute socket_type - DISABLING SERVICE [file=/etc/xinetd.d/mysqlchk] [line=6]
+ [file=/etc/xinetd.d/mysqlchk] [line=8]er} Bad value for wait: no
+23/6/30@17:55:05: ERROR: 324 {identify_attribute} Error parsing attribute wait - DISABLING SERVICE [file=/etc/xinetd.d/mysqlchk] [line=8]
+ [file=/etc/xinetd.d/mysqlchk] [line=9]er} Unknown user: mysqlchk
+23/6/30@17:55:05: ERROR: 324 {identify_attribute} Error parsing attribute user - DISABLING SERVICE [file=/etc/xinetd.d/mysqlchk] [line=9]
+ is not executable [file=/etc/xinetd.d/mysqlchk] [line=10]mysqlchk/mysqlchk.mysql.sh
+23/6/30@17:55:05: ERROR: 324 {identify_attribute} Error parsing attribute server - DISABLING SERVICE [file=/etc/xinetd.d/mysqlchk] [line=10]
+ [file=/etc/xinetd.d/mysqlchk] [line=11]lue_list} Bad log_on_failure flag: USERID
+23/6/30@17:55:05: ERROR: 324 {identify_attribute} Error parsing attribute log_on_failure - DISABLING SERVICE [file=/etc/xinetd.d/mysqlchk] [line=11]
+ [file=/etc/xinetd.d/mysqlchk] [line=12]_parser} Bad value: no
+23/6/30@17:55:05: ERROR: 324 {identify_attribute} Error parsing attribute disable - DISABLING SERVICE [file=/etc/xinetd.d/mysqlchk] [line=12]
