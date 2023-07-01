@@ -34,16 +34,6 @@ x-haproxy-defaults: &haproxy-service
   volumes:
     - ./haproxy:/usr/local/etc/haproxy:ro
 
-x-keepalived-defaults: &keepalived-service
-  image: "osixia/keepalived:2.0.19"
-  cap_add:
-    - NET_ADMIN
-    - NET_BROADCAST
-    - NET_RAW
-  environment:
-    KEEPALIVED_COMMAND_LINE_ARGUMENTS: >-
-      --log-detail
-
 
 networks:
   galera-ha-stack:
@@ -158,22 +148,27 @@ services:
 
 
   keepalived-a:
-    <<: *keepalived-service
-    network_mode: host
-    volumes:
-      - "./keepalived/proxy-a/keepalived.conf:/usr/local/etc/keepalived/keepalived.conf"
-      - "./keepalived/notify.sh:/container/service/keepalived/assets/notify.custom.sh"
+    build:
+      context: ./keepalived/proxy-a
+    networks:
+      galera-ha-stack:
+        ipv4_address: 172.20.0.10
+    cap_add: 
+        - NET_ADMIN
 
   keepalived-b:
-    <<: *keepalived-service
-    network_mode: host
-    volumes:
-      - "./keepalived/proxy-b/keepalived.conf:/usr/local/etc/keepalived/keepalived.conf"
-      - "./keepalived/notify.sh:/container/service/keepalived/assets/notify.custom.sh"
+    build:
+      context: ./keepalived/proxy-b
+    networks:
+      galera-ha-stack:
+        ipv4_address: 172.20.0.20
+    cap_add: 
+        - NET_ADMIN
 
 
-  haproxy-a:
+  mariadb_haproxy_1:
     <<: *haproxy-service
+    container_name: mariadb_haproxy_1
     networks:
       galera-ha-stack:
         ipv4_address: 172.20.0.50
@@ -181,8 +176,9 @@ services:
           - haproxy-a.ha.stack
 
 
-  haproxy-b:
+  mariadb_haproxy_2:
     <<: *haproxy-service
+    container_name: mariadb_haproxy_2
     networks:
       galera-ha-stack:
         ipv4_address: 172.20.0.60
@@ -190,19 +186,19 @@ services:
           - haproxy-b.ha.stack
 
   # php My Admin
-  phpMyAdmin:
+  mariadb_web_admin:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
     restart: always
     depends_on:
-      - haproxy-a
+      - mariadb_haproxy_1
     environment:
       PMA_HOST: ${PMA_HOST}
       PMA_PORT: ${PMA_PORT}
       PMA_USER: ${PMA_USER}
       PMA_PASSWORD: ${PMA_PASSWORD}
     links:
-      - haproxy-a
+      - mariadb_haproxy_1
     ports:
       - "8081:80"
     networks:
