@@ -1,6 +1,5 @@
 [mysqld]
 server-id=2
-read_only=1
 character-set-server=utf8mb4
 collation_server=utf8mb4_unicode_ci
 general_log=1

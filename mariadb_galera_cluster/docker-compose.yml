@@ -1,5 +1,42 @@
 version: "3.6"
 
+x-haproxy-defaults: &haproxy-service
+  image: "haproxytech/haproxy-alpine:2.7"
+  depends_on:
+    - mariadb_slave_1
+    - mariadb_slave_2
+    - mariadb_slave_3
+    - mariadb_master_1
+    - mariadb_master_2
+    - mariadb_master_3
+  links:
+    - mariadb_slave_1
+    - mariadb_slave_2
+    - mariadb_slave_3
+    - mariadb_master_1
+    - mariadb_master_2
+    - mariadb_master_3
+  volumes:
+    - ./haproxy:/usr/local/etc/haproxy:ro
+
+x-keepalived-defaults: &keepalived-service
+  image: "osixia/keepalived:2.0.19"
+  cap_add:
+    - NET_ADMIN
+    - NET_BROADCAST
+    - NET_RAW
+  environment:
+    KEEPALIVED_COMMAND_LINE_ARGUMENTS: >-
+      --log-detail
+
+
+networks:
+  galera-ha-stack:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+
 ## MariaDB Galera Cluster, a type of MySQL cluster, with ProxySQL
 ## multi-primary MySQL Cluster, in the form of MariaDB Galera Cluster, to make it more reliable to load balance databases.
 services:
@@ -21,7 +58,7 @@ services:
       - ./mariadb_master_1/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
       - ./mariadb_master_1/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - galera_cluster_network
+      - galera-ha-stack
 
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
@@ -46,7 +83,7 @@ services:
       - mariadb_master_1
     command: sh /start_replicant_cluster_1.sh
     networks:
-      - galera_cluster_network
+      - galera-ha-stack
 
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
@@ -71,7 +108,7 @@ services:
       - mariadb_master_2
     command: sh /start_replicant_cluster_1.sh
     networks:
-      - galera_cluster_network
+      - galera-ha-stack
 
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
@@ -84,14 +121,13 @@ services:
     volumes:
       - ./mariadb_slave_1/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
       - ./mariadb_slave_1/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./configure_slave.sh:/configure_slave.sh
-      - ./start_master_slave.sh:/start_master_slave.sh
+      - ./configure_slave.sh:/usr/bin/configure_slave.sh
+      - ./start_master_slave.sh:/docker-entrypoint-initdb.d/start_master_slave.sh
     environment:
       - MARIADB_USER=${MARIADB_USER}
       - MARIADB_PASSWORD=${MARIADB_PASSWORD}
       - MARIADB_DATABASE=${MARIADB_DATABASE}
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
-    command: sh /start_master_slave.sh
     depends_on:
       - mariadb_master_1
       - mariadb_master_2
@@ -101,7 +137,7 @@ services:
       - mariadb_master_2
       - mariadb_master_3
     networks:
-      - galera_cluster_network
+      - galera-ha-stack
 
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
@@ -119,8 +155,7 @@ services:
     volumes:
       - ./mariadb_slave_2/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
       - ./mariadb_slave_2/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./configure_slave.sh:/configure_slave.sh
-      - ./start_slave.sh:/start_slave.sh
+      - ./start_master_slave.sh:/docker-entrypoint-initdb.d/start_slave.sh
     depends_on:
       - mariadb_slave_1
       - mariadb_master_1
@@ -131,9 +166,8 @@ services:
       - mariadb_master_1
       - mariadb_master_2
       - mariadb_master_3
-    command: sh /start_slave.sh
     networks:
-      - galera_cluster_network
+      - galera-ha-stack
 
   # MariaDB Image
   # MariaDB is a community-developed fork of MySQL intended to remain free under the GNU GPL.
@@ -151,8 +185,7 @@ services:
     volumes:
       - ./mariadb_slave_3/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
       - ./mariadb_slave_3/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./configure_slave.sh:/configure_slave.sh
-      - ./start_slave.sh:/start_slave.sh
+      - ./start_master_slave.sh:/docker-entrypoint-initdb.d/start_slave.sh
     depends_on:
       - mariadb_slave_1
       - mariadb_slave_2
@@ -165,35 +198,41 @@ services:
       - mariadb_master_1
       - mariadb_master_2
       - mariadb_master_3
-    command: sh /start_slave.sh
     networks:
-      - galera_cluster_network
+      - galera-ha-stack
 
-  # HAProxy Load Balancer Proxy 
-  mariadb_haproxy:
-    image: haproxytech/haproxy-alpine:2.7
-    container_name: mariadb_haproxy
+
+  keepalived-a:
+    <<: *keepalived-service
+    network_mode: host
     volumes:
-        - ./haproxy:/usr/local/etc/haproxy:ro
-    ports:
-        - "9090:9090"
-        - "8404:8404"
-    depends_on:
-      - mariadb_slave_1
-      - mariadb_slave_2
-      - mariadb_slave_3
-      - mariadb_master_1
-      - mariadb_master_2
-      - mariadb_master_3
-    links:
-      - mariadb_slave_1
-      - mariadb_slave_2
-      - mariadb_slave_3
-      - mariadb_master_1
-      - mariadb_master_2
-      - mariadb_master_3
+      - "./keepalived/proxy-a/keepalived.conf:/usr/local/etc/keepalived/keepalived.conf"
+      - "./keepalived/notify.sh:/container/service/keepalived/assets/notify.custom.sh"
+
+  keepalived-b:
+    <<: *keepalived-service
+    network_mode: host
+    volumes:
+      - "./keepalived/proxy-b/keepalived.conf:/usr/local/etc/keepalived/keepalived.conf"
+      - "./keepalived/notify.sh:/container/service/keepalived/assets/notify.custom.sh"
+
+
+  haproxy-a:
+    <<: *haproxy-service
     networks:
-      - galera_cluster_network
+      galera-ha-stack:
+        ipv4_address: 172.20.0.50
+        aliases:
+          - haproxy-a.ha.stack
+
+
+  haproxy-b:
+    <<: *haproxy-service
+    networks:
+      galera-ha-stack:
+        ipv4_address: 172.20.0.60
+        aliases:
+          - haproxy-b.ha.stack
 
   # php My Admin
   phpMyAdmin:
@@ -201,19 +240,15 @@ services:
     container_name: phpmyadmin
     restart: always
     depends_on:
-      - mariadb_haproxy
+      - haproxy-a
     environment:
       PMA_HOST: ${PMA_HOST}
       PMA_PORT: ${PMA_PORT}
       PMA_USER: ${PMA_USER}
       PMA_PASSWORD: ${PMA_PASSWORD}
     links:
-      - mariadb_haproxy
+      - haproxy-a
     ports:
       - "8081:80"
     networks:
-      - galera_cluster_network
-
-networks:
-  galera_cluster_network:
-    driver: bridge
+      - galera-ha-stack
