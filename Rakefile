@@ -48,7 +48,7 @@ namespace :ecommerce do
 	end
 
 
-    ## Deploy MariaDB Galera Cluster with ProxySQL
+    ## Deploy highly available MariaDB with Galera Cluster and HAProxy
 	namespace :galera do
 
 	        desc "Check Platform Deployment File"
@@ -58,13 +58,13 @@ namespace :ecommerce do
     			puts "Platform Deployment File OK!"
     		end
 
-    		desc "Start MariaDB Galera Cluster and ProxySQL containers"
+    		desc "Start highly available MariaDB with Galera Cluster and HAProxy containers"
             task :start => [ :check_docker_task, :login, :check_deployment_file ] do
                 puts "Start MariaDB Galera Cluster and ProxySQL containers"
             	puts `docker-compose -f ./mariadb_galera_cluster/docker-compose.yml up -d`
             end
 
-            desc "Stop MariaDB Galera Cluster and ProxySQL containers"
+            desc "Stop highly available MariaDB with Galera Cluster and HAProxy containers"
             task :stop => [ :check_docker_task, :login, :check_deployment_file  ] do
             	puts "Stop Platform Containers"
             	puts `docker-compose -f ./mariadb_galera_cluster/docker-compose.yml stop 2>&1`

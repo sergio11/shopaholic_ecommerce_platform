@@ -84,11 +84,14 @@ services:
     volumes:
       - ./mariadb_slave_1/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
       - ./mariadb_slave_1/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./configure_slave.sh:/configure_slave.sh
+      - ./start_master_slave.sh:/start_master_slave.sh
     environment:
       - MARIADB_USER=${MARIADB_USER}
       - MARIADB_PASSWORD=${MARIADB_PASSWORD}
       - MARIADB_DATABASE=${MARIADB_DATABASE}
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    command: sh /start_master_slave.sh
     depends_on:
       - mariadb_master_1
       - mariadb_master_2
@@ -115,9 +118,9 @@ services:
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     volumes:
       - ./mariadb_slave_2/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
-      - ./apply_master_slave_configuration.sh:/apply_master_slave_configuration.sh
-      - ./start_replicant_cluster_2.sh:/start_replicant_cluster_2.sh
       - ./mariadb_slave_2/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./configure_slave.sh:/configure_slave.sh
+      - ./start_slave.sh:/start_slave.sh
     depends_on:
       - mariadb_slave_1
       - mariadb_master_1
@@ -128,7 +131,7 @@ services:
       - mariadb_master_1
       - mariadb_master_2
       - mariadb_master_3
-    command: sh /apply_master_slave_configuration.sh
+    command: sh /start_slave.sh
     networks:
       - galera_cluster_network
 
@@ -147,8 +150,9 @@ services:
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     volumes:
       - ./mariadb_slave_3/db.cnf:/etc/mysql/mariadb.conf.d/db.cnf
-      - ./start_replicant_cluster_2.sh:/start_replicant_cluster_2.sh
       - ./mariadb_slave_3/entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./configure_slave.sh:/configure_slave.sh
+      - ./start_slave.sh:/start_slave.sh
     depends_on:
       - mariadb_slave_1
       - mariadb_slave_2
@@ -161,7 +165,7 @@ services:
       - mariadb_master_1
       - mariadb_master_2
       - mariadb_master_3
-    command: sh /start_replicant_cluster_2.sh
+    command: sh /start_slave.sh
     networks:
       - galera_cluster_network
 
