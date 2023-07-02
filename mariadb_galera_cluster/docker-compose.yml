@@ -146,44 +146,16 @@ services:
       - mariadb_master_2
       - mariadb_master_3
 
-
-  keepalived-a:
-    build:
-      context: ./keepalived/proxy-a
-    networks:
-      galera-ha-stack:
-        ipv4_address: 172.20.0.10
-    cap_add: 
-        - NET_ADMIN
-
-  keepalived-b:
-    build:
-      context: ./keepalived/proxy-b
-    networks:
-      galera-ha-stack:
-        ipv4_address: 172.20.0.20
-    cap_add: 
-        - NET_ADMIN
-
-
-  mariadb_haproxy_1:
+  # HAProxy is a free, very fast and reliable reverse-proxy offering high availability, 
+  # load balancing, and proxying for TCP and HTTP-based applications.
+  mariadb_haproxy:
     <<: *haproxy-service
-    container_name: mariadb_haproxy_1
+    container_name: mariadb_haproxy
+    ports:
+      - "8404:8404"
     networks:
-      galera-ha-stack:
-        ipv4_address: 172.20.0.50
-        aliases:
-          - haproxy-a.ha.stack
+      - galera-ha-stack
 
-
-  mariadb_haproxy_2:
-    <<: *haproxy-service
-    container_name: mariadb_haproxy_2
-    networks:
-      galera-ha-stack:
-        ipv4_address: 172.20.0.60
-        aliases:
-          - haproxy-b.ha.stack
 
   # php My Admin
   mariadb_web_admin:
@@ -191,14 +163,14 @@ services:
     container_name: phpmyadmin
     restart: always
     depends_on:
-      - mariadb_haproxy_1
+      - mariadb_haproxy
     environment:
       PMA_HOST: ${PMA_HOST}
       PMA_PORT: ${PMA_PORT}
       PMA_USER: ${PMA_USER}
       PMA_PASSWORD: ${PMA_PASSWORD}
     links:
-      - mariadb_haproxy_1
+      - mariadb_haproxy
     ports:
       - "8081:80"
     networks:
