@@ -72,6 +72,32 @@ namespace :ecommerce do
 
 	end
 
+	# Redis Cluster
+	namespace :redis do
+
+		desc "Check Redis Cluster Deployment File"
+		task :check_deployment_file do
+			puts "Check Redis Cluster Deployment File ..."
+			raise "Deployment file not found, please check availability" unless File.file?("./redis_cluster/docker-compose.yml")
+			puts "Platform Deployment File OK!"
+		end
+
+		desc "Start and configure Cluster Containers"
+		task :start => [ :check_docker_task, :login, :check_deployment_file ] do 
+			puts "Start Cluster Containers"
+			puts `docker-compose -f ./redis_cluster/docker-compose.yml up -d`
+			puts `docker run -it --rm --network=redis_cluster_redis_cluster_network redislabs/rejson:latest redis-cli --cluster create 192.168.0.30:6379 192.168.0.35:6380 192.168.0.40:6381 192.168.0.45:6382 192.168.0.50:6383 192.168.0.55:6384 192.168.0.60:6385 192.168.0.65:6386 --cluster-replicas 1 --cluster-yes`
+		end 
+
+		desc "Stop Cluster Containers"
+		task :stop => [ :check_docker_task, :login, :check_deployment_file  ] do
+			puts "Stop Cluster Containers"
+			puts `docker-compose -f ./redis_cluster/docker-compose.yml stop 2>&1`
+		end
+
+	end	
+
+
 	## Deploy Platform
 	namespace :platform do
 
