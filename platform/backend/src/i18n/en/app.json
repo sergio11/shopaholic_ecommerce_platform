@@ -1,4 +1,4 @@
 {
-    "USER_NOT_FOUND": "Hello",
-    "IMAGE_ERROR": "Hello"
+    "USER_NOT_FOUND": "User not found",
+    "IMAGE_ERROR": "An error occurred when trying to update image"
 }

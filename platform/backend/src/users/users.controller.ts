@@ -7,7 +7,11 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
 import { HasRoles } from 'src/auth/jwt/has-roles';
 import { JwtRole } from 'src/auth/jwt/jwt-role';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { User } from './user.entity';
 
+@ApiBearerAuth()
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
 
@@ -17,11 +21,19 @@ export class UsersController {
     @HasRoles(JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Get()
+    @ApiOperation({ summary: 'Get users' })
+    @ApiResponse({
+        status: 200,
+        description: 'User list',
+        type: User,
+    })
     findAll() {
         return this.usersService.findAll();
     }
 
     @Post()
+    @ApiOperation({ summary: 'Create new user' })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
     create(@Body() user: CreateUserDto) {
         return this.usersService.create(user);
     }
@@ -29,6 +41,8 @@ export class UsersController {
     @HasRoles(JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Put(':id')
+    @ApiOperation({ summary: 'Update user' })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
     update(@Param('id', ParseIntPipe) id: number, @Body() user: UpdateUserDto) {
         return this.usersService.update(id, user);
     }
@@ -36,6 +50,8 @@ export class UsersController {
     @HasRoles(JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Post('upload/:id')
+    @ApiOperation({ summary: 'Update user and profile picture' })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
     @UseInterceptors(FileInterceptor('file'))
     updateWithImage(
         @UploadedFile(
