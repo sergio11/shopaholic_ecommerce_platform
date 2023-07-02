@@ -9,13 +9,24 @@ import { RolesModule } from './roles/roles.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: process.env.MYSQL_HOST || "localhost",
-      port: parseInt(process.env.MYSQL_PORT) || 6033,
-      username: process.env.MYSQL_USER || "admin",
-      password: process.env.MYSQL_PASSWORD || "admin00",
-      database: process.env.MYSQL_DATABASE || "ecommerce",
+      replication: {
+        master: {
+        host: process.env.MYSQL_MASTER_HOST || "localhost",
+        port: parseInt(process.env.MYSQL_MASTER_PORT) || 3306,
+        username: process.env.MYSQL_MASTER_USER || "dreamsoftware",
+        password: process.env.MYSQL_MASTER_PASSWORD || "dreamsoftware00",
+        database: process.env.MYSQL_DATABASE || "ecommerce",
+        },
+        slaves: [{
+          host: process.env.MYSQL_SLAVE_HOST || "localhost",
+          port: parseInt(process.env.MYSQL_SLAVE_PORT) || 3307,
+          username: process.env.MYSQL_MASTER_USER || "dreamsoftware",
+          password: process.env.MYSQL_MASTER_PASSWORD || "dreamsoftware00",
+          database: process.env.MYSQL_DATABASE || "ecommerce",
+        }]
+      },
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,
+      synchronize: true
     }),
     UsersModule,
     AuthModule,

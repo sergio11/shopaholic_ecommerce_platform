@@ -153,6 +153,8 @@ services:
     container_name: mariadb_haproxy
     ports:
       - "8404:8404"
+      - "3306:3306"
+      - "3307:3307"
     networks:
       - galera-ha-stack
 
