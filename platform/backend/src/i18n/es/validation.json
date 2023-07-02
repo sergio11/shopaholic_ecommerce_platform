@@ -1,0 +1,9 @@
+{
+    "email": "email",
+    "password": "password",
+    "NOT_EMPTY": "Debes proporcionar un valor para el campo $t(validation.{property})",
+    "INVALID_EMAIL": "El email proporcionado no es válido",
+    "INVALID_BOOLEAN": "La {property} no es un booleano",
+    "MIN": "{property} with value: \"{value}\" needs to be at least {constraints.0}, ow and {message}",
+    "MAX": "{property} with value: \"{value}\" needs to be less than {constraints.0}, ow and {message}"
+  }
