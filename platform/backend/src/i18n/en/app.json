@@ -1,4 +1,5 @@
 {
     "USER_NOT_FOUND": "User not found",
-    "IMAGE_ERROR": "An error occurred when trying to update image"
+    "IMAGE_ERROR": "An error occurred when trying to update image",
+    "CATEGORY_NOT_FOUND": "Category not found"
 }

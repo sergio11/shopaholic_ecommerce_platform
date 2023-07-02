@@ -1,3 +1,4 @@
+import { CategoriesModule } from './categories/categories.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AcceptLanguageResolver, I18nModule, QueryResolver , HeaderResolver} from 'nestjs-i18n';
@@ -48,6 +49,7 @@ import { RedisCacheModule } from './cache/redis-cache.module';
     UsersModule,
     AuthModule,
     RolesModule,
+    CategoriesModule,
     RedisCacheModule
   ],
   providers: [
