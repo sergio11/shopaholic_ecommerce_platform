@@ -5,6 +5,9 @@ import { join } from 'path';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { CacheInterceptor } from '@nestjs/cache-manager';
+import { RedisCacheModule } from './cache/redis-cache.module';
 
 
 @Module({
@@ -44,7 +47,14 @@ import { RolesModule } from './roles/roles.module';
     }),
     UsersModule,
     AuthModule,
-    RolesModule
+    RolesModule,
+    RedisCacheModule
   ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
+    },
+  ]
 })
 export class AppModule {}
