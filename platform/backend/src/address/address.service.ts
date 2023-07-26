@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Address } from './address.entity';
 import { Repository } from 'typeorm';
@@ -26,25 +26,28 @@ export class AddressService extends SupportService {
         return this.addressRepository.find()
     }
     
-    findByUser(idUser: number) {
-        return this.addressRepository.findBy({ id_user: idUser })
+    findByUser(id: number) {
+        return this.addressRepository.findBy({ idUser: id })
     }
 
     async update(id: number, address: UpdateAddressDto) {
-        const addressFound = await this.addressRepository.findOneBy({ id: id });
-        if (!addressFound) {
-            throw new HttpException(this.resolveString("ADDRESS_NOT_FOUND"), HttpStatus.NOT_FOUND);
-        }
+        const addressFound = await this.findAddress(id);
         const updatedAddress = Object.assign(addressFound, address);
         return this.addressRepository.save(updatedAddress);
     }
     
     async delete(id: number) {
+        await this.findAddress(id);
+        return this.addressRepository.delete(id);
+    }
+
+
+    private async findAddress(id: number) {
         const addressFound = await this.addressRepository.findOneBy({ id: id });
         if (!addressFound) {
-            throw new HttpException(this.resolveString("ADDRESS_NOT_FOUND"), HttpStatus.NOT_FOUND);
+            this.throwNotFoundException("ADDRESS_NOT_FOUND");
         }
-        return this.addressRepository.delete(id);
+        return addressFound;
     }
 
 }

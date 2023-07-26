@@ -7,31 +7,31 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Rol } from '../roles/rol.entity';
+import { SupportService } from 'src/core/support.service';
+import { I18nService } from 'nestjs-i18n';
 
 
 @Injectable()
-export class AuthService {
+export class AuthService extends SupportService {
 
     constructor(
         @InjectRepository(User) private usersRepository: Repository<User>,
         @InjectRepository(Rol) private rolesRepository: Repository<Rol>,
-        private jwtService: JwtService
-    ) {}
+        private jwtService: JwtService,
+        i18n: I18nService
+    ) {
+        super(i18n);
+    }
 
     async register(user: RegisterAuthDto) {
-
         const { email, phone } = user;
         const emailExist = await this.usersRepository.findOneBy({ email: email })
-
         if (emailExist) {
-            // 409 CONFLICT
-            throw new HttpException('El email ya esta registrado', HttpStatus.CONFLICT);
+            this.throwConflictException("EMAIL_ALREADY_REGISTERED");
         }
-
         const phoneExist = await this.usersRepository.findOneBy({phone: phone});
-
         if (phoneExist) {
-            throw new HttpException('El telefono ya esta registrado', HttpStatus.CONFLICT)
+            this.throwConflictException("PHONE_ALREADY_REGISTERED");
         }
 
         const newUser = this.usersRepository.create(user);
@@ -41,7 +41,7 @@ export class AuthService {
             rolesIds = user.rolesIds;
         }
         else {
-            rolesIds.push('CLIENT')
+            rolesIds.push('CLIENT');
         }
         
         const roles = await this.rolesRepository.findBy({ id: In(rolesIds) });
@@ -68,13 +68,12 @@ export class AuthService {
             relations: ['roles']
          })
         if (!userFound) {
-            throw new HttpException('El email no existe', HttpStatus.NOT_FOUND);
+            this.throwNotFoundException("EMAIL_NOT_FOUND");
         }
         
         const isPasswordValid = await compare(password, userFound.password);
         if (!isPasswordValid) {
-            // 403 FORBITTEN access denied
-            throw new HttpException('La contraseña es incorrecta', HttpStatus.FORBIDDEN);
+            this.throwForbiddenException("INVALID_CREDENTIALS");
         }
 
         const rolesIds = userFound.roles.map(rol => rol.id);

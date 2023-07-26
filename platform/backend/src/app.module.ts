@@ -1,3 +1,4 @@
+import { AddressModule } from './address/address.module';
 import { CategoriesModule } from './categories/categories.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,6 +10,7 @@ import { RolesModule } from './roles/roles.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CacheInterceptor } from '@nestjs/cache-manager';
 import { RedisCacheModule } from './cache/redis-cache.module';
+import { ProductsModule } from './products/products.module';
 
 
 @Module({
@@ -50,7 +52,9 @@ import { RedisCacheModule } from './cache/redis-cache.module';
     AuthModule,
     RolesModule,
     CategoriesModule,
-    RedisCacheModule
+    RedisCacheModule,
+    AddressModule,
+    ProductsModule
   ],
   providers: [
     {

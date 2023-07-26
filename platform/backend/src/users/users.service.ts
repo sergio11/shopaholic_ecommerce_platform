@@ -30,10 +30,7 @@ export class UsersService extends SupportService {
 
     
     async update(id: number, user: UpdateUserDto) {
-        const userFound = await this.usersRepository.findOneBy({id: id});
-        if (!userFound) {
-            throw new HttpException(this.resolveString('app.USER_NOT_FOUND'), HttpStatus.NOT_FOUND);
-        }
+        const userFound = await this.findUser(id);
         const updatedUser = Object.assign(userFound, user);
         return this.usersRepository.save(updatedUser);
     }
@@ -44,17 +41,21 @@ export class UsersService extends SupportService {
         console.log('URL: ' + url);
         
         if (url === undefined && url === null) {
-            throw new HttpException(this.resolveString('app.IMAGE_ERROR'), HttpStatus.INTERNAL_SERVER_ERROR);
+            this.throwInternalServerError("app.IMAGE_ERROR");
         }
 
-        const userFound = await this.usersRepository.findOneBy({id: id});
-
-        if (!userFound) {
-            throw new HttpException(this.resolveString('app.USER_NOT_FOUND'), HttpStatus.NOT_FOUND);
-        }
+        const userFound = await this.findUser(id);
         user.image = url;
         const updatedUser = Object.assign(userFound, user);
         return this.usersRepository.save(updatedUser);
+    }
+
+    private async findUser(id: number) {
+        const userFound = await this.usersRepository.findOneBy({id: id});
+        if (!userFound) {
+            this.throwNotFoundException("app.USER_NOT_FOUND");
+        }
+        return userFound;
     }
     
 }

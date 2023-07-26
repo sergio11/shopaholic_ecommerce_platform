@@ -26,14 +26,14 @@ export class User {
     @Column()
     password: string;
     
-    @Column({ nullable: true })
-    notification_token: string;
+    @Column({ name: "notification_token", nullable: true })
+    notificationToken: string;
     
-    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    created_at: Date;
+    @Column({ name: "created_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
     
-    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    updated_at: Date;
+    @Column({ name: "updated_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+    updatedAt: Date;
 
     @JoinTable({
         name: 'user_has_roles',

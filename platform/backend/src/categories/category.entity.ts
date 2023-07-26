@@ -15,10 +15,10 @@ export class Category {
     @Column()
     image: string;
 
-    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    created_at: Date;
+    @Column({ name: "created_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
     
-    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    updated_at: Date;
+    @Column({ name: "updated_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+    updatedAt: Date;
 
 }
