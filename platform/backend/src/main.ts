@@ -10,10 +10,10 @@ async function bootstrap() {
     detailedErrors: false,
   }))
   const config = new DocumentBuilder()
-    .setTitle('Ecommerce API')
-    .setDescription('Ecommerce API description')
+    .setTitle('Shopaholic API')
+    .setDescription('Shopaholic API description')
     .setVersion('1.0')
-    .addTag('ecommerce')
+    .addTag('Shopaholic')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

@@ -42,7 +42,7 @@ export class ProductsService extends SupportService {
             this.throwBadRequestException("NO_IMAGES_PROVIDED");
         }
         let uploadedFiles = 0;
-        const newProduct = this.productsRepository.create(product);
+        const newProduct = await this.productsRepository.create(product);
         const savedProduct = await this.productsRepository.save(newProduct);        
         const startForEach = async () => {
             await asyncForEach(files, async (file: Express.Multer.File) => {

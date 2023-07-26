@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^6.9.1",
+    "@nestjs/axios": "^3.0.0",
     "@nestjs/cache-manager": "^2.0.1",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^3.0.0",
