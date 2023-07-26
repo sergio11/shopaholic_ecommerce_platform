@@ -11,6 +11,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CacheInterceptor } from '@nestjs/cache-manager';
 import { RedisCacheModule } from './cache/redis-cache.module';
 import { ProductsModule } from './products/products.module';
+import { MercadoPagoModule } from './mercado_pago/mercado_pago.module';
 
 
 @Module({
@@ -54,7 +55,8 @@ import { ProductsModule } from './products/products.module';
     CategoriesModule,
     RedisCacheModule,
     AddressModule,
-    ProductsModule
+    ProductsModule,
+    MercadoPagoModule
   ],
   providers: [
     {
