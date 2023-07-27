@@ -60,13 +60,13 @@ namespace :shopaholic do
 
     		desc "Start highly available MariaDB with Galera Cluster and HAProxy containers"
             task :start => [ :check_docker_task, :login, :check_deployment_file ] do
-                puts "Start MariaDB Galera Cluster and ProxySQL containers"
+                puts "Start highly available MariaDB with Galera Cluster and HAProxy containers"
             	puts `docker-compose -f ./mariadb_galera_cluster/docker-compose.yml up -d`
             end
 
             desc "Stop highly available MariaDB with Galera Cluster and HAProxy containers"
             task :stop => [ :check_docker_task, :login, :check_deployment_file  ] do
-            	puts "Stop Platform Containers"
+            	puts "Stop highly available MariaDB with Galera Cluster and HAProxy container"
             	puts `docker-compose -f ./mariadb_galera_cluster/docker-compose.yml stop 2>&1`
             end
 

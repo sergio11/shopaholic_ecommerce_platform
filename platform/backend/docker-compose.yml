@@ -5,8 +5,6 @@ services:
   nestjs_service_1:
     container_name: nestjs_service_1
     image: ssanchez11/shopaholic_api_service:0.0.1
-    env_file:
-        - .env
     restart: always
     deploy:
       resources:
