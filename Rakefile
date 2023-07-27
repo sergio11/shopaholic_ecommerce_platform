@@ -1,6 +1,6 @@
-task default: %w[ecommerce:deploy]
+task default: %w[shopaholic:deploy]
 
-namespace :ecommerce do
+namespace :shopaholic do
 
 	desc "Authenticating with existing credentials"
 	task :login do
@@ -20,7 +20,7 @@ namespace :ecommerce do
 		puts `docker-compose ps 2>&1`
 	end
 
-	desc "Deploys Platform Containers and launches all services and daemons needed to properly work"
+	desc "Deploys Shopaholic Platform Containers and launches all services and daemons needed to properly work"
 	task :deploy => [
 		:cleaning_environment_task,
 		"galera:start",
@@ -104,28 +104,28 @@ namespace :ecommerce do
 		desc "Check Platform Deployment File"
 		task :check_deployment_file do
 			puts "Check Platform Deployment File ..."
-			raise "Deployment file not found, please check availability" unless File.file?("./docker-compose.yml")
+			raise "Deployment file not found, please check availability" unless File.file?("./platform/backend/docker-compose.yml")
 			puts "Platform Deployment File OK!"
 		end
 
 		desc "Start Platform NodeJS Containers"
 		task :start => [ :check_docker_task, :login, :check_deployment_file  ] do
 			puts "Start Platform Containers"
-			puts `docker-compose -f ./docker-compose.yml up -d 2>&1`
+			puts `docker-compose -f ./platform/backend/docker-compose.yml up -d 2>&1`
 		end
 
 		desc "Stop Platform NodeJS Containers"
 		task :stop => [ :check_docker_task, :login, :check_deployment_file  ] do
 			puts "Stop Platform Containers"
-			puts `docker-compose -f ./docker-compose.yml stop 2>&1`
+			puts `docker-compose -f ./platform/backend/docker-compose.yml stop 2>&1`
 		end
 
 		desc "Build Docker Image"
 		task :build_image => [:check_docker_task, :login] do
 		    microservicesFolder = "./platform/backend"
-			apiServiceDockerImage = "ssanchez11/ecommerce_api_service:0.0.1"
+			apiServiceDockerImage = "ssanchez11/shopaholic_api_service:0.0.1"
 			puts "Build Docker Image #{apiServiceDockerImage}"
-			puts `docker build -t #{apiServiceDockerImage} -f #{microservicesFolder}/Dockerfile #{microservicesFolder}`
+			puts `docker build --target production -t #{apiServiceDockerImage} -f #{microservicesFolder}/Dockerfile #{microservicesFolder}`
 			puts "Docker image #{apiServiceDockerImage} has been created! trying to upload it!"
 			puts `docker push #{apiServiceDockerImage}`
 			puts `docker images`

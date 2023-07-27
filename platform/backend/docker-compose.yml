@@ -4,12 +4,9 @@ services:
 
   nestjs_service_1:
     container_name: nestjs_service_1
-    image: ssanchez11/ecommerce_api_service:0.0.1
+    image: ssanchez11/shopaholic_api_service:0.0.1
     env_file:
         - .env
-    volumes:
-      - .:/usr/src/app
-    command: npm run start:prod
     restart: always
     deploy:
       resources:

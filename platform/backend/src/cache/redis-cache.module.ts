@@ -9,14 +9,14 @@ import { RedisCacheService } from './redis-cache.service';
         store: redisStore,
         clusterConfig: {
           nodes: [
-            { host: 'localhost', port: 6379 },
-            { host: 'localhost', port: 6380 },
-            { host: 'localhost', port: 6381 },
-            { host: 'localhost', port: 6382 },
-            { host: 'localhost', port: 6383 },
-            { host: 'localhost', port: 6384 },
-            { host: 'localhost', port: 6385 },
-            { host: 'localhost', port: 6386 }
+            { host: process.env.REDIS_CLUSTER_HOST || 'localhost', port: 6379 },
+            { host: process.env.REDIS_CLUSTER_HOST || 'localhost', port: 6380 },
+            { host: process.env.REDIS_CLUSTER_HOST || 'localhost', port: 6381 },
+            { host: process.env.REDIS_CLUSTER_HOST || 'localhost', port: 6382 },
+            { host: process.env.REDIS_CLUSTER_HOST || 'localhost', port: 6383 },
+            { host: process.env.REDIS_CLUSTER_HOST || 'localhost', port: 6384 },
+            { host: process.env.REDIS_CLUSTER_HOST || 'localhost', port: 6385 },
+            { host: process.env.REDIS_CLUSTER_HOST || 'localhost', port: 6386 }
           ],
           redisOptions: {
             keyPrefix: 'cache:'
