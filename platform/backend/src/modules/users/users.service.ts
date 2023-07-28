@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './user.entity';
+import { UserEntity } from './user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -12,7 +12,7 @@ import storage = require('../../core/utils/cloud_storage');
 export class UsersService extends SupportService {
 
     constructor(
-        @InjectRepository(User) private usersRepository: Repository<User>,
+        @InjectRepository(UserEntity) private usersRepository: Repository<UserEntity>,
         i18n: I18nService
     ) {
         super(i18n)

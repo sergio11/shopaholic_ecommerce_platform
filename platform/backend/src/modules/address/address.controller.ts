@@ -7,7 +7,7 @@ import { AddressService } from './address.service';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Address } from './address.entity';
+import { AddressEntity } from './address.entity';
 
 @ApiBearerAuth()
 @ApiTags('address')
@@ -23,7 +23,7 @@ export class AddressController {
     @ApiResponse({
         status: 200,
         description: 'A new address created',
-        type: Address,
+        type: AddressEntity,
     })
     create(@Body() address: CreateAddressDto) {
         return this.addressService.create(address);

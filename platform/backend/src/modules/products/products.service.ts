@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Product } from './product.entity';
+import { ProductEntity } from './product.entity';
 import { Like, Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
@@ -14,7 +14,7 @@ import { I18nService } from 'nestjs-i18n';
 export class ProductsService extends SupportService {
 
     constructor(
-        @InjectRepository(Product) private productsRepository: Repository<Product>,
+        @InjectRepository(ProductEntity) private productsRepository: Repository<ProductEntity>,
         i18n: I18nService
     ) {
         super(i18n);
@@ -28,8 +28,8 @@ export class ProductsService extends SupportService {
         return this.productsRepository.findBy({ idCategory: idCategory });
     }
 
-    async paginate(options: IPaginationOptions): Promise<Pagination<Product>> {
-        return paginate<Product>(this.productsRepository, options);
+    async paginate(options: IPaginationOptions): Promise<Pagination<ProductEntity>> {
+        return paginate<ProductEntity>(this.productsRepository, options);
     }
 
     findByName(name: string) {

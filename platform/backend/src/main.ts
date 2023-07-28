@@ -20,9 +20,8 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
   const config: ConfigService = app.get(ConfigService);
   const port: number = config.get<number>('PORT');
-  const baseUrl: string = config.get<string>('BASE_URL');
-  await app.listen(port, baseUrl, () => {
-    console.log(`Server Started at %${baseUrl}:%${port}`);
+  await app.listen(port, "0.0.0.0", () => {
+    console.log(`Server Started at 0.0.0.0:%${port}`);
   });
 }
 bootstrap();

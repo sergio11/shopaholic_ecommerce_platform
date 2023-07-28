@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Order } from './order.entity';
+import { OrderEntity } from './order.entity';
 import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
 
@@ -9,7 +9,7 @@ import { I18nService } from 'nestjs-i18n';
 export class OrdersService extends SupportService {
 
     constructor(
-        @InjectRepository(Order) private ordersRepository: Repository<Order>,
+        @InjectRepository(OrderEntity) private ordersRepository: Repository<OrderEntity>,
         i18n: I18nService
     ) {
         super(i18n);

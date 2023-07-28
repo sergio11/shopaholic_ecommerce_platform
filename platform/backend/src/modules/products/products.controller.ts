@@ -8,7 +8,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { Product } from './product.entity';
+import { ProductEntity } from './product.entity';
 import { API } from 'src/config/config';
 
 @Controller('products')
@@ -29,7 +29,7 @@ export class ProductsController {
     async pagination(
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
         @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number = 5,
-    ): Promise<Pagination<Product>> {
+    ): Promise<Pagination<ProductEntity>> {
         return this.productsService.paginate({
             page,
             limit,

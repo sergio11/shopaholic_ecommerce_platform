@@ -8,7 +8,7 @@ import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
 import { HasRoles } from 'src/modules/auth/jwt/has-roles';
 import { JwtRole } from 'src/modules/auth/jwt/jwt-role';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from './user.entity';
+import { UserEntity } from './user.entity';
 
 @ApiBearerAuth()
 @ApiTags('users')
@@ -25,7 +25,7 @@ export class UsersController {
     @ApiResponse({
         status: 200,
         description: 'User list',
-        type: User,
+        type: UserEntity,
     })
     findAll() {
         return this.usersService.findAll();

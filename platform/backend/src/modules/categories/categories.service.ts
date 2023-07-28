@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import CreateCategoryDTO from './dto/create-category.dto';
 import storage = require('../../core/utils/cloud_storage');
 import { InjectRepository } from '@nestjs/typeorm';
-import { Category } from './category.entity';
+import { CategoryEntity } from './category.entity';
 import { Repository } from 'typeorm';
 import UpdateCategoryDTO from './dto/update-category.dto';
 import { SupportService } from 'src/core/support.service';
@@ -12,7 +12,7 @@ import { I18nService } from 'nestjs-i18n';
 export class CategoriesService extends SupportService {
 
     constructor(
-        @InjectRepository(Category) private categoriesRepository: Repository<Category>,
+        @InjectRepository(CategoryEntity) private categoriesRepository: Repository<CategoryEntity>,
         i18n: I18nService
     ) {
         super(i18n);

@@ -3,11 +3,11 @@ import { MercadoPagoService } from './mercado_pago.service';
 import { MercadoPagoController } from './mercado_pago.controller';
 import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Order } from '../orders/order.entity';
-import { OrderHasProducts } from '../orders/order_has_products.entity';
+import { OrderEntity } from '../orders/order.entity';
+import { OrderHasProductsEntity } from '../orders/order_has_products.entity';
 
 @Module({
-  imports: [HttpModule, TypeOrmModule.forFeature([ Order, OrderHasProducts])],
+  imports: [HttpModule, TypeOrmModule.forFeature([ OrderEntity, OrderHasProductsEntity])],
   providers: [MercadoPagoService],
   controllers: [MercadoPagoController]
 })

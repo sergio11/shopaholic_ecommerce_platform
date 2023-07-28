@@ -1,12 +1,12 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
-import { Order } from 'src/modules/orders/order.entity';
-import { Product } from 'src/modules/products/product.entity';
+import { OrderEntity } from 'src/modules/orders/order.entity';
+import { ProductEntity } from 'src/modules/products/product.entity';
 
-@Entity('order_has_products')
-export class OrderHasProducts {
+@Entity({ name: 'order_has_products' })
+export class OrderHasProductsEntity {
 
     @PrimaryColumn({ name: "id_order" })
-    id_order: number;
+    idOrder: number;
     
     @PrimaryColumn({ name: "id_product" })
     idProduct: number;
@@ -20,12 +20,12 @@ export class OrderHasProducts {
     @Column({ name: "updated_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
 
-    @ManyToOne(() => Order, (order) => order.id)
+    @ManyToOne(() => OrderEntity, (order) => order.id)
     @JoinColumn({ name: 'id_order' })
-    order: Order
+    order: OrderEntity
     
-    @ManyToOne(() => Product, (product) => product.id)
+    @ManyToOne(() => ProductEntity, (product) => product.id)
     @JoinColumn({ name: 'id_product' })
-    product: Product
+    product: ProductEntity
 
 }

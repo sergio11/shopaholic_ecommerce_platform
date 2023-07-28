@@ -11,17 +11,17 @@ import { CardTokenResponse } from './models/card_token_response';
 import { PaymentResponse } from './models/payment_response';
 import { PaymentBody } from './models/payment_body';
 import { Repository } from 'typeorm';
-import { Order } from 'src/modules/orders/order.entity';
+import { OrderEntity } from 'src/modules/orders/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { OrderHasProducts } from '../orders/order_has_products.entity';
+import { OrderHasProductsEntity } from '../orders/order_has_products.entity';
 
 @Injectable()
 export class MercadoPagoService {
 
     constructor(
         private readonly httpService: HttpService,
-        @InjectRepository(Order) private ordersRepository: Repository<Order>,
-        @InjectRepository(OrderHasProducts) private ordersHasProductsRepository: Repository<OrderHasProducts>,
+        @InjectRepository(OrderEntity) private ordersRepository: Repository<OrderEntity>,
+        @InjectRepository(OrderHasProductsEntity) private ordersHasProductsRepository: Repository<OrderHasProductsEntity>,
     ) {}
 
     getIdentificationTypes(): Observable<AxiosResponse<IdentificationType[]>> {
@@ -57,8 +57,8 @@ export class MercadoPagoService {
         const savedOrder = await this.ordersRepository.save(newOrder);
 
         for (const product of paymentBody.order.products) {
-            const ohp = new OrderHasProducts();
-            ohp.id_order = savedOrder.id;
+            const ohp = new OrderHasProductsEntity();
+            ohp.idOrder = savedOrder.id;
             ohp.idProduct = product.id;
             ohp.quantity = product.quantity;
             await this.ordersHasProductsRepository.save(ohp);

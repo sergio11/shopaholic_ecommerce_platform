@@ -1,10 +1,10 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { User } from 'src/modules/users/user.entity';
-import { Address } from '../address/address.entity';
-import { OrderHasProducts } from './order_has_products.entity';
+import { UserEntity } from 'src/modules/users/user.entity';
+import { AddressEntity } from '../address/address.entity';
+import { OrderHasProductsEntity } from './order_has_products.entity';
 
-@Entity('orders')
-export class Order {
+@Entity({ name: 'orders' })
+export class OrderEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -24,17 +24,17 @@ export class Order {
     @Column({ name: "updated_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
 
-    @ManyToOne(() => User, (user) => user.id)
+    @ManyToOne(() => UserEntity, (user) => user.id)
     @JoinColumn({ name: 'id_client' })
-    user: User;
+    user: UserEntity;
     
-    @ManyToOne(() => Address, (address) => address.id)
+    @ManyToOne(() => AddressEntity, (address) => address.id)
     @JoinColumn({ name: 'id_address' })
-    address: Address;
+    address: AddressEntity;
 
-    @OneToMany(() => OrderHasProducts, (ohp) => ohp.order)
+    @OneToMany(() => OrderHasProductsEntity, (ohp) => ohp.order)
     @JoinColumn({ referencedColumnName: 'id_order' })
-    orderHasProducts: OrderHasProducts[]
+    orderHasProducts: OrderHasProductsEntity[]
 
 
 }

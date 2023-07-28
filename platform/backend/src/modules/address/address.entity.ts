@@ -1,9 +1,9 @@
-import { Order } from 'src/modules/orders/order.entity';
-import { User } from 'src/modules/users/user.entity';
+import { OrderEntity } from 'src/modules/orders/order.entity';
+import { UserEntity } from 'src/modules/users/user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 
 @Entity({name: 'address'})
-export class Address {
+export class AddressEntity {
 
     @PrimaryGeneratedColumn()
     id: number; 
@@ -23,11 +23,11 @@ export class Address {
     @Column({ name: "updated_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
 
-    @OneToMany(() => Order, order => order.id)
-    order: Order;
+    @OneToMany(() => OrderEntity, order => order.id)
+    order: OrderEntity;
 
-    @ManyToOne(() => User, (user) => user.id)
+    @ManyToOne(() => UserEntity, (user) => user.id)
     @JoinColumn({name: 'id_user'})
-    user: User;
+    user: UserEntity;
 
 }

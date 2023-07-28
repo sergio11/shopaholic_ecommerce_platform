@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../users/user.entity';
+import { UserEntity } from '../users/user.entity';
 import { Repository, In } from 'typeorm';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { Rol } from '../roles/rol.entity';
+import { RoleEntity } from '../roles/rol.entity';
 import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
 
@@ -15,8 +15,8 @@ import { I18nService } from 'nestjs-i18n';
 export class AuthService extends SupportService {
 
     constructor(
-        @InjectRepository(User) private usersRepository: Repository<User>,
-        @InjectRepository(Rol) private rolesRepository: Repository<Rol>,
+        @InjectRepository(UserEntity) private usersRepository: Repository<UserEntity>,
+        @InjectRepository(RoleEntity) private rolesRepository: Repository<RoleEntity>,
         private jwtService: JwtService,
         i18n: I18nService
     ) {

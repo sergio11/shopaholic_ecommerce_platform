@@ -1,9 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Category } from '../categories/category.entity';
-import { OrderHasProducts } from '../orders/order_has_products.entity';
+import { CategoryEntity } from '../categories/category.entity';
+import { OrderHasProductsEntity } from '../orders/order_has_products.entity';
 
 @Entity({ name: 'products' })
-export class Product {
+export class ProductEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -32,13 +32,13 @@ export class Product {
     @Column({ name: "updated_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
 
-    @ManyToOne(() => Category, (category) => category.id)
+    @ManyToOne(() => CategoryEntity, (category) => category.id)
     @JoinColumn({name: 'id_category'})
-    category: Category
+    category: CategoryEntity
 
-    @OneToMany(() => OrderHasProducts, (ohp) => ohp.product)
+    @OneToMany(() => OrderHasProductsEntity, (ohp) => ohp.product)
     @JoinColumn({ referencedColumnName: 'id_product' })
-    orderHasProducts: OrderHasProducts[]
+    orderHasProducts: OrderHasProductsEntity[]
 
 
 }

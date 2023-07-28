@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Address } from './address.entity';
+import { AddressEntity } from './address.entity';
 import { Repository } from 'typeorm';
 import { SupportService } from 'src/core/support.service';
 import { CreateAddressDto } from './dto/create-address.dto';
@@ -11,7 +11,7 @@ import { I18nService } from 'nestjs-i18n';
 export class AddressService extends SupportService {
 
     constructor(
-        @InjectRepository(Address) private addressRepository: Repository<Address>,
+        @InjectRepository(AddressEntity) private addressRepository: Repository<AddressEntity>,
         i18n: I18nService
     ) {
         super(i18n);

@@ -20,7 +20,11 @@ const envFilePath: string = getEnvPath(`${__dirname}/env`);
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath, isGlobal: true }),
+    ConfigModule.forRoot({ 
+      envFilePath, 
+      isGlobal: true, 
+      expandVariables: true 
+    }),
     I18nModule.forRoot({
       fallbackLanguage: 'en',
       loaderOptions: {

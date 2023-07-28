@@ -1,8 +1,8 @@
-import { User } from "src/modules/users/user.entity";
+import { UserEntity } from "src/modules/users/user.entity";
 import { Column, Entity, ManyToMany, PrimaryColumn } from "typeorm";
 
 @Entity({name: 'roles'})
-export class Rol {
+export class RoleEntity {
     
     @PrimaryColumn()
     id: string;
@@ -22,7 +22,7 @@ export class Rol {
     @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
     updated_at: Date;
 
-    @ManyToMany(() => User, (user) => user.roles)
-    users: User[];
+    @ManyToMany(() => UserEntity, (user) => user.roles)
+    users: UserEntity[];
 
 }
