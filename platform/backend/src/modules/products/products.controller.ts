@@ -10,7 +10,10 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { ProductEntity } from './product.entity';
 import { API } from 'src/config/config';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('products')
 @Controller('products')
 export class ProductsController {
 
@@ -43,7 +46,7 @@ export class ProductsController {
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
     @Get('category/:id_category')
-    findByCategory(@Param('id_category', ParseIntPipe) id_category: number) {
+    findByCategory(@Param('id_category') id_category: string) {
         return this.productsService.findByCategory(id_category);
     }
     
@@ -91,7 +94,7 @@ export class ProductsController {
                 ],
               }),
         ) files: Array<Express.Multer.File>,
-        @Param('id', ParseIntPipe) id: number,
+        @Param('id') id: string,
         @Body() product: UpdateProductDto
     ) {
         console.log('Product: ', product);
@@ -104,7 +107,7 @@ export class ProductsController {
     @Version('1.0')
     @Put(':id')
     update(
-        @Param('id', ParseIntPipe) id: number,
+        @Param('id') id: string,
         @Body() product: UpdateProductDto
     ) {
         return this.productsService.update(id, product);
@@ -115,7 +118,7 @@ export class ProductsController {
     @Version('1.0')
     @Delete(':id')
     delete(
-        @Param('id', ParseIntPipe) id: number,
+        @Param('id') id: string,
     ) {
         return this.productsService.delete(id);
     }

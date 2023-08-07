@@ -19,14 +19,14 @@ export class OrdersService extends SupportService {
         return this.ordersRepository.find({ relations: ['user', 'address', 'orderHasProducts.product'] })
     }
     
-    findByClient(idClient: number) {
+    findByClient(idClient: string) {
         return this.ordersRepository.find({ 
             relations: ['user', 'address', 'orderHasProducts.product'],
             where: { idClient: idClient },
         })
     }
 
-    async updateStatus(id: number) {
+    async updateStatus(id: string) {
         const orderFound = await this.ordersRepository.findOneBy({id: id});
         if (!orderFound) {
             this.throwNotFoundException("ORDER_NOT_FOUND");

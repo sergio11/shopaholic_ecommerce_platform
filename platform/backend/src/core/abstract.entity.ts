@@ -23,24 +23,24 @@ import {
     @AutoMap()
     @CreateDateColumn({
       name: 'created_at',
-      type: 'timestamptz',
-      default: () => 'CURRENT_TIMESTAMP(6)',
+      type: 'datetime',
+      default: () => 'CURRENT_TIMESTAMP',
     })
     createdAt: Date;
   
     @AutoMap()
     @UpdateDateColumn({
       name: 'updated_at',
-      type: 'timestamptz',
-      default: () => 'CURRENT_TIMESTAMP(6)',
-      onUpdate: 'CURRENT_TIMESTAMP(6)',
+      type: 'datetime',
+      default: () => 'CURRENT_TIMESTAMP',
+      onUpdate: 'CURRENT_TIMESTAMP',
     })
     updatedAt: Date;
   
     @AutoMap()
     @DeleteDateColumn({
       name: 'deleted_at',
-      type: 'timestamp',
+      type: 'datetime',
     })
     @Exclude({ toPlainOnly: true })
     deletedAt?: Date;

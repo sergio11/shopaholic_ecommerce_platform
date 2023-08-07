@@ -24,7 +24,7 @@ export class ProductsService extends SupportService {
         return this.productsRepository.find();
     }
     
-    findByCategory(idCategory: number) {
+    findByCategory(idCategory: string) {
         return this.productsRepository.findBy({ idCategory: idCategory });
     }
 
@@ -67,7 +67,7 @@ export class ProductsService extends SupportService {
         
     }
     
-    async updateWithImages(files: Array<Express.Multer.File>, id: number, product: UpdateProductDto) {
+    async updateWithImages(files: Array<Express.Multer.File>, id: string, product: UpdateProductDto) {
 
         if (files.length === 0) {
             this.throwBadRequestException("NO_IMAGES_PROVIDED");
@@ -102,19 +102,19 @@ export class ProductsService extends SupportService {
         
     }
 
-    async update(id: number, product: UpdateProductDto)  {   
+    async update(id: string, product: UpdateProductDto)  {   
         const productFound = await this.findProduct(id);
         const updatedProduct = Object.assign(productFound, product);
         console.log('Product Updated:', updatedProduct);
         return this.productsRepository.save(updatedProduct);
     }
     
-    async delete(id: number)  {
+    async delete(id: string)  {
         await this.findProduct(id);
         return this.productsRepository.delete(id);
     }
 
-    private async findProduct(id: number) {
+    private async findProduct(id: string) {
         const productFound = await this.productsRepository.findOneBy({ id: id });
         if (!productFound) {
             this.throwNotFoundException("PRODUCT_NOT_FOUND");

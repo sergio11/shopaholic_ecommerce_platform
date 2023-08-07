@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../users/user.entity';
 import { Repository, In } from 'typeorm';
@@ -49,14 +49,14 @@ export class AuthService extends SupportService {
 
         const userSaved = await this.usersRepository.save(newUser);
 
-        const rolesString = userSaved.roles.map(rol => rol.id);
+        /*const rolesString = userSaved.roles.map(rol => rol.id);
         const payload = { id: userSaved.id, name: userSaved.name, roles: rolesString };
         const token = this.jwtService.sign(payload);
         const data = {
             user: userSaved,
             token: 'Bearer ' + token
         }
-        delete data.user.password;
+        delete data.user.password;*/
         return data;
     }
 

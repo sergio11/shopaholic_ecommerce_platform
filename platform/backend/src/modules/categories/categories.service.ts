@@ -33,13 +33,13 @@ export class CategoriesService extends SupportService {
     }
     
 
-    async update(id: number, category: UpdateCategoryDTO) {    
+    async update(id: string, category: UpdateCategoryDTO) {    
         const categoryFound = await this.findCategory(id);
         const updatedCategory = Object.assign(categoryFound, category);
         return this.categoriesRepository.save(updatedCategory);
     }
    
-    async updateWithImage(file: Express.Multer.File, id: number, category: UpdateCategoryDTO) {
+    async updateWithImage(file: Express.Multer.File, id: string, category: UpdateCategoryDTO) {
         const url = await storage(file, file.originalname);
         if (url === undefined && url === null) {
             this.throwInternalServerError("IMAGE_ERROR");
@@ -50,12 +50,12 @@ export class CategoriesService extends SupportService {
         return this.categoriesRepository.save(updatedCategory);
     }
 
-    async delete(id: number) {
+    async delete(id: string) {
         await this.findCategory(id);
         return this.categoriesRepository.delete(id);
     }
 
-    private async findCategory(id: number) {
+    private async findCategory(id: string) {
         const categoryFound = await this.categoriesRepository.findOneBy({ id: id });
         if (!categoryFound) {
             this.throwNotFoundException("CATEGORY_NOT_FOUND");

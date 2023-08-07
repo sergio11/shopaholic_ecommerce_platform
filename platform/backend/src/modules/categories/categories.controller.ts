@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Put, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Param, Body, ParseIntPipe, Post, Get, Delete, Version } from '@nestjs/common';
+import { Controller, UseGuards, Put, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Param, Body, Post, Get, Delete, Version } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { HasRoles } from '../auth/jwt/has-roles';
 import { JwtRole } from '../auth/jwt/jwt-role';
@@ -7,9 +7,11 @@ import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
 import CreateCategoryDTO from './dto/create-category.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import UpdateCategoryDTO from './dto/update-category.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CategoryEntity } from './category.entity';
 
+@ApiBearerAuth()
+@ApiTags('categories')
 @Controller('categories')
 export class CategoriesController {
 
@@ -52,7 +54,7 @@ export class CategoriesController {
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
     @Put(':id')
-    update( @Param('id', ParseIntPipe) id: number, @Body() category: UpdateCategoryDTO) {
+    update( @Param('id') id: string, @Body() category: UpdateCategoryDTO) {
         return this.categoriesService.update(id, category);
     }
 
@@ -70,7 +72,7 @@ export class CategoriesController {
                 ],
               }),
         ) file: Express.Multer.File,
-        @Param('id', ParseIntPipe) id: number,
+        @Param('id') id: string,
         @Body() category: UpdateCategoryDTO
     ) {
         return this.categoriesService.updateWithImage(file, id, category);
@@ -80,7 +82,7 @@ export class CategoriesController {
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
     @Delete(':id')
-    delete(@Param('id', ParseIntPipe) id: number) {
+    delete(@Param('id') id: string) {
         return this.categoriesService.delete(id);
     }
 

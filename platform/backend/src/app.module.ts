@@ -1,6 +1,6 @@
 import { AddressModule } from './modules/address/address.module';
 import { CategoriesModule } from './modules/categories/categories.module';
-import { Module } from '@nestjs/common';
+import { Module, OnApplicationBootstrap } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AcceptLanguageResolver, I18nModule, QueryResolver , HeaderResolver} from 'nestjs-i18n';
 import { join } from 'path';
@@ -13,7 +13,7 @@ import { CacheInterceptor } from '@nestjs/cache-manager';
 import { RedisCacheModule } from './modules/cache/redis-cache.module';
 import { ProductsModule } from './modules/products/products.module';
 import { MercadoPagoModule } from './modules/mercado_pago/mercado_pago.module';
-import { TypeOrmConfigService } from './core/typeorm/typeorm.service';
+import { TypeOrmConfigService } from './core/service/typeorm.service';
 import { getEnvPath } from './core/helper/env.helper';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
@@ -58,5 +58,9 @@ const envFilePath: string = getEnvPath(`${__dirname}/env`);
     },
   ]
 })
-export class AppModule {}
+export class AppModule implements OnApplicationBootstrap {
+  async onApplicationBootstrap(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+}
 

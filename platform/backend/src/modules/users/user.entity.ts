@@ -4,7 +4,7 @@ import { RoleEntity } from 'src/modules/roles/role.entity';
 import { AbstractEntity } from 'src/core/abstract.entity';
 import { AutoMap } from '@automapper/classes';
 
-@Entity({ name: 'users' })
+@Entity({ name: 'users'})
 export class UserEntity extends AbstractEntity  {
 
     @AutoMap()

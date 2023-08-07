@@ -1,27 +1,23 @@
+import { AbstractEntity } from 'src/core/abstract.entity';
 import { OrderEntity } from 'src/modules/orders/order.entity';
 import { UserEntity } from 'src/modules/users/user.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { AutoMap } from '@automapper/classes';
 
 @Entity({name: 'address'})
-export class AddressEntity {
+export class AddressEntity extends AbstractEntity {
 
-    @PrimaryGeneratedColumn()
-    id: number; 
-
+    @AutoMap()
     @Column()
     address: string;
     
+    @AutoMap()
     @Column()
     neighborhood: string;
 
+    @AutoMap()
     @Column({ name: "id_user" })
-    idUser: number;
-
-    @Column({ name: "created_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    createdAt: Date;
-    
-    @Column({ name: "updated_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    updatedAt: Date;
+    idUser: string;
 
     @OneToMany(() => OrderEntity, order => order.id)
     order: OrderEntity;

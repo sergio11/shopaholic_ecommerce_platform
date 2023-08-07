@@ -1,24 +1,19 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { AbstractEntity } from "src/core/abstract.entity";
+import { Column, Entity } from "typeorm";
+import { AutoMap } from '@automapper/classes';
 
 @Entity({ name: 'categories' })
-export class CategoryEntity {
+export class CategoryEntity extends AbstractEntity {
 
-    @PrimaryGeneratedColumn()
-    id: number;
-
+    @AutoMap()
     @Column({ unique: true })
     name: string;
     
+    @AutoMap()
     @Column()
     description: string;
     
+    @AutoMap()
     @Column()
     image: string;
-
-    @Column({ name: "created_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    createdAt: Date;
-    
-    @Column({ name: "updated_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    updatedAt: Date;
-
 }

@@ -1,10 +1,13 @@
-import { Controller, UseGuards, Put, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Param, Body, ParseIntPipe, Post, Get, Delete, Version } from '@nestjs/common';
+import { Controller, UseGuards, Put, Param, Get, Version } from '@nestjs/common';
 import { HasRoles } from '../auth/jwt/has-roles';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
 import { OrdersService } from './orders.service';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('orders')
 @Controller('orders')
 export class OrdersController {
 
@@ -22,7 +25,7 @@ export class OrdersController {
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
     @Get(':id_client')
-    findByClient(@Param('id_client', ParseIntPipe) idClient: number) {
+    findByClient(@Param('id_client') idClient: string) {
         return this.ordersService.findByClient(idClient);
     }
     
@@ -30,7 +33,7 @@ export class OrdersController {
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
     @Put(':id')
-    updateStatus(@Param('id', ParseIntPipe) id: number) {
+    updateStatus(@Param('id') id: string) {
         return this.ordersService.updateStatus(id);
     }
 

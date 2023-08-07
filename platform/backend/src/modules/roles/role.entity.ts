@@ -1,6 +1,6 @@
 import { AbstractEntity } from "src/core/abstract.entity";
 import { UserEntity } from "src/modules/users/user.entity";
-import { Column, Entity, ManyToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToMany } from "typeorm";
 import { AutoMap } from '@automapper/classes';
 
 @Entity({name: 'roles'})

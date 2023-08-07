@@ -1,12 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { CategoryEntity } from '../categories/category.entity';
 import { OrderHasProductsEntity } from '../orders/order_has_products.entity';
+import { AbstractEntity } from 'src/core/abstract.entity';
 
 @Entity({ name: 'products' })
-export class ProductEntity {
-
-    @PrimaryGeneratedColumn()
-    id: number;
+export class ProductEntity extends AbstractEntity {
 
     @Column({ name: "name"})
     name: string;
@@ -21,16 +19,10 @@ export class ProductEntity {
     image2: string;
     
     @Column({ name: "id_category"})
-    idCategory: number;
+    idCategory: string;
     
     @Column({ name: "price" })
     price: number;
-
-    @Column({ name: "created_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    createdAt: Date;
-    
-    @Column({ name: "updated_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    updatedAt: Date;
 
     @ManyToOne(() => CategoryEntity, (category) => category.id)
     @JoinColumn({name: 'id_category'})

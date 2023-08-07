@@ -1,24 +1,19 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { OrderEntity } from 'src/modules/orders/order.entity';
 import { ProductEntity } from 'src/modules/products/product.entity';
+import { AbstractEntity } from 'src/core/abstract.entity';
 
 @Entity({ name: 'order_has_products' })
-export class OrderHasProductsEntity {
+export class OrderHasProductsEntity extends AbstractEntity {
 
     @PrimaryColumn({ name: "id_order" })
-    idOrder: number;
+    idOrder: string;
     
     @PrimaryColumn({ name: "id_product" })
-    idProduct: number;
+    idProduct: string;
 
     @Column()
     quantity: number;
-
-    @Column({ name: "created_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    createdAt: Date;
-    
-    @Column({ name: "updated_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    updatedAt: Date;
 
     @ManyToOne(() => OrderEntity, (order) => order.id)
     @JoinColumn({ name: 'id_order' })

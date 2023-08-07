@@ -26,23 +26,23 @@ export class AddressService extends SupportService {
         return this.addressRepository.find()
     }
     
-    findByUser(id: number) {
+    findByUser(id: string) {
         return this.addressRepository.findBy({ idUser: id })
     }
 
-    async update(id: number, address: UpdateAddressDto) {
+    async update(id: string, address: UpdateAddressDto) {
         const addressFound = await this.findAddress(id);
         const updatedAddress = Object.assign(addressFound, address);
         return this.addressRepository.save(updatedAddress);
     }
     
-    async delete(id: number) {
+    async delete(id: string) {
         await this.findAddress(id);
         return this.addressRepository.delete(id);
     }
 
 
-    private async findAddress(id: number) {
+    private async findAddress(id: string) {
         const addressFound = await this.addressRepository.findOneBy({ id: id });
         if (!addressFound) {
             this.throwNotFoundException("ADDRESS_NOT_FOUND");

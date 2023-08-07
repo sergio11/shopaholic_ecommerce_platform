@@ -1,5 +1,5 @@
 export class CreateOrderDto {
-    idClient: number;
-    idAddress: number;
-    products: Array< { id: number; quantity: number; } >
+    idClient: string;
+    idAddress: string;
+    products: Array< { id: string; quantity: number; } >
 }

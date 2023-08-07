@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Put, Param, Body, ParseIntPipe, Post, Get, Delete, Version } from '@nestjs/common';
+import { Controller, UseGuards, Put, Param, Body, Post, Get, Delete, Version } from '@nestjs/common';
 import { HasRoles } from '../auth/jwt/has-roles';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
@@ -54,7 +54,7 @@ export class AddressController {
         description: 'A list of address created by user',
         type: AddressEntity,
     })
-    findByUser(@Param('id_user', ParseIntPipe) id_user: number) {
+    findByUser(@Param('id_user') id_user: string) {
         return this.addressService.findByUser(id_user);
     }
 
@@ -68,7 +68,7 @@ export class AddressController {
         description: 'The address updated by the user',
         type: AddressEntity,
     })
-    update(@Param('id', ParseIntPipe) id: number, @Body() address: UpdateAddressDto) {
+    update(@Param('id') id: string, @Body() address: UpdateAddressDto) {
         return this.addressService.update(id, address);
     }
     
@@ -82,7 +82,7 @@ export class AddressController {
         description: 'The address deleted by the user',
         type: AddressEntity,
     })
-    delete(@Param('id', ParseIntPipe) id: number) {
+    delete(@Param('id') id: string) {
         return this.addressService.delete(id);
     }
 
