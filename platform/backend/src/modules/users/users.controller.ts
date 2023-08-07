@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, UseGuards, Put, Param, ParseIntPipe, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards, Put, Param, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Version } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/modules/auth/jwt/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -8,7 +8,7 @@ import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
 import { HasRoles } from 'src/modules/auth/jwt/has-roles';
 import { JwtRole } from 'src/modules/auth/jwt/jwt-role';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UserEntity } from './user.entity';
+import { UserDto } from './dto/user.dto';
 
 @ApiBearerAuth()
 @ApiTags('users')
@@ -20,18 +20,20 @@ export class UsersController {
     
     @HasRoles(JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Version('1.0')
     @Get()
     @ApiOperation({ summary: 'Get users' })
     @ApiResponse({
         status: 200,
         description: 'User list',
-        type: UserEntity,
+        type: UserDto,
     })
     findAll() {
         return this.usersService.findAll();
     }
 
     @Post()
+    @Version('1.0')
     @ApiOperation({ summary: 'Create new user' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
     create(@Body() user: CreateUserDto) {
@@ -40,15 +42,17 @@ export class UsersController {
     
     @HasRoles(JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Version('1.0')
     @Put(':id')
     @ApiOperation({ summary: 'Update user' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    update(@Param('id', ParseIntPipe) id: number, @Body() user: UpdateUserDto) {
+    update(@Param('id') id: string, @Body() user: UpdateUserDto) {
         return this.usersService.update(id, user);
     }
 
     @HasRoles(JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Version('1.0')
     @Post('upload/:id')
     @ApiOperation({ summary: 'Update user and profile picture' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
@@ -62,7 +66,7 @@ export class UsersController {
                 ],
               }),
         ) file: Express.Multer.File,
-        @Param('id', ParseIntPipe) id: number, 
+        @Param('id') id: string, 
         @Body() user: UpdateUserDto
     ) {
         return this.usersService.updateWithImage(file, id, user);

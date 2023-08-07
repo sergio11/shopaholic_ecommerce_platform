@@ -2,8 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../users/user.entity';
 import { Repository, In } from 'typeorm';
-import { RegisterAuthDto } from './dto/register-auth.dto';
-import { LoginAuthDto } from './dto/login-auth.dto';
+import { SignUpAuthDto } from './dto/signup-auth.dto';
+import { SignInAuthDto } from './dto/signin-auth.dto';
 import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { RoleEntity } from '../roles/rol.entity';
@@ -23,7 +23,7 @@ export class AuthService extends SupportService {
         super(i18n);
     }
 
-    async register(user: RegisterAuthDto) {
+    async register(user: SignUpAuthDto) {
         const { email, phone } = user;
         const emailExist = await this.usersRepository.findOneBy({ email: email })
         if (emailExist) {
@@ -60,7 +60,7 @@ export class AuthService extends SupportService {
         return data;
     }
 
-    async login(loginData: LoginAuthDto) {
+    async login(loginData: SignInAuthDto) {
 
         const { email, password } = loginData;
         const userFound = await this.usersRepository.findOne({ 

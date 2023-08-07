@@ -5,10 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { JwtStrategy } from '../auth/jwt/jwt.strategy';
 import { RoleEntity } from 'src/modules/roles/rol.entity';
+import { UserProfile } from './user.mapper';
 
 @Module({
   imports: [ TypeOrmModule.forFeature([UserEntity, RoleEntity]) ],
-  providers: [UsersService, JwtStrategy],
+  providers: [UsersService, JwtStrategy, UserProfile],
   controllers: [UsersController]
 })
 export class UsersModule {}

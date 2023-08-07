@@ -7,7 +7,7 @@ export abstract class SupportService {
     constructor(private readonly i18n: I18nService) {}
 
     protected resolveString(key: string): string {
-        return this.i18n.t('app.USER_NOT_FOUND',{ lang: I18nContext.current().lang });
+        return this.i18n.t(key, { lang: I18nContext.current().lang });
     }
 
     protected throwNotFoundException(key: string) {

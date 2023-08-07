@@ -1,25 +1,29 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, BeforeInsert, ManyToMany, JoinTable } from 'typeorm';
 import { hash } from 'bcrypt';
 import { RoleEntity } from 'src/modules/roles/rol.entity';
+import { AbstractEntity } from 'src/core/abstract.entity';
+import { AutoMap } from '@automapper/classes';
 
 @Entity({ name: 'users' })
-export class UserEntity {
+export class UserEntity extends AbstractEntity  {
 
-    @PrimaryGeneratedColumn()
-    id: number;
-
+    @AutoMap()
     @Column()
     name: string;
     
+    @AutoMap()
     @Column()
     lastname: string;
 
+    @AutoMap()
     @Column({ unique: true })
     email: string;
     
+    @AutoMap()
     @Column({ unique: true })
     phone: string;
     
+    @AutoMap()
     @Column({ nullable: true })
     image: string;
     
@@ -28,12 +32,6 @@ export class UserEntity {
     
     @Column({ name: "notification_token", nullable: true })
     notificationToken: string;
-    
-    @Column({ name: "created_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    createdAt: Date;
-    
-    @Column({ name: "updated_at", type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    updatedAt: Date;
 
     @JoinTable({
         name: 'user_has_roles',

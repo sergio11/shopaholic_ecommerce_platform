@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Put, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Param, Body, ParseIntPipe, Post, Get, Delete } from '@nestjs/common';
+import { Controller, UseGuards, Put, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Param, Body, ParseIntPipe, Post, Get, Delete, Version } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { HasRoles } from '../auth/jwt/has-roles';
 import { JwtRole } from '../auth/jwt/jwt-role';
@@ -7,6 +7,8 @@ import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
 import CreateCategoryDTO from './dto/create-category.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import UpdateCategoryDTO from './dto/update-category.dto';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { CategoryEntity } from './category.entity';
 
 @Controller('categories')
 export class CategoriesController {
@@ -15,13 +17,21 @@ export class CategoriesController {
 
     @HasRoles(JwtRole.CLIENT, JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Version('1.0')
     @Get()
+    @ApiOperation({ summary: 'Return all categories registered' })
+    @ApiResponse({
+        status: 200,
+        description: 'All categories registered',
+        type: CategoryEntity,
+    })
     findAll() {
         return this.categoriesService.findAll()
     }
 
     @HasRoles(JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Version('1.0')
     @Post()
     @UseInterceptors(FileInterceptor('file'))
     createWithImage(
@@ -40,6 +50,7 @@ export class CategoriesController {
     
     @HasRoles(JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Version('1.0')
     @Put(':id')
     update( @Param('id', ParseIntPipe) id: number, @Body() category: UpdateCategoryDTO) {
         return this.categoriesService.update(id, category);
@@ -47,6 +58,7 @@ export class CategoriesController {
 
     @HasRoles(JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Version('1.0')
     @Put('upload/:id')
     @UseInterceptors(FileInterceptor('file'))
     updateWithImage(
@@ -66,6 +78,7 @@ export class CategoriesController {
 
     @HasRoles(JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Version('1.0')
     @Delete(':id')
     delete(@Param('id', ParseIntPipe) id: number) {
         return this.categoriesService.delete(id);

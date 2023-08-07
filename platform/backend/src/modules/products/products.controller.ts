@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Put, UseInterceptors, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Param, Body, ParseIntPipe, Post, Get, Delete, UploadedFiles, Query, DefaultValuePipe } from '@nestjs/common';
+import { Controller, UseGuards, Put, UseInterceptors, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Param, Body, ParseIntPipe, Post, Get, Delete, UploadedFiles, Query, DefaultValuePipe, Version } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { HasRoles } from '../auth/jwt/has-roles';
 import { JwtRole } from '../auth/jwt/jwt-role';
@@ -18,6 +18,7 @@ export class ProductsController {
 
     @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Version('1.0')
     @Get()
     findAll() {
         return this.productsService.findAll();
@@ -25,6 +26,7 @@ export class ProductsController {
 
     @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Version('1.0')
     @Get('pagination')
     async pagination(
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
@@ -39,6 +41,7 @@ export class ProductsController {
 
     @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Version('1.0')
     @Get('category/:id_category')
     findByCategory(@Param('id_category', ParseIntPipe) id_category: number) {
         return this.productsService.findByCategory(id_category);
@@ -46,6 +49,7 @@ export class ProductsController {
     
     @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Version('1.0')
     @Get('search/:name')
     findByName(@Param('name') name: string) {
         return this.productsService.findByName(name);
@@ -53,6 +57,7 @@ export class ProductsController {
 
     @HasRoles(JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Version('1.0')
     @Post()
     @UseInterceptors(FilesInterceptor('files[]', 2))
     create(
@@ -74,6 +79,7 @@ export class ProductsController {
     
     @HasRoles(JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Version('1.0')
     @Put('upload/:id')
     @UseInterceptors(FilesInterceptor('files[]', 2))
     updateWithImage(
@@ -95,6 +101,7 @@ export class ProductsController {
     
     @HasRoles(JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Version('1.0')
     @Put(':id')
     update(
         @Param('id', ParseIntPipe) id: number,
@@ -105,6 +112,7 @@ export class ProductsController {
     
     @HasRoles(JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Version('1.0')
     @Delete(':id')
     delete(
         @Param('id', ParseIntPipe) id: number,

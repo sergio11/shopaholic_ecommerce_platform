@@ -15,11 +15,15 @@ import { ProductsModule } from './modules/products/products.module';
 import { MercadoPagoModule } from './modules/mercado_pago/mercado_pago.module';
 import { TypeOrmConfigService } from './core/typeorm/typeorm.service';
 import { getEnvPath } from './core/helper/env.helper';
-
+import { AutomapperModule } from '@automapper/nestjs';
+import { classes } from '@automapper/classes';
 const envFilePath: string = getEnvPath(`${__dirname}/env`);
 
 @Module({
   imports: [
+    AutomapperModule.forRoot({
+      strategyInitializer: classes(),
+    }),
     ConfigModule.forRoot({ 
       envFilePath, 
       isGlobal: true, 
@@ -55,3 +59,4 @@ const envFilePath: string = getEnvPath(`${__dirname}/env`);
   ]
 })
 export class AppModule {}
+
