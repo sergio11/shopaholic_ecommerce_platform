@@ -7,7 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './jwt/jwt.constants';
 import { JwtStrategy } from './jwt/jwt.strategy';
 import { RolesService } from 'src/modules/roles/roles.service';
-import { RoleEntity } from 'src/modules/roles/rol.entity';
+import { RoleEntity } from 'src/modules/roles/role.entity';
 
 @Module({
   imports: [ 

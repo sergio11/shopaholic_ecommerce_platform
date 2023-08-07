@@ -6,7 +6,7 @@ import { SignUpAuthDto } from './dto/signup-auth.dto';
 import { SignInAuthDto } from './dto/signin-auth.dto';
 import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { RoleEntity } from '../roles/rol.entity';
+import { RoleEntity } from '../roles/role.entity';
 import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
 

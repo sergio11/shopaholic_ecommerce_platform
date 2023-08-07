@@ -6,7 +6,7 @@ import { CategoryEntity } from 'src/modules/categories/category.entity';
 import { OrderEntity } from 'src/modules/orders/order.entity';
 import { OrderHasProductsEntity } from 'src/modules/orders/order_has_products.entity';
 import { ProductEntity } from 'src/modules/products/product.entity';
-import { RoleEntity } from 'src/modules/roles/rol.entity';
+import { RoleEntity } from 'src/modules/roles/role.entity';
 import { UserEntity } from 'src/modules/users/user.entity';
 
 @Injectable()

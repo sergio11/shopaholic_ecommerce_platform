@@ -1,26 +1,22 @@
+import { AbstractEntity } from "src/core/abstract.entity";
 import { UserEntity } from "src/modules/users/user.entity";
 import { Column, Entity, ManyToMany, PrimaryColumn } from "typeorm";
+import { AutoMap } from '@automapper/classes';
 
 @Entity({name: 'roles'})
-export class RoleEntity {
+export class RoleEntity extends AbstractEntity {
     
-    @PrimaryColumn()
-    id: string;
-
+    @AutoMap()
     @Column({ unique: true })
     name: string
     
+    @AutoMap()
     @Column()
     image: string
 
+    @AutoMap()
     @Column()
     route: string
-
-    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    created_at: Date;
-    
-    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    updated_at: Date;
 
     @ManyToMany(() => UserEntity, (user) => user.roles)
     users: UserEntity[];

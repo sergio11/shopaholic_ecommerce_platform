@@ -1,6 +1,6 @@
 import { Entity, Column, BeforeInsert, ManyToMany, JoinTable } from 'typeorm';
 import { hash } from 'bcrypt';
-import { RoleEntity } from 'src/modules/roles/rol.entity';
+import { RoleEntity } from 'src/modules/roles/role.entity';
 import { AbstractEntity } from 'src/core/abstract.entity';
 import { AutoMap } from '@automapper/classes';
 

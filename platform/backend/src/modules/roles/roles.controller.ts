@@ -1,6 +1,6 @@
 import { Body, Controller, Post, UseGuards, Version } from '@nestjs/common';
 import { RolesService } from './roles.service';
-import { CreateRolDto } from './dto/create-rol.dto';
+import { CreateRolDto } from './dto/create-role.dto';
 import { HasRoles } from '../auth/jwt/has-roles';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
