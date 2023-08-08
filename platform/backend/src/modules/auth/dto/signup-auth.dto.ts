@@ -70,14 +70,14 @@ export class SignUpAuthDto {
     password: string;
     
     /**
-     * The role of the user
-     * @example 'The role of the user'
+     * The roles of the user
+     * @example 'CLIENT|ADMIN'
      */
     @ApiProperty({
-        description: `The role of the user`,
-        example: '1'
+        description: `The roles of the user`,
+        example: 'CLIENT|ADMIN'
     })
     @ApiProperty({ required: false, default: [] })
-    rolesIds: string[];
+    rolesName: string[];
 
 }

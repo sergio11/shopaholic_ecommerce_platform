@@ -18,11 +18,11 @@ export class SignInAuthDto {
 
     /**
      * The password of the user
-     * @example '121212143'
+     * @example 'dsds4343dsd'
      */
     @ApiProperty({
         description: `The password of the user`,
-        example: '121212143'
+        example: 'dsds4343dsd'
     })
     @IsNotEmpty()
     @IsString()

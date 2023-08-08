@@ -23,8 +23,8 @@ export class AuthService extends SupportService {
         super(i18n);
     }
 
-    async register(user: SignUpAuthDto) {
-        const { email, phone } = user;
+    async signup(signUpData: SignUpAuthDto) {
+        const { email, phone } = signUpData;
         const emailExist = await this.usersRepository.findOneBy({ email: email })
         if (emailExist) {
             this.throwConflictException("EMAIL_ALREADY_REGISTERED");
@@ -34,35 +34,38 @@ export class AuthService extends SupportService {
             this.throwConflictException("PHONE_ALREADY_REGISTERED");
         }
 
-        const newUser = this.usersRepository.create(user);
+        const newUser = this.usersRepository.create(signUpData);
         let rolesIds = [];
         
-        if (user.rolesIds !== undefined && user.rolesIds !== null) { // DATA
-            rolesIds = user.rolesIds;
+        if (signUpData.rolesName !== undefined && signUpData.rolesName !== null) { // DATA
+            rolesIds = signUpData.rolesName;
         }
         else {
             rolesIds.push('CLIENT');
         }
         
-        const roles = await this.rolesRepository.findBy({ id: In(rolesIds) });
+        const roles = await this.rolesRepository.findBy({ name: In(rolesIds) });
+        if (roles.length == 0) {
+            this.throwConflictException("NO_ROLES_FOUND");
+        }
         newUser.roles = roles;
 
         const userSaved = await this.usersRepository.save(newUser);
 
-        /*const rolesString = userSaved.roles.map(rol => rol.id);
+        const rolesString = userSaved.roles.map(rol => rol.id);
         const payload = { id: userSaved.id, name: userSaved.name, roles: rolesString };
         const token = this.jwtService.sign(payload);
         const data = {
             user: userSaved,
             token: 'Bearer ' + token
         }
-        delete data.user.password;*/
+        delete data.user.password;
         return data;
     }
 
-    async login(loginData: SignInAuthDto) {
+    async signin(signInData: SignInAuthDto) {
 
-        const { email, password } = loginData;
+        const { email, password } = signInData;
         const userFound = await this.usersRepository.findOne({ 
             where: { email: email },
             relations: ['roles']

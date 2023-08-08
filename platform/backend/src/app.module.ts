@@ -17,6 +17,7 @@ import { TypeOrmConfigService } from './core/service/typeorm.service';
 import { getEnvPath } from './core/helper/env.helper';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
+import { SeedingService } from './core/service/seeding.service';
 const envFilePath: string = getEnvPath(`${__dirname}/env`);
 
 @Module({
@@ -56,11 +57,17 @@ const envFilePath: string = getEnvPath(`${__dirname}/env`);
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor,
     },
+    SeedingService
   ]
 })
 export class AppModule implements OnApplicationBootstrap {
+
+  constructor(
+    private readonly seedingService: SeedingService,
+  ) {}
+
   async onApplicationBootstrap(): Promise<void> {
-    throw new Error('Method not implemented.');
+    await this.seedingService.seed();
   }
 }
 
