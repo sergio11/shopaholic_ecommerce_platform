@@ -3,30 +3,40 @@ version: '3'
 services:
   minio1:
     image: minio/minio
+    container_name: minio1
+    env_file:
+      - ./.env
     environment:
-      MINIO_ACCESS_KEY: minio-access-key
-      MINIO_SECRET_KEY: minio-secret-key
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
     volumes:
       - minio-data-1:/data
+    command: server http://minio{1...2}/data
     networks:
       - minio-network
 
   minio2:
     image: minio/minio
+    container_name: minio2
+    env_file:
+      - ./.env
     environment:
-      MINIO_ACCESS_KEY: minio-access-key
-      MINIO_SECRET_KEY: minio-secret-key
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
     volumes:
       - minio-data-2:/data
+    command: server http://minio{1...2}/data
     networks:
       - minio-network
 
   haproxy:
-    image: haproxy:2.4
+    image: haproxytech/haproxy-alpine:2.7
+    container_name: minio_haproxy
     volumes:
-      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     ports:
       - '9000:9000'
+      - '1936:1936'
     networks:
       - minio-network
 
