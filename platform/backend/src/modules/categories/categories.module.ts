@@ -6,8 +6,13 @@ import { CategoryEntity } from './category.entity';
 import { JwtStrategy } from '../auth/jwt/jwt.strategy';
 
 @Module({
-  imports: [ TypeOrmModule.forFeature([CategoryEntity]) ],
-  providers: [CategoriesService, JwtStrategy],
+  imports: [ 
+    TypeOrmModule.forFeature([CategoryEntity])
+  ],
+  providers: [
+    CategoriesService, 
+    JwtStrategy
+  ],
   controllers: [CategoriesController]
 })
 export class CategoriesModule {}

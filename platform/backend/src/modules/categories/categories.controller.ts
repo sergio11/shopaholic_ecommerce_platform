@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Put, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Param, Body, Post, Get, Delete, Version } from '@nestjs/common';
+import { Controller, UseGuards, Put, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Param, Body, Post, Get, Delete, Version, HttpStatus, ParseFilePipeBuilder } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { HasRoles } from '../auth/jwt/has-roles';
 import { JwtRole } from '../auth/jwt/jwt-role';
@@ -7,7 +7,7 @@ import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
 import CreateCategoryDTO from './dto/create-category.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import UpdateCategoryDTO from './dto/update-category.dto';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CategoryEntity } from './category.entity';
 
 @ApiBearerAuth()
@@ -28,7 +28,7 @@ export class CategoriesController {
         type: CategoryEntity,
     })
     findAll() {
-        return this.categoriesService.findAll()
+        return this.categoriesService.findAll();
     }
 
     @HasRoles(JwtRole.ADMIN)
@@ -36,17 +36,31 @@ export class CategoriesController {
     @Version('1.0')
     @Post()
     @UseInterceptors(FileInterceptor('file'))
+    @ApiConsumes('multipart/form-data')
+    @ApiOperation({ summary: 'Allow us to create a new category' })
+    @ApiResponse({
+        status: 200,
+        description: 'New category successfully created',
+        type: CategoryEntity,
+    })
     createWithImage(
         @UploadedFile(
-            new ParseFilePipe({
-                validators: [
-                  new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 10 }),
-                  new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
-                ],
-              }),
+            new ParseFilePipeBuilder()
+                .addFileTypeValidator({
+                    fileType: '.(png|jpeg|jpg)',
+                })
+                .addMaxSizeValidator({
+                    maxSize: 1024 * 1024 * 10
+                })
+                .build({
+                    errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
+                }),
         ) file: Express.Multer.File,
         @Body() category: CreateCategoryDTO
     ) {
+        console.log("Categories - create new one");
+        console.log(file);
+        console.log(category);
         return this.categoriesService.create(file,category);
     }
     
@@ -54,7 +68,16 @@ export class CategoriesController {
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
     @Put(':id')
-    update( @Param('id') id: string, @Body() category: UpdateCategoryDTO) {
+    @ApiOperation({ summary: 'Allow us to update an existing category' })
+    @ApiResponse({
+        status: 200,
+        description: 'Category successfully updated',
+        type: CategoryEntity,
+    })
+    update( 
+        @Param('id') id: string, 
+        @Body() category: UpdateCategoryDTO
+    ) {
         return this.categoriesService.update(id, category);
     }
 
@@ -78,12 +101,20 @@ export class CategoriesController {
         return this.categoriesService.updateWithImage(file, id, category);
     }
 
+
     @HasRoles(JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
     @Delete(':id')
+    @ApiOperation({ summary: 'Allow us to delete a category' })
+    @ApiResponse({
+        status: 200,
+        description: 'Category successfully deleted',
+        type: CategoryEntity,
+    })
     delete(@Param('id') id: string) {
         return this.categoriesService.delete(id);
     }
 
 }
+

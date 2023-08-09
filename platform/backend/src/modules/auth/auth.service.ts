@@ -52,15 +52,7 @@ export class AuthService extends SupportService {
 
         const userSaved = await this.usersRepository.save(newUser);
 
-        const rolesString = userSaved.roles.map(rol => rol.id);
-        const payload = { id: userSaved.id, name: userSaved.name, roles: rolesString };
-        const token = this.jwtService.sign(payload);
-        const data = {
-            user: userSaved,
-            token: 'Bearer ' + token
-        }
-        delete data.user.password;
-        return data;
+        return this.generateAndSignJwt(userSaved);
     }
 
     async signin(signInData: SignInAuthDto) {
@@ -79,21 +71,22 @@ export class AuthService extends SupportService {
             this.throwForbiddenException("INVALID_CREDENTIALS");
         }
 
-        const rolesIds = userFound.roles.map(rol => rol.id);
+        return this.generateAndSignJwt(userFound);
+    }
 
+    private generateAndSignJwt(user: UserEntity) {
+        const roles = user.roles.map(rol => rol.name);
         const payload = { 
-            id: userFound.id, 
-            name: userFound.name, 
-            roles: rolesIds 
+            id: user.id, 
+            name: user.name, 
+            roles: roles 
         };
         const token = this.jwtService.sign(payload);
         const data = {
-            user: userFound,
+            user: user,
             token: 'Bearer ' + token
         }
-
         delete data.user.password;
-
         return data;
     }
 

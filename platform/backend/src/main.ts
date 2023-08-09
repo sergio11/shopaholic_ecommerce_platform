@@ -15,6 +15,7 @@ async function bootstrap() {
     .setDescription('Shopaholic API description')
     .setVersion('1.0')
     .addTag('Shopaholic')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api', app, document);

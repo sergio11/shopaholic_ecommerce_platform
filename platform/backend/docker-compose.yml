@@ -10,6 +10,8 @@ services:
       resources:
         limits:
           memory: 500M
+    cap_add:
+      - SYS_TIME
     ports:
       - 3000:3000
 

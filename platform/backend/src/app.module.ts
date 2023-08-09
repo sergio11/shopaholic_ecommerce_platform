@@ -18,6 +18,8 @@ import { getEnvPath } from './core/helper/env.helper';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { SeedingService } from './core/service/seeding.service';
+import { FilesStorageModule } from './modules/storage/storage.module';
+import { FirebaseModule } from './modules/firebase/firebase.module';
 const envFilePath: string = getEnvPath(`${__dirname}/env`);
 
 @Module({
@@ -50,7 +52,9 @@ const envFilePath: string = getEnvPath(`${__dirname}/env`);
     RedisCacheModule,
     AddressModule,
     ProductsModule,
-    MercadoPagoModule
+    MercadoPagoModule,
+    FirebaseModule,
+    FilesStorageModule
   ],
   providers: [
     {

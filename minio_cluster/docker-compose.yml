@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  minio1:
+    image: minio/minio
+    environment:
+      MINIO_ACCESS_KEY: minio-access-key
+      MINIO_SECRET_KEY: minio-secret-key
+    volumes:
+      - minio-data-1:/data
+    networks:
+      - minio-network
+
+  minio2:
+    image: minio/minio
+    environment:
+      MINIO_ACCESS_KEY: minio-access-key
+      MINIO_SECRET_KEY: minio-secret-key
+    volumes:
+      - minio-data-2:/data
+    networks:
+      - minio-network
+
+  haproxy:
+    image: haproxy:2.4
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    ports:
+      - '9000:9000'
+    networks:
+      - minio-network
+
+volumes:
+  minio-data-1:
+  minio-data-2:
+
+networks:
+  minio-network:
+    driver: bridge

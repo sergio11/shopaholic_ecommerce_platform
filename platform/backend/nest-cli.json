@@ -6,7 +6,8 @@
     "deleteOutDir": true,
     "assets": [
       { "include": "i18n/**/*", "watchAssets": true },
-      { "include": "env/**/*", "watchAssets": true }
+      { "include": "env/**/*", "watchAssets": true },
+      { "include": "config/**/*", "watchAssets": true }
     ]
   }
 }

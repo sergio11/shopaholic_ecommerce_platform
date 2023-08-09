@@ -1,29 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import CreateCategoryDTO from './dto/create-category.dto';
-import storage = require('../../core/utils/cloud_storage');
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryEntity } from './category.entity';
 import { Repository } from 'typeorm';
 import UpdateCategoryDTO from './dto/update-category.dto';
 import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
+import { IStorageService, STORAGE_SERVICE } from '../storage/storage.service';
 
 @Injectable()
 export class CategoriesService extends SupportService {
 
     constructor(
         @InjectRepository(CategoryEntity) private categoriesRepository: Repository<CategoryEntity>,
+        @Inject(STORAGE_SERVICE)
+        private readonly storageService: IStorageService,
         i18n: I18nService
     ) {
         super(i18n);
     }
 
-    findAll() {
-        return this.categoriesRepository.find()    
+    async findAll() {
+        return this.categoriesRepository.find(); 
     }
 
     async create(file: Express.Multer.File, category: CreateCategoryDTO) {
-        const url = await storage(file, file.originalname);
+        console.log(`destination -> ${file.destination}`)
+        console.log(`size -> ${file.size}`)
+        const url = await this.storageService.saveFile(file.buffer, file.originalname, file.mimetype);
         if (url === undefined && url === null) {
             this.throwInternalServerError("IMAGE_ERROR");
         }
@@ -40,7 +44,7 @@ export class CategoriesService extends SupportService {
     }
    
     async updateWithImage(file: Express.Multer.File, id: string, category: UpdateCategoryDTO) {
-        const url = await storage(file, file.originalname);
+        const url = await this.storageService.saveFile(file.buffer, file.originalname, file.mimetype);
         if (url === undefined && url === null) {
             this.throwInternalServerError("IMAGE_ERROR");
         }

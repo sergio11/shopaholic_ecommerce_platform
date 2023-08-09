@@ -5,8 +5,8 @@ import { ProductEntity } from './product.entity';
 import { Like, Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
-import asyncForEach = require('../../core/utils/async_foreach');
-import storage = require('../../core/utils/cloud_storage');
+import asyncForEach = require('../../firebase/async_foreach');
+import storage = require('../../firebase/cloud_storage');
 import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
 
