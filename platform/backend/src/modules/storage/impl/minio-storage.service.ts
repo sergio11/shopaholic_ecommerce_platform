@@ -1,28 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import * as Minio from 'minio';
 import { Readable } from 'stream';
 import { IStorageService } from '../storage.service';
-
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MinioStorageService implements IStorageService {
   private readonly minioClient: Minio.Client;
-  private readonly bucketName: string = 'my-bucket'; // Nombre del bucket de MinIO
+  private readonly bucketName: string;
 
-  constructor() {
+  constructor(
+    @Inject(ConfigService)
+    private readonly configService: ConfigService
+  ) {
+
+    const minioEndpoint = this.configService.get<string>('MINIO_SERVER_HOST');
+    const minioPort = this.configService.get<number>('MINIO_SERVER_PORT');
+    const minioUseSSL = this.configService.get<boolean>('MINIO_SERVER_USE_SSL');
+    const minioAccessKey = this.configService.get<string>('MINIO_SERVER_ACCESS_KEY');
+    const minioSecretKey = this.configService.get<string>('MINIO_SERVER_SECRET_KEY');
+    this.bucketName = this.configService.get<string>('MINIO_SERVER_BUCKET_NAME');
+
+
     this.minioClient = new Minio.Client({
-      endPoint: 'minio-server', // Cambia esto al host de tu servidor MinIO
-      port: 9000, // Puerto de MinIO
-      useSSL: false, // Cambia a true si estás usando SSL/TLS
-      accessKey: 'your-access-key', // Cambia a tus credenciales de acceso
-      secretKey: 'your-secret-key',
+      endPoint: minioEndpoint,
+      port: 9000,
+      useSSL: false,
+      accessKey: minioAccessKey,
+      secretKey: minioSecretKey,
+    });
+    
+    this.checkAndCreateBucket().catch((error) => {
+      console.error('Error checking and creating bucket:', error);
     });
   }
 
-  async saveFile(file: Buffer, fileName: string, contentType: string): Promise<string> {
+  public async saveFile(file: Buffer, fileName: string, contentType: string): Promise<string> {
     const readableStream = new Readable();
     readableStream.push(file);
-    readableStream.push(null); // Indica el final del stream
+    readableStream.push(null); // final stream
 
     const uploadOptions = {
       'Content-Type': contentType,
@@ -36,5 +52,27 @@ export class MinioStorageService implements IStorageService {
       console.error('Error saving file to MinIO:', error);
       throw new Error('Error saving file to MinIO');
     }
+  }
+
+  private async checkAndCreateBucket(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.minioClient.bucketExists(this.bucketName, (err, exists) => {
+        if (err) {
+          reject(err);
+        } else {
+          if (!exists) {
+            this.minioClient.makeBucket(this.bucketName, 'us-east-1', (err) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve();
+              }
+            });
+          } else {
+            resolve();
+          }
+        }
+      });
+    });
   }
 }

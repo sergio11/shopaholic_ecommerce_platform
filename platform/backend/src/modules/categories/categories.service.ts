@@ -25,13 +25,12 @@ export class CategoriesService extends SupportService {
     }
 
     async create(file: Express.Multer.File, category: CreateCategoryDTO) {
-        console.log(`destination -> ${file.destination}`)
-        console.log(`size -> ${file.size}`)
         const url = await this.storageService.saveFile(file.buffer, file.originalname, file.mimetype);
         if (url === undefined && url === null) {
             this.throwInternalServerError("IMAGE_ERROR");
         }
         category.image = url;
+        console.log(`category.image url -> ${url}`)
         const newCategory = this.categoriesRepository.create(category)
         return this.categoriesRepository.save(newCategory);
     }

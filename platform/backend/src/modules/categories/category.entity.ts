@@ -10,10 +10,10 @@ export class CategoryEntity extends AbstractEntity {
     name: string;
     
     @AutoMap()
-    @Column()
+    @Column({ length: 1000 })
     description: string;
     
     @AutoMap()
-    @Column()
+    @Column({ length: 4000 })
     image: string;
 }
