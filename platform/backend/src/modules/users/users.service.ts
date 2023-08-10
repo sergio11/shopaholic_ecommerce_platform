@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { Repository } from 'typeorm';
@@ -7,9 +7,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { SupportService } from 'src/core/support.service'
 import { I18nService } from 'nestjs-i18n';
 import { Mapper } from '@automapper/core';
-import storage = require('../../firebase/cloud_storage');
 import { UserDto } from './dto/user.dto';
 import { InjectMapper } from '@automapper/nestjs';
+import { IStorageService, STORAGE_SERVICE } from '../storage/storage.service';
 
 @Injectable()
 export class UsersService extends SupportService {
@@ -17,6 +17,8 @@ export class UsersService extends SupportService {
     constructor(
         @InjectRepository(UserEntity) private usersRepository: Repository<UserEntity>,
         @InjectMapper() private readonly classMapper: Mapper,
+        @Inject(STORAGE_SERVICE)
+        private readonly storageService: IStorageService,
         i18n: I18nService
     ) {
         super(i18n)
@@ -41,7 +43,7 @@ export class UsersService extends SupportService {
     
 
     async updateWithImage(file: Express.Multer.File, id: string, user: UpdateUserDto) {
-        const url = await storage(file, file.originalname);
+        const url = await this.storageService.saveFile(file.buffer, file.originalname, file.mimetype);
         console.log('URL: ' + url);
         if (url === undefined && url === null) {
             this.throwInternalServerError("app.IMAGE_ERROR");

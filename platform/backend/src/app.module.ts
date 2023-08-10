@@ -7,10 +7,8 @@ import { join } from 'path';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { RolesModule } from './modules/roles/roles.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
-import { CacheInterceptor } from '@nestjs/cache-manager';
-import { RedisCacheModule } from './modules/cache/redis-cache.module';
+import { CacheConfigModule } from './modules/cache/cache.module';
 import { ProductsModule } from './modules/products/products.module';
 import { MercadoPagoModule } from './modules/mercado_pago/mercado_pago.module';
 import { TypeOrmConfigService } from './core/service/typeorm.service';
@@ -19,7 +17,7 @@ import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { SeedingService } from './core/service/seeding.service';
 import { FilesStorageModule } from './modules/storage/storage.module';
-import { FirebaseModule } from './modules/firebase/firebase.module';
+
 const envFilePath: string = getEnvPath(`${__dirname}/env`);
 
 @Module({
@@ -49,18 +47,13 @@ const envFilePath: string = getEnvPath(`${__dirname}/env`);
     AuthModule,
     RolesModule,
     CategoriesModule,
-    RedisCacheModule,
+    CacheConfigModule,
     AddressModule,
     ProductsModule,
     MercadoPagoModule,
-    FirebaseModule,
     FilesStorageModule
   ],
   providers: [
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor,
-    },
     SeedingService
   ]
 })

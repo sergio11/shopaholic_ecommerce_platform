@@ -20,9 +20,6 @@ services:
       volumes:
         - ./data:/var/lib/redis
         - ./conf/node_1/redis.conf:/usr/local/etc/redis/redis.conf
-      ports:
-        - 6379:6379
-        - 16379:16379
       networks:
         redis_cluster_network:
           ipv4_address: 192.168.0.30
@@ -35,9 +32,6 @@ services:
       volumes:
         - ./data:/var/lib/redis
         - ./conf/node_2/redis.conf:/usr/local/etc/redis/redis.conf
-      ports:
-        - 6380:6380
-        - 16380:16380
       networks:
         redis_cluster_network:
           ipv4_address: 192.168.0.35
@@ -50,9 +44,6 @@ services:
       volumes:
         - ./data:/var/lib/redis
         - ./conf/node_3/redis.conf:/usr/local/etc/redis/redis.conf
-      ports:
-        - 6381:6381
-        - 16381:16381
       networks:
         redis_cluster_network:
           ipv4_address: 192.168.0.40
@@ -65,9 +56,6 @@ services:
       volumes:
         - ./data:/var/lib/redis
         - ./conf/node_4/redis.conf:/usr/local/etc/redis/redis.conf
-      ports:
-        - 6382:6382
-        - 16382:16382
       networks:
         redis_cluster_network:
           ipv4_address: 192.168.0.45
@@ -80,9 +68,6 @@ services:
       volumes:
         - ./data:/var/lib/redis
         - ./conf/node_5/redis.conf:/usr/local/etc/redis/redis.conf
-      ports:
-        - 6383:6383
-        - 16383:16383
       networks:
         redis_cluster_network:
           ipv4_address: 192.168.0.50
@@ -94,10 +79,7 @@ services:
       command: redis-server /usr/local/etc/redis/redis.conf
       volumes:
         - ./data:/var/lib/redis
-        - ./conf/node_6/redis.conf:/usr/local/etc/redis/redis.conf
-      ports:
-        - 6384:6384
-        - 16384:16384      
+        - ./conf/node_6/redis.conf:/usr/local/etc/redis/redis.conf   
       networks:
         redis_cluster_network:
           ipv4_address: 192.168.0.55
@@ -109,10 +91,7 @@ services:
       command: redis-server /usr/local/etc/redis/redis.conf
       volumes:
         - ./data:/var/lib/redis
-        - ./conf/node_7/redis.conf:/usr/local/etc/redis/redis.conf
-      ports:
-        - 6385:6385
-        - 16385:16385      
+        - ./conf/node_7/redis.conf:/usr/local/etc/redis/redis.conf 
       networks:
         redis_cluster_network:
           ipv4_address: 192.168.0.60
@@ -124,10 +103,7 @@ services:
       command: redis-server /usr/local/etc/redis/redis.conf
       volumes:
         - ./data:/var/lib/redis
-        - ./conf/node_8/redis.conf:/usr/local/etc/redis/redis.conf
-      ports:
-        - 6386:6386
-        - 16386:16386      
+        - ./conf/node_8/redis.conf:/usr/local/etc/redis/redis.conf   
       networks:
         redis_cluster_network:
           ipv4_address: 192.168.0.65
@@ -143,3 +119,21 @@ services:
     networks:
         redis_cluster_network:
           ipv4_address: 192.168.0.70
+
+  haproxy:
+    image: haproxytech/haproxy-alpine:2.7
+    container_name: redis_haproxy
+    volumes:
+      - ./conf/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    ports:
+      - "6379:6379"
+      - "6380:6380"
+      - "6381:6381"
+      - "6382:6382"
+      - "6383:6383"
+      - "6384:6384"
+      - "6385:6385"
+      - "6386:6386"
+      - "6390:6390"
+    networks:
+      - redis_cluster_network

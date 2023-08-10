@@ -12,10 +12,10 @@ export class ProductEntity extends AbstractEntity {
     @Column({ name: "description"})
     description: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, length: 4000 })
     image1: string;
     
-    @Column({ nullable: true })
+    @Column({ nullable: true, length: 4000 })
     image2: string;
     
     @Column({ name: "id_category"})

@@ -1,20 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductEntity } from './product.entity';
 import { Like, Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
-import asyncForEach = require('../../firebase/async_foreach');
-import storage = require('../../firebase/cloud_storage');
+import asyncForEach = require('../../core/async_foreach');
 import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
+import { IStorageService, STORAGE_SERVICE } from '../storage/storage.service';
 
 @Injectable()
 export class ProductsService extends SupportService {
 
     constructor(
         @InjectRepository(ProductEntity) private productsRepository: Repository<ProductEntity>,
+        @Inject(STORAGE_SERVICE)
+        private readonly storageService: IStorageService,
         i18n: I18nService
     ) {
         super(i18n);
@@ -46,8 +48,7 @@ export class ProductsService extends SupportService {
         const savedProduct = await this.productsRepository.save(newProduct);        
         const startForEach = async () => {
             await asyncForEach(files, async (file: Express.Multer.File) => {
-                const url = await storage(file, file.originalname);
-
+                const url = await this.storageService.saveFile(file.buffer, file.originalname, file.mimetype);
                 if (url !== undefined && url !== null) {
                     if (uploadedFiles === 0) {
                         savedProduct.image1 = url
@@ -80,7 +81,7 @@ export class ProductsService extends SupportService {
 
         const startForEach = async () => {
             await asyncForEach(files, async (file: Express.Multer.File) => {
-                const url = await storage(file, file.originalname);
+                const url = await this.storageService.saveFile(file.buffer, file.originalname, file.mimetype);
 
                 if (url !== undefined && url !== null) {
                     if (uploadedFiles === 0) {

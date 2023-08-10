@@ -24,7 +24,7 @@ export class UserEntity extends AbstractEntity  {
     phone: string;
     
     @AutoMap()
-    @Column({ nullable: true })
+    @Column({ length: 4000, nullable: true })
     image: string;
     
     @Column()
