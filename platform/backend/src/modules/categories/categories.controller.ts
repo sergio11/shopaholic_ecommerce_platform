@@ -9,6 +9,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import UpdateCategoryDTO from './dto/update-category.dto';
 import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CategoryEntity } from './category.entity';
+import { CategoryResponseDto } from './dto/category-response.dto';
 
 @ApiBearerAuth()
 @ApiTags('categories')
@@ -25,7 +26,8 @@ export class CategoriesController {
     @ApiResponse({
         status: 200,
         description: 'All categories registered',
-        type: CategoryEntity,
+        type: CategoryResponseDto,
+        isArray: true,
     })
     findAll() {
         return this.categoriesService.findAll();
@@ -41,7 +43,7 @@ export class CategoriesController {
     @ApiResponse({
         status: 200,
         description: 'New category successfully created',
-        type: CategoryEntity,
+        type: CategoryResponseDto,
     })
     createWithImage(
         @UploadedFile(
@@ -72,7 +74,7 @@ export class CategoriesController {
     @ApiResponse({
         status: 200,
         description: 'Category successfully updated',
-        type: CategoryEntity,
+        type: CategoryResponseDto,
     })
     update( 
         @Param('id') id: string, 
@@ -109,8 +111,7 @@ export class CategoriesController {
     @ApiOperation({ summary: 'Allow us to delete a category' })
     @ApiResponse({
         status: 200,
-        description: 'Category successfully deleted',
-        type: CategoryEntity,
+        description: 'Category successfully deleted'
     })
     delete(@Param('id') id: string) {
         return this.categoriesService.delete(id);

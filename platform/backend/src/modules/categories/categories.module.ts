@@ -4,6 +4,7 @@ import { CategoriesController } from './categories.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryEntity } from './category.entity';
 import { JwtStrategy } from '../auth/jwt/jwt.strategy';
+import { CategoryProfile } from './category.mapper';
 
 @Module({
   imports: [ 
@@ -11,7 +12,8 @@ import { JwtStrategy } from '../auth/jwt/jwt.strategy';
   ],
   providers: [
     CategoriesService, 
-    JwtStrategy
+    JwtStrategy,
+    CategoryProfile
   ],
   controllers: [CategoriesController]
 })

@@ -3,6 +3,7 @@ import * as Minio from 'minio';
 import { Readable } from 'stream';
 import { IStorageService } from '../storage.service';
 import { ConfigService } from '@nestjs/config';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class MinioStorageService implements IStorageService {
@@ -15,8 +16,8 @@ export class MinioStorageService implements IStorageService {
   ) {
 
     const minioEndpoint = this.configService.get<string>('MINIO_SERVER_HOST');
-    const minioPort = this.configService.get<number>('MINIO_SERVER_PORT');
-    const minioUseSSL = this.configService.get<boolean>('MINIO_SERVER_USE_SSL');
+    const minioPort = Number(this.configService.get<number>('MINIO_SERVER_PORT'));
+    const minioUseSSL = Boolean(this.configService.get<boolean>('MINIO_SERVER_USE_SSL'));
     const minioAccessKey = this.configService.get<string>('MINIO_SERVER_ACCESS_KEY');
     const minioSecretKey = this.configService.get<string>('MINIO_SERVER_SECRET_KEY');
     this.bucketName = this.configService.get<string>('MINIO_SERVER_BUCKET_NAME');
@@ -24,8 +25,8 @@ export class MinioStorageService implements IStorageService {
 
     this.minioClient = new Minio.Client({
       endPoint: minioEndpoint,
-      port: 9000,
-      useSSL: false,
+      port: minioPort,
+      useSSL: minioUseSSL,
       accessKey: minioAccessKey,
       secretKey: minioSecretKey,
     });
@@ -35,7 +36,8 @@ export class MinioStorageService implements IStorageService {
     });
   }
 
-  public async saveFile(file: Buffer, fileName: string, contentType: string): Promise<string> {
+  public async saveFile(file: Buffer, contentType: string): Promise<string> {
+    const fileName = `${uuidv4()}.${contentType.split('/')[1]}`; // Generate a UUID and append it to the filename
     const readableStream = new Readable();
     readableStream.push(file);
     readableStream.push(null); // final stream
