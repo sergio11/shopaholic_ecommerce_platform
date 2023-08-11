@@ -10,13 +10,13 @@ import { RolesModule } from './modules/roles/roles.module';
 import { ConfigModule } from '@nestjs/config';
 import { CacheConfigModule } from './modules/cache/cache.module';
 import { ProductsModule } from './modules/products/products.module';
-import { MercadoPagoModule } from './modules/mercado_pago/mercado_pago.module';
 import { TypeOrmConfigService } from './core/service/typeorm.service';
 import { getEnvPath } from './core/helper/env.helper';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { SeedingService } from './core/service/seeding.service';
 import { FilesStorageModule } from './modules/storage/storage.module';
+import { PaymentsModule } from './modules/payments/payments.module';
 
 const envFilePath: string = getEnvPath(`${__dirname}/env`);
 
@@ -50,7 +50,7 @@ const envFilePath: string = getEnvPath(`${__dirname}/env`);
     CacheConfigModule,
     AddressModule,
     ProductsModule,
-    MercadoPagoModule,
+    PaymentsModule,
     FilesStorageModule
   ],
   providers: [
