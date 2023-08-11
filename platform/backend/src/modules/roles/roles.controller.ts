@@ -1,6 +1,6 @@
 import { Body, Controller, Post, UseGuards, Version } from '@nestjs/common';
 import { RolesService } from './roles.service';
-import { CreateRolDto } from './dto/create-role.dto';
+import { CreateRoleDto } from './dto/create-role.dto';
 import { HasRoles } from '../auth/jwt/has-roles';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
@@ -20,7 +20,7 @@ export class RolesController {
     @Post()
     @ApiOperation({ summary: 'Create new rol' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    create(@Body() rol: CreateRolDto) {
+    create(@Body() rol: CreateRoleDto) {
         return this.rolesService.create(rol);
     }
 
