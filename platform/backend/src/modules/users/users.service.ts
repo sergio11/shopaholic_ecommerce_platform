@@ -7,9 +7,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { SupportService } from 'src/core/support.service'
 import { I18nService } from 'nestjs-i18n';
 import { Mapper } from '@automapper/core';
-import { UserDto } from './dto/user-response.dto';
 import { InjectMapper } from '@automapper/nestjs';
 import { IStorageService, STORAGE_SERVICE } from '../storage/storage.service';
+import { UserResponseDto } from './dto/user-response.dto';
 
 @Injectable()
 export class UsersService extends SupportService {
@@ -30,8 +30,9 @@ export class UsersService extends SupportService {
     }
 
     
-    async findAll(): Promise<UserDto[]> {
-        return this.classMapper.mapArrayAsync(await this.usersRepository.find({ relations: ['roles'] }), UserEntity, UserDto);
+    async findAll(): Promise<UserResponseDto[]> {
+        const users = await this.usersRepository.find({ relations: ['roles'] });
+        return this.classMapper.mapArrayAsync(users, UserEntity, UserResponseDto);
     }
 
     
@@ -43,7 +44,7 @@ export class UsersService extends SupportService {
     
 
     async updateWithImage(file: Express.Multer.File, id: string, user: UpdateUserDto) {
-        const url = await this.storageService.saveFile(file.buffer, file.originalname, file.mimetype);
+        const url = await this.storageService.saveFile(file.buffer, file.mimetype);
         console.log('URL: ' + url);
         if (url === undefined && url === null) {
             this.throwInternalServerError("app.IMAGE_ERROR");

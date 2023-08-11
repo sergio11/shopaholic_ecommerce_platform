@@ -34,7 +34,7 @@ export class PaymentsController {
         console.log('firstSixDigits', firstSixDigits);
         console.log('amount', amount);
         
-        return this.mercadoPagoService.getInstallments(firstSixDigits, amount);
+       // return this.mercadoPagoService.getInstallments(firstSixDigits, amount);
     }
     
     @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
@@ -42,7 +42,7 @@ export class PaymentsController {
     @Version('1.0')
     @Post('card_token')
     createCardToken(@Body() cardTokenBody: CardTokenBody) {
-        return this.mercadoPagoService.createCardToken(cardTokenBody);
+        //return this.mercadoPagoService.createCardToken(cardTokenBody);
     }
     
     @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
@@ -50,7 +50,7 @@ export class PaymentsController {
     @Version('1.0')
     @Post('payments')
     createPayment(@Body() paymentBody: PaymentBody) {
-        return this.mercadoPagoService.createPayment(paymentBody);
+        //return this.mercadoPagoService.createPayment(paymentBody);
     }
 
 }

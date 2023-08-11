@@ -39,7 +39,7 @@ export class AddressService extends SupportService {
 
     async update(id: string, address: UpdateAddressDto): Promise<AddressResponseDto> {
         const addressFound = await this.findAddress(id);
-        const updatedAddress = this.mapper.map(address, UpdateAddressDto, AddressEntity, addressFound);
+        const updatedAddress = this.mapper.map(address, UpdateAddressDto, AddressEntity);
         const savedAddress = await this.addressRepository.save(updatedAddress);
         return this.mapper.map(savedAddress, AddressEntity, AddressResponseDto);
     }

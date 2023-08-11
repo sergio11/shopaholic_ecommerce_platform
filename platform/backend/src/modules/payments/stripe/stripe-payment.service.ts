@@ -42,9 +42,10 @@ export class StripePaymentService implements PaymentService {
   async getIdentificationTypes(): Promise<any> {
     try {
       // Recupera los tipos de identificación de la API de Stripe
-      const identificationTypes = await this.stripe.issuing.identityDocument.listTypes();
+      /*const identificationTypes = await this.stripe.issuing.identityDocument.listTypes();
 
-      return identificationTypes;
+      return identificationTypes;*/
+      return null;
     } catch (error) {
       throw new Error('Error al recuperar los tipos de identificación desde Stripe');
     }
