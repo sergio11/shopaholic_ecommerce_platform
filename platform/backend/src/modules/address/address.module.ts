@@ -6,10 +6,15 @@ import { AddressEntity } from './address.entity';
 import { UserEntity } from '../users/user.entity';
 import { JwtStrategy } from '../auth/jwt/jwt.strategy';
 import { OrderEntity } from 'src/modules/orders/order.entity';
+import { AddressProfile } from './adress.mapper';
 
 @Module({
   imports: [ TypeOrmModule.forFeature([AddressEntity, UserEntity, OrderEntity]) ],
-  providers: [AddressService, JwtStrategy],
+  providers: [
+    AddressService, 
+    JwtStrategy,
+    AddressProfile
+  ],
   controllers: [AddressController]
 })
 export class AddressModule {}

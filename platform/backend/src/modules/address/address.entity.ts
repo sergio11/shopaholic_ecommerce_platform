@@ -15,13 +15,14 @@ export class AddressEntity extends AbstractEntity {
     @Column()
     neighborhood: string;
 
-    @AutoMap()
     @Column({ name: "id_user" })
     idUser: string;
 
+    @AutoMap()
     @OneToMany(() => OrderEntity, order => order.id)
     order: OrderEntity;
 
+    @AutoMap()
     @ManyToOne(() => UserEntity, (user) => user.id)
     @JoinColumn({name: 'id_user'})
     user: UserEntity;
