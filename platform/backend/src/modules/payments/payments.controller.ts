@@ -3,17 +3,17 @@ import { HasRoles } from '../auth/jwt/has-roles';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
-import { MercadoPagoService } from './mercado_pago.service';
-import { CardTokenBody } from '../mercado_pago/models/card_token_body';
+import { MercadoPagoPaymentService } from './mercadopago/mercadopago-payment.service';
 import { PaymentBody } from './models/payment_body';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { CardTokenBody } from './models/card_token_body';
 
 @ApiBearerAuth()
-@ApiTags('mercadopago')
-@Controller('mercadopago')
-export class MercadoPagoController {
+@ApiTags('payments')
+@Controller('payments')
+export class PaymentsController {
 
-    constructor(private mercadoPagoService: MercadoPagoService) {}
+    constructor(private mercadoPagoService: MercadoPagoPaymentService) {}
 
     @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
