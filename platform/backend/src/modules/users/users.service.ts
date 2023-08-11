@@ -7,7 +7,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { SupportService } from 'src/core/support.service'
 import { I18nService } from 'nestjs-i18n';
 import { Mapper } from '@automapper/core';
-import { UserDto } from './dto/user.dto';
+import { UserDto } from './dto/user-response.dto';
 import { InjectMapper } from '@automapper/nestjs';
 import { IStorageService, STORAGE_SERVICE } from '../storage/storage.service';
 
