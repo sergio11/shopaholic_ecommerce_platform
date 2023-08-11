@@ -41,7 +41,7 @@ export class CategoriesService extends SupportService {
     }
 
     async create(file: Express.Multer.File, category: CreateCategoryDTO): Promise<CategoryResponseDto> {
-        const url = await this.storageService.saveFile(file.buffer, file.originalname, file.mimetype);
+        const url = await this.storageService.saveFile(file.buffer, file.mimetype);
         if (url === undefined && url === null) {
             this.throwInternalServerError("IMAGE_ERROR");
         }
@@ -63,7 +63,7 @@ export class CategoriesService extends SupportService {
     }
    
     async updateWithImage(file: Express.Multer.File, id: string, category: UpdateCategoryDTO): Promise<CategoryResponseDto> {
-        const url = await this.storageService.saveFile(file.buffer, file.originalname, file.mimetype);
+        const url = await this.storageService.saveFile(file.buffer, file.mimetype);
         if (url === undefined && url === null) {
             this.throwInternalServerError("IMAGE_ERROR");
         }
