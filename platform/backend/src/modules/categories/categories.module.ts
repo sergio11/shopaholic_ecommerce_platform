@@ -3,7 +3,6 @@ import { CategoriesService } from './categories.service';
 import { CategoriesController } from './categories.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryEntity } from './category.entity';
-import { JwtStrategy } from '../auth/jwt/jwt.strategy';
 import { CategoryProfile } from './category.mapper';
 
 @Module({
@@ -12,7 +11,6 @@ import { CategoryProfile } from './category.mapper';
   ],
   providers: [
     CategoriesService, 
-    JwtStrategy,
     CategoryProfile
   ],
   controllers: [CategoriesController]

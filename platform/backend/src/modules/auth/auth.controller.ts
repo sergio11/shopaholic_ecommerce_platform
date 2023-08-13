@@ -14,14 +14,14 @@ export class AuthController {
     @ApiOperation({ summary: 'Allow us to register new user' })
     @Version('1.0')
     @Post('signup')
-    register(@Body() signUpData: SignUpAuthDto) {
+    signup(@Body() signUpData: SignUpAuthDto) {
         return this.authService.signup(signUpData);
     }
     
     @ApiOperation({ summary: 'Allow us to sign in session into the platform' })
     @Version('1.0')
     @Post('signin')
-    login(@Body() signInData: SignInAuthDto) {
+    signin(@Body() signInData: SignInAuthDto) {
         return this.authService.signin(signInData);
     }
 

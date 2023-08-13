@@ -9,6 +9,10 @@ import { JwtService } from '@nestjs/jwt';
 import { RoleEntity } from '../roles/role.entity';
 import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
+import { AuthResponseDto } from './dto/auth-response.dto';
+import { InjectMapper } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
+import { UserResponseDto } from '../users/dto/user-response.dto';
 
 
 @Injectable()
@@ -18,12 +22,13 @@ export class AuthService extends SupportService {
         @InjectRepository(UserEntity) private usersRepository: Repository<UserEntity>,
         @InjectRepository(RoleEntity) private rolesRepository: Repository<RoleEntity>,
         private jwtService: JwtService,
+        @InjectMapper() private readonly mapper: Mapper,
         i18n: I18nService
     ) {
         super(i18n);
     }
 
-    async signup(signUpData: SignUpAuthDto) {
+    async signup(signUpData: SignUpAuthDto): Promise<AuthResponseDto> {
         const { email, phone } = signUpData;
         const emailExist = await this.usersRepository.findOneBy({ email: email })
         if (emailExist) {
@@ -55,7 +60,7 @@ export class AuthService extends SupportService {
         return this.generateAndSignJwt(userSaved);
     }
 
-    async signin(signInData: SignInAuthDto) {
+    async signin(signInData: SignInAuthDto): Promise<AuthResponseDto> {
 
         const { email, password } = signInData;
         const userFound = await this.usersRepository.findOne({ 
@@ -74,7 +79,7 @@ export class AuthService extends SupportService {
         return this.generateAndSignJwt(userFound);
     }
 
-    private generateAndSignJwt(user: UserEntity) {
+    private generateAndSignJwt(user: UserEntity): AuthResponseDto {
         const roles = user.roles.map(rol => rol.name);
         const payload = { 
             id: user.id, 
@@ -82,11 +87,11 @@ export class AuthService extends SupportService {
             roles: roles 
         };
         const token = this.jwtService.sign(payload);
-        const data = {
-            user: user,
+        const userDTO = this.mapper.map(user, UserEntity, UserResponseDto);
+        const data: AuthResponseDto = {
+            user: userDTO,
             token: 'Bearer ' + token
         }
-        delete data.user.password;
         return data;
     }
 

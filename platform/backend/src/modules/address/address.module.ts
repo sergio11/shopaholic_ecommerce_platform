@@ -4,7 +4,6 @@ import { AddressController } from './address.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AddressEntity } from './address.entity';
 import { UserEntity } from '../users/user.entity';
-import { JwtStrategy } from '../auth/jwt/jwt.strategy';
 import { OrderEntity } from 'src/modules/orders/order.entity';
 import { AddressProfile } from './adress.mapper';
 
@@ -12,7 +11,6 @@ import { AddressProfile } from './adress.mapper';
   imports: [ TypeOrmModule.forFeature([AddressEntity, UserEntity, OrderEntity]) ],
   providers: [
     AddressService, 
-    JwtStrategy,
     AddressProfile
   ],
   controllers: [AddressController]
