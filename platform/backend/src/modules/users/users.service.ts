@@ -42,7 +42,6 @@ export class UsersService extends SupportService {
         return this.usersRepository.save(updatedUser);
     }
     
-
     async updateWithImage(file: Express.Multer.File, id: string, user: UpdateUserDto) {
         const url = await this.storageService.saveFile(file.buffer, file.mimetype);
         console.log('URL: ' + url);

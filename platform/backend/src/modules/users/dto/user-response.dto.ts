@@ -29,4 +29,10 @@ export class UserResponseDto {
         type: [RoleResponseDto],
     })
     roles: RoleResponseDto[];
+
+    @ApiProperty({ description: 'User country', example: 'United States' })
+    country: string;
+
+    @ApiProperty({ description: 'User preferred language', example: 'en' })
+    language: string;
 }

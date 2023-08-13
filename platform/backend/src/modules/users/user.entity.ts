@@ -32,6 +32,14 @@ export class UserEntity extends AbstractEntity  {
     
     @Column({ name: "notification_token", nullable: true })
     notificationToken: string;
+    
+    @AutoMap()
+    @Column()
+    country: string;
+
+    @AutoMap()
+    @Column()
+    language: string;
 
     @JoinTable({
         name: 'user_has_roles',
