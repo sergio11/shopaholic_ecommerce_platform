@@ -10,7 +10,8 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { ProductEntity } from './product.entity';
 import { API } from 'src/config/config';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ProductResponseDto } from './dto/product-response.dto';
 
 @ApiBearerAuth()
 @ApiTags('products')
@@ -23,7 +24,8 @@ export class ProductsController {
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
     @Get()
-    findAll() {
+    @ApiResponse({ status: 200, description: 'Retrieved all products.', type: ProductResponseDto, isArray: true })
+    async findAll(): Promise<ProductResponseDto[]> {
         return this.productsService.findAll();
     }
 
@@ -31,6 +33,7 @@ export class ProductsController {
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
     @Get('pagination')
+    @ApiResponse({ status: 200, description: 'Retrieved paginated products.', type: Pagination, isArray: false })
     async pagination(
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
         @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number = 5,
@@ -46,7 +49,8 @@ export class ProductsController {
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
     @Get('category/:id_category')
-    findByCategory(@Param('id_category') id_category: string) {
+    @ApiResponse({ status: 200, description: 'Retrieved products by category.', type: ProductResponseDto, isArray: true })
+    async findByCategory(@Param('id_category') id_category: string): Promise<ProductResponseDto[]> {
         return this.productsService.findByCategory(id_category);
     }
     
@@ -54,7 +58,8 @@ export class ProductsController {
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
     @Get('search/:name')
-    findByName(@Param('name') name: string) {
+    @ApiResponse({ status: 200, description: 'Retrieved products by name.', type: ProductResponseDto, isArray: true })
+    async findByName(@Param('name') name: string): Promise<ProductResponseDto[]> {
         return this.productsService.findByName(name);
     }
 
@@ -63,7 +68,8 @@ export class ProductsController {
     @Version('1.0')
     @Post()
     @UseInterceptors(FilesInterceptor('files[]', 2))
-    create(
+    @ApiResponse({ status: 201, description: 'Product created successfully.', type: ProductResponseDto })
+    async create(
         @UploadedFiles(
             new ParseFilePipe({
                 validators: [
@@ -73,10 +79,7 @@ export class ProductsController {
               }),
         ) files: Array<Express.Multer.File>,
         @Body() product: CreateProductDto
-    ) {
-        console.log('Files: ', files);
-        console.log('Product: ', product);
-        
+    ): Promise<ProductResponseDto> {
         return this.productsService.create(files, product);
     }
     
@@ -85,7 +88,8 @@ export class ProductsController {
     @Version('1.0')
     @Put('upload/:id')
     @UseInterceptors(FilesInterceptor('files[]', 2))
-    updateWithImage(
+    @ApiResponse({ status: 200, description: 'Product updated with images successfully.', type: ProductResponseDto })
+    async updateWithImage(
         @UploadedFiles(
             new ParseFilePipe({
                 validators: [
@@ -96,9 +100,7 @@ export class ProductsController {
         ) files: Array<Express.Multer.File>,
         @Param('id') id: string,
         @Body() product: UpdateProductDto
-    ) {
-        console.log('Product: ', product);
-        
+    ): Promise<ProductResponseDto> {
         return this.productsService.updateWithImages(files, id, product);
     }
     
@@ -106,10 +108,11 @@ export class ProductsController {
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
     @Put(':id')
-    update(
+    @ApiResponse({ status: 200, description: 'Product updated successfully.', type: ProductResponseDto })
+    async update(
         @Param('id') id: string,
         @Body() product: UpdateProductDto
-    ) {
+    ): Promise<ProductResponseDto> {
         return this.productsService.update(id, product);
     }
     
@@ -117,7 +120,8 @@ export class ProductsController {
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
     @Delete(':id')
-    delete(
+    @ApiResponse({ status: 200, description: 'Product deleted successfully.' })
+    async delete(
         @Param('id') id: string,
     ) {
         return this.productsService.delete(id);
