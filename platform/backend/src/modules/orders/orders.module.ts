@@ -1,4 +1,4 @@
-import { Global, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { OrdersController } from './orders.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,10 +8,15 @@ import { UserEntity } from 'src/modules/users/user.entity';
 import { AddressEntity } from '../address/address.entity';
 import { ProductEntity } from '../products/product.entity';
 import { OrderMapper } from './order.mapper';
+import { AddressModule } from '../address/address.module';
+import { UsersModule } from '../users/users.module';
 
-@Global()
 @Module({
-  imports: [ TypeOrmModule.forFeature([ OrderEntity, OrderHasProductsEntity, UserEntity, AddressEntity, ProductEntity ]) ],
+  imports: [ 
+    TypeOrmModule.forFeature([ OrderEntity, OrderHasProductsEntity, UserEntity, AddressEntity, ProductEntity ]),
+    AddressModule,
+    UsersModule
+   ],
   providers: [ OrdersService, OrderMapper],
   controllers: [OrdersController],
   exports: [OrdersService, OrderMapper] 

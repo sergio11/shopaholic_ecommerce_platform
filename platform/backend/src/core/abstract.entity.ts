@@ -5,43 +5,76 @@ import {
     DeleteDateColumn,
   } from 'typeorm';
   import { Exclude } from 'class-transformer';
-  import { AutoMap } from '@automapper/classes';
-  
-  export interface IAbstractEntity {
-    id: string;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt?: Date;
-  }
-  
-  export abstract class AbstractEntity implements IAbstractEntity {
-    @AutoMap()
-    @PrimaryGeneratedColumn('uuid')
-    @Exclude({ toPlainOnly: true })
-    id: string;
-  
-    @AutoMap()
-    @CreateDateColumn({
-      name: 'created_at',
-      type: 'datetime',
-      default: () => 'CURRENT_TIMESTAMP',
-    })
-    createdAt: Date;
-  
-    @AutoMap()
-    @UpdateDateColumn({
-      name: 'updated_at',
-      type: 'datetime',
-      default: () => 'CURRENT_TIMESTAMP',
-      onUpdate: 'CURRENT_TIMESTAMP',
-    })
-    updatedAt: Date;
-  
-    @AutoMap()
-    @DeleteDateColumn({
-      name: 'deleted_at',
-      type: 'datetime',
-    })
-    @Exclude({ toPlainOnly: true })
-    deletedAt?: Date;
-  }
+
+/**
+ * Interface for the abstract entity properties.
+ * @interface
+ */
+export interface IAbstractEntity {
+  /**
+   * Unique identifier of the entity.
+   */
+  id: string;
+
+  /**
+   * Timestamp of when the entity was created.
+   */
+  createdAt: Date;
+
+  /**
+   * Timestamp of when the entity was last updated.
+   */
+  updatedAt: Date;
+
+  /**
+   * Timestamp of when the entity was soft-deleted (if applicable).
+   */
+  deletedAt?: Date;
+}
+
+/**
+ * Abstract class representing a base entity with common fields.
+ * @abstract
+ * @class
+ */
+export abstract class AbstractEntity implements IAbstractEntity {
+  /**
+   * Unique identifier of the entity.
+   */
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  /**
+   * Timestamp of when the entity was created.
+   * @type {Date}
+   */
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'datetime',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date;
+
+  /**
+   * Timestamp of when the entity was last updated.
+   * @type {Date}
+   */
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'datetime',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: Date;
+
+  /**
+   * Timestamp of when the entity was soft-deleted (if applicable).
+   * @type {Date}
+   */
+  @DeleteDateColumn({
+    name: 'deleted_at',
+    type: 'datetime',
+  })
+  @Exclude({ toPlainOnly: true })
+  deletedAt?: Date;
+}

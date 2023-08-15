@@ -3,6 +3,7 @@ import { OrderHasProductResponseDto } from './order-has-product-response.dto';
 import { UserResponseDto } from 'src/modules/users/dto/user-response.dto';
 import { AddressResponseDto } from 'src/modules/address/dto/address-response.dto';
 import { AbstractDto } from '../../../core/abstract.dto';
+import { Expose } from 'class-transformer';
 
 /**
  * DTO for representing an order in the response.
@@ -17,6 +18,7 @@ export class OrderResponseDto extends AbstractDto {
     description: 'Client information',
     type: UserResponseDto,
   })
+  @Expose()
   client: UserResponseDto;
 
   /**
@@ -27,6 +29,7 @@ export class OrderResponseDto extends AbstractDto {
     description: 'Delivery address information',
     type: AddressResponseDto,
   })
+  @Expose()
   address: AddressResponseDto;
 
   /**
@@ -36,8 +39,9 @@ export class OrderResponseDto extends AbstractDto {
    */
   @ApiProperty({
     description: 'Status of the order',
-    example: 'PAGADO',
+    example: 'PAID',
   })
+  @Expose()
   status: string;
 
   /**
@@ -48,5 +52,6 @@ export class OrderResponseDto extends AbstractDto {
     description: 'Array of products in the order',
     type: [OrderHasProductResponseDto],
   })
+  @Expose()
   orderHasProducts: OrderHasProductResponseDto[];
 }

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Expose } from 'class-transformer';
 import { AbstractDto } from 'src/core/abstract.dto';
 import { ImageResponseDto } from 'src/modules/images/dto/image-response.dto';
 import { RoleResponseDto } from 'src/modules/roles/dto/role-response.dto';
@@ -10,6 +11,7 @@ export class UserResponseDto extends AbstractDto {
      * @example John
      */
     @ApiProperty({ description: 'User name', example: 'John' })
+    @Expose()
     name: string;
 
     /**
@@ -17,6 +19,7 @@ export class UserResponseDto extends AbstractDto {
      * @example Doe
      */
     @ApiProperty({ description: 'User lastname', example: 'Doe' })
+    @Expose()
     lastname: string;
 
     /**
@@ -24,6 +27,7 @@ export class UserResponseDto extends AbstractDto {
      * @example john@example.com
      */
     @ApiProperty({ description: 'User email', example: 'john@example.com' })
+    @Expose()
     email: string;
 
     /**
@@ -31,6 +35,7 @@ export class UserResponseDto extends AbstractDto {
      * @example 1234567890
      */
     @ApiProperty({ description: 'User phone number', example: '1234567890' })
+    @Expose()
     phone: string;
 
     /**
@@ -38,6 +43,7 @@ export class UserResponseDto extends AbstractDto {
      * @example https://example.com/user-image.jpg
      */
     @ApiProperty({ description: 'URL to user image', example: 'https://example.com/user-image.jpg' })
+    @Expose()
     image: ImageResponseDto;
 
     /**
@@ -49,6 +55,7 @@ export class UserResponseDto extends AbstractDto {
         example: [{ id: '1', name: 'Admin', image: 'admin.png', route: '/admin' }],
         type: [RoleResponseDto],
     })
+    @Expose()
     roles: RoleResponseDto[];
 
     /**
@@ -56,6 +63,7 @@ export class UserResponseDto extends AbstractDto {
      * @example United States
      */
     @ApiProperty({ description: 'User country', example: 'United States' })
+    @Expose()
     country: string;
 
     /**
@@ -63,5 +71,6 @@ export class UserResponseDto extends AbstractDto {
      * @example en
      */
     @ApiProperty({ description: 'User preferred language', example: 'en' })
+    @Expose()
     language: string;
 }

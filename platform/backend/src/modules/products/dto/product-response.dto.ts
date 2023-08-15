@@ -16,7 +16,6 @@ export class ProductResponseDto extends AbstractDto {
      */
     @ApiProperty({ description: 'Name of the product', example: 'T-shirt' })
     @Expose()
-    @IsString()
     name: string;
 
     /**
@@ -25,7 +24,6 @@ export class ProductResponseDto extends AbstractDto {
      */
     @ApiProperty({ description: 'Description of the product', example: 'A comfortable and stylish T-shirt' })
     @Expose()
-    @IsString()
     description: string;
 
     /**
@@ -58,6 +56,5 @@ export class ProductResponseDto extends AbstractDto {
      */
     @ApiProperty({ description: 'Price of the product', example: 25.99 })
     @Expose()
-    @IsNumber()
     price: number;
 }

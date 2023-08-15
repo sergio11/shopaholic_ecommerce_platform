@@ -6,20 +6,20 @@ export class AbstractDto {
     description: 'Unique identifier',
     example: 'c5e1e99a-7efc-4a63-83da-5ef5e6cb6d16',
   })
-  @Expose({ name: 'id' })
+  @Expose()
   id: string;
 
   @ApiProperty({
     description: 'Date of creation',
     example: '2023-08-15T10:30:00Z',
   })
-  @Expose({ name: 'created_at' })
+  @Expose()
   createdAt: Date;
 
   @ApiProperty({
     description: 'Date of last update',
     example: '2023-08-15T14:45:00Z',
   })
-  @Expose({ name: 'updated_at' })
+  @Expose()
   updatedAt: Date;
 }
