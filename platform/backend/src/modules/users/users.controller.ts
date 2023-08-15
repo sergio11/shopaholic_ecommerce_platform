@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, UseGuards, Put, Param, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Version } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards, Put, Param, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Version, ParseFilePipeBuilder, HttpStatus } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/modules/auth/jwt/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -7,7 +7,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
 import { HasRoles } from 'src/modules/auth/jwt/has-roles';
 import { JwtRole } from 'src/modules/auth/jwt/jwt-role';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserResponseDto } from './dto/user-response.dto';
 
 @ApiBearerAuth()
@@ -15,10 +15,24 @@ import { UserResponseDto } from './dto/user-response.dto';
 @Controller('users')
 export class UsersController {
 
+    private static parseFilePipeBuilder(fileIsRequired: boolean): ParseFilePipe {
+        return new ParseFilePipeBuilder()
+            .addFileTypeValidator({
+                fileType: '.(png|jpeg|jpg)',
+            })
+            .addMaxSizeValidator({
+                maxSize: 1024 * 1024 * 10,
+            })
+            .build({
+                fileIsRequired,
+                errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+            });
+    }
+
     constructor(private usersService: UsersService) {}
 
     
-    @HasRoles(JwtRole.CLIENT)
+    @HasRoles(JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
     @Get()
@@ -32,45 +46,35 @@ export class UsersController {
         return this.usersService.findAll();
     }
 
+    @HasRoles(JwtRole.ADMIN)
+    @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Post()
     @Version('1.0')
+    @UseInterceptors(FileInterceptor('imageFile'))
     @ApiOperation({ summary: 'Create new user' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    create(@Body() user: CreateUserDto) {
-        return this.usersService.create(user);
-    }
-    
-    @HasRoles(JwtRole.CLIENT)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
-    @Version('1.0')
-    @Put(':id')
-    @ApiOperation({ summary: 'Update user' })
-    @ApiResponse({ status: 403, description: 'Forbidden.' })
-    update(@Param('id') id: string, @Body() user: UpdateUserDto) {
-        return this.usersService.update(id, user);
+    @ApiConsumes('multipart/form-data')
+    create(
+        @UploadedFile(UsersController.parseFilePipeBuilder(true)) file: Express.Multer.File,
+        @Body() user: CreateUserDto
+    ) {
+        return this.usersService.create(user, file);
     }
 
-    @HasRoles(JwtRole.CLIENT)
+    
+    @HasRoles(JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
-    @Post('upload/:id')
+    @Post(':id')
+    @UseInterceptors(FileInterceptor('imageFile'))
+    @ApiConsumes('multipart/form-data')
     @ApiOperation({ summary: 'Update user and profile picture' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    @UseInterceptors(FileInterceptor('file'))
-    updateWithImage(
-        @UploadedFile(
-            new ParseFilePipe({
-                validators: [
-                  new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 10 }),
-                  new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
-                ],
-              }),
-        ) file: Express.Multer.File,
+    update(
+        @UploadedFile(UsersController.parseFilePipeBuilder(false)) file: Express.Multer.File,
         @Param('id') id: string, 
         @Body() user: UpdateUserDto
     ) {
-        return this.usersService.updateWithImage(file, id, user);
+        return this.usersService.update(id, user, file);
     }
-    
-
 }

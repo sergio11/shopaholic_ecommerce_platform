@@ -1,31 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { Mapper, createMap, forMember, ignore, mapFrom } from '@automapper/core';
+import { plainToClass } from 'class-transformer';
 import { ProductEntity } from './product.entity';
 import { ProductResponseDto } from './dto/product-response.dto';
-import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
-import { CategoryResponseDto } from '../categories/dto/category-response.dto';
+import { CategoryMapper } from '../categories/category.mapper';
+import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
-export class ProductProfile extends AutomapperProfile {
-    constructor(@InjectMapper() mapper: Mapper) {
-        super(mapper);
-      }
+export class ProductMapper {
+  constructor(private readonly categoryMapper: CategoryMapper) {}
 
-    override get profile() {
-        return (mapper) => {
-          createMap(mapper, ProductEntity, ProductResponseDto, 
-            forMember(
-                (dest) => dest.image1Url,
-                mapFrom((src) => src.image1)
-            ),
-            forMember(
-                (dest) => dest.image2Url,
-                mapFrom((src) => src.image2)
-            ),
-            forMember(
-                (dest) => dest.category,
-                mapFrom((src) => mapper.map(src.category, CategoryResponseDto))
-            ))
-        };
-      }
+  mapProductToResponseDto(product: ProductEntity): ProductResponseDto {
+    const productDto = plainToClass(ProductResponseDto, product, { excludeExtraneousValues: true });
+
+    if (product.category) {
+      productDto.category = this.categoryMapper.mapCategoryToResponseDto(product.category);
+    }
+
+    return productDto;
+  }
+
+  mapProductsToResponseDtos(products: ProductEntity[]): ProductResponseDto[] {
+    return products.map(product => this.mapProductToResponseDto(product));
+  }
+
+  mapCreateProductDtoToEntity(dto: CreateProductDto): ProductEntity {
+    return plainToClass(ProductEntity, dto, { excludeExtraneousValues: true });
+  }
+
+  mapUpdateProductDtoToEntity(dto: UpdateProductDto, entity: ProductEntity): ProductEntity {
+    return Object.assign(entity, plainToClass(ProductEntity, dto, { excludeExtraneousValues: true }));
+  }
 }

@@ -1,7 +1,12 @@
 import { IsNotEmpty, IsEmail, IsString, MinLength, IsOptional } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { CreateImageDto } from 'src/modules/images/dto/create-image.dto';
+import { Exclude } from 'class-transformer';
 
 export class CreateUserDto {
+    /**
+     * The first name of the user.
+     */
     @ApiProperty({
         description: "The first name of the user.",
         example: "John"
@@ -10,6 +15,9 @@ export class CreateUserDto {
     @IsString()
     name: string;
 
+    /**
+     * The last name of the user.
+     */
     @ApiProperty({
         description: "The last name of the user.",
         example: "Doe"
@@ -18,6 +26,9 @@ export class CreateUserDto {
     @IsString()
     lastname: string;
 
+    /**
+     * The email address of the user.
+     */
     @ApiProperty({
         description: "The email address of the user.",
         example: "john@example.com"
@@ -26,6 +37,9 @@ export class CreateUserDto {
     @IsEmail()
     email: string;
 
+    /**
+     * The phone number of the user.
+     */
     @ApiProperty({
         description: "The phone number of the user.",
         example: "1234567890"
@@ -34,6 +48,9 @@ export class CreateUserDto {
     @IsString()
     phone: string;
 
+    /**
+     * The password for the user's account.
+     */
     @ApiProperty({
         description: "The password for the user's account.",
         example: "mysecurepassword"
@@ -43,15 +60,9 @@ export class CreateUserDto {
     @MinLength(6)
     password: string;
 
-    @ApiProperty({
-        description: "URL of the user's profile image.",
-        example: "https://example.com/profile.jpg",
-        required: false
-    })
-    @IsOptional()
-    @IsString()
-    image?: string;
-
+    /**
+     * Token used for push notifications.
+     */
     @ApiProperty({
         description: "Token used for push notifications.",
         example: "f1d8e9c0-1234-5678-9abc-0def1ab234cd",
@@ -59,8 +70,11 @@ export class CreateUserDto {
     })
     @IsOptional()
     @IsString()
-    notification_token?: string;
+    notificationToken?: string;
 
+    /**
+     * The country where the user is located.
+     */
     @ApiProperty({
         description: "The country where the user is located.",
         example: "United States"
@@ -69,6 +83,9 @@ export class CreateUserDto {
     @IsString()
     country: string;
 
+    /**
+     * The preferred language of the user.
+     */
     @ApiProperty({
         description: "The preferred language of the user.",
         example: "en"
@@ -76,4 +93,17 @@ export class CreateUserDto {
     @IsNotEmpty()
     @IsString()
     language: string;
+
+    /**
+     * The image file associated with the user.
+     */
+    @ApiProperty({  description: `The image file associated with the user`, type: 'string', format: 'binary' })
+    imageFile: Express.Multer.File;
+    
+    /**
+     * Hidden property for internal use.
+     */
+    @ApiHideProperty()
+    @Exclude()
+    image: CreateImageDto;
 }

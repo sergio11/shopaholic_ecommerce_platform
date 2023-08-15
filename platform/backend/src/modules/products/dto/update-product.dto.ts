@@ -1,5 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { IsNumber, IsOptional, IsString, IsUUID, Min } from 'class-validator';
+import { CreateImageDto } from 'src/modules/images/dto/create-image.dto';
 
 export class UpdateProductDto {
     @ApiProperty({ description: 'Updated product name', example: 'Updated Product Name' })
@@ -23,13 +25,32 @@ export class UpdateProductDto {
     @IsUUID(undefined, { message: 'Invalid category ID format' })
     id_category?: string;
 
-    @ApiProperty({ description: 'Updated image URL 1 for the product', example: 'https://example.com/image1.jpg' })
-    @IsOptional()
-    @IsString({ message: 'Image URL must be a string' })
-    image1?: string;
+    /**
+     * Image file for the main product image
+     * @format binary
+     */
+    @ApiProperty({ description: 'Image file for the main product image', type: 'string', format: 'binary' })
+    mainImageFile?: Express.Multer.File;
 
-    @ApiProperty({ description: 'Updated image URL 2 for the product', example: 'https://example.com/image2.jpg' })
-    @IsOptional()
-    @IsString({ message: 'Image URL must be a string' })
-    image2?: string;
+    /**
+     * Image file for the secondary product image
+     * @format binary
+     */
+    @ApiProperty({ description: 'Image file for the secondary product image', type: 'string', format: 'binary' })
+    secondaryImageFile?: Express.Multer.File;
+
+    /**
+     * Hidden property for internal use.
+     */
+    @ApiHideProperty()
+    @Exclude()
+    mainImage?: CreateImageDto;
+
+    /**
+     * Hidden property for internal use.
+     */
+    @ApiHideProperty()
+    @Exclude()
+    secondaryImage?: CreateImageDto;
+
 }

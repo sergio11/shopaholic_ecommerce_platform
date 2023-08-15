@@ -1,26 +1,25 @@
-import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
-import { Mapper, createMap, forMember, mapFrom } from '@automapper/core';
 import { Injectable } from '@nestjs/common';
+import { plainToClass } from 'class-transformer';
 import { RoleEntity } from './role.entity';
 import { RoleResponseDto } from './dto/role-response.dto';
+import { CreateRoleDto } from './dto/create-role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
 
 @Injectable()
-export class RoleProfile extends AutomapperProfile {
-    constructor(@InjectMapper() mapper: Mapper) {
-        super(mapper);
-    }
+export class RoleMapper {
+  mapRoleToResponseDto(role: RoleEntity): RoleResponseDto {
+    return plainToClass(RoleResponseDto, role, { excludeExtraneousValues: true });
+  }
 
-    override get profile() {
-        return (mapper) => {
-            createMap(
-                mapper, 
-                RoleEntity, 
-                RoleResponseDto,
-                forMember(
-                    (destination) => destination.id,
-                    mapFrom((source) => source.id.toString())
-                )
-            );
-        };
-    }
+  mapRolesToResponseDtos(roles: RoleEntity[]): RoleResponseDto[] {
+    return roles.map(role => this.mapRoleToResponseDto(role));
+  }
+
+  mapCreateRoleDtoToEntity(dto: CreateRoleDto): RoleEntity {
+    return plainToClass(RoleEntity, dto, { excludeExtraneousValues: true });
+  }
+
+  mapUpdateRoleDtoToEntity(dto: UpdateRoleDto, entity: RoleEntity): RoleEntity {
+    return Object.assign(entity, plainToClass(RoleEntity, dto, { excludeExtraneousValues: true }));
+  }
 }

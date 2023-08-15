@@ -16,7 +16,7 @@ export class OrdersController {
 
     /**
     * Retrieve a list of all orders.
-    * @returns {OrderResponseDto[]} List of orders.
+    * @returns {Promise<OrderResponseDto[]>} List of orders.
     */
     @HasRoles(JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
@@ -24,14 +24,14 @@ export class OrdersController {
     @Get()
     @ApiOperation({ summary: 'Retrieve a list of all orders' })
     @ApiResponse({ status: 200, description: 'List of orders', type: [OrderResponseDto] })
-    findAll() {
+    async findAll(): Promise<OrderResponseDto[]> {
         return this.ordersService.findAll()
     }
     
     /**
     * Retrieve orders by client ID.
-    * @param {string} id_client - ID of the client.
-    * @returns {OrderResponseDto[]} List of orders.
+    * @param {string} idClient - ID of the client.
+    * @returns {Promise<OrderResponseDto[]>} List of orders.
     */
     @HasRoles(JwtRole.CLIENT, JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
@@ -40,14 +40,14 @@ export class OrdersController {
     @ApiOperation({ summary: 'Retrieve orders by client ID' })
     @ApiParam({ name: 'id_client', description: 'ID of the client' })
     @ApiResponse({ status: 200, description: 'List of orders', type: [OrderResponseDto] })
-    findByClient(@Param('id_client') idClient: string) {
+    async findByClient(@Param('id_client') idClient: string): Promise<OrderResponseDto[]> {
         return this.ordersService.findByClient(idClient);
     }
     
     /**
      * Update the status of an order.
      * @param {string} id - ID of the order.
-     * @returns {OrderResponseDto} Updated order with new status.
+     * @returns {Promise<OrderResponseDto>} Updated order with new status.
     */
     @HasRoles(JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
@@ -56,7 +56,7 @@ export class OrdersController {
     @ApiOperation({ summary: 'Update the status of an order' })
     @ApiParam({ name: 'id', description: 'ID of the order' })
     @ApiResponse({ status: 200, description: 'Updated order with new status', type: OrderResponseDto })
-    updateStatus(@Param('id') id: string) {
+    async updateStatus(@Param('id') id: string): Promise<OrderResponseDto> {
         return this.ordersService.updateStatus(id);
     }
 }

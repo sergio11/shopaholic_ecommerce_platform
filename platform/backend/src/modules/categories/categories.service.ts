@@ -7,80 +7,95 @@ import UpdateCategoryDTO from './dto/update-category.dto';
 import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
 import { IStorageService, STORAGE_SERVICE } from '../storage/storage.service';
-import { Mapper } from '@automapper/core';
 import { CategoryResponseDto } from './dto/category-response.dto';
-import { InjectMapper } from '@automapper/nestjs';
 import { CacheService } from '../cache/cache.service';
+import { CategoryMapper } from './category.mapper';
 
 @Injectable()
 export class CategoriesService extends SupportService {
 
     private readonly CACHE_KEY = 'all-categories';
 
+    /**
+     * Constructor of the CategoriesService class.
+     * @param categoriesRepository The repository for CategoryEntity.
+     * @param storageService The storage service to handle file uploads.
+     * @param cacheService The cache service to store category data.
+     * @param i18n The internationalization service.
+     * @param categoryMapper The mapper for category data.
+     */
     constructor(
         @InjectRepository(CategoryEntity) private categoriesRepository: Repository<CategoryEntity>,
         @Inject(STORAGE_SERVICE)
-        private readonly storageService: IStorageService,
+        storageService: IStorageService,
         private readonly cacheService: CacheService<CategoryResponseDto[]>,
         i18n: I18nService,
-        @InjectMapper()
-        private readonly mapper: Mapper,
+        private readonly categoryMapper: CategoryMapper,
     ) {
-        super(i18n);
+        super(i18n, storageService);
     }
 
+    /**
+     * Retrieve all categories.
+     * @returns A list of category response DTOs.
+     */
     async findAll(): Promise<CategoryResponseDto[]> {
         const cachedCategories = await this.cacheService.get(this.CACHE_KEY);
         if (cachedCategories) {
             return cachedCategories;
         }
         const categories = await this.categoriesRepository.find();
-        const categoryDtos = this.mapper.mapArray(categories, CategoryEntity, CategoryResponseDto);
+        const categoryDtos = this.categoryMapper.mapCategoriesToResponseDtos(categories);
         await this.cacheService.set(this.CACHE_KEY, categoryDtos, { ttl: 60 });
         return categoryDtos;
     }
 
+    /**
+     * Create a new category.
+     * @param file The image file for the category.
+     * @param category The data for creating the category.
+     * @returns The created category response DTO.
+     */
     async create(file: Express.Multer.File, category: CreateCategoryDTO): Promise<CategoryResponseDto> {
-        const url = await this.storageService.saveFile(file.buffer, file.mimetype);
-        if (url === undefined && url === null) {
-            this.throwInternalServerError("IMAGE_ERROR");
-        }
-        category.image = url;
-        console.log(`category.image url -> ${url}`)
-        const newCategory = this.categoriesRepository.create(category)
+        category.image = await this.saveFileAndGetImageDto(file);
+        const newCategory = this.categoriesRepository.create(category);
         const savedCategory = await this.categoriesRepository.save(newCategory);
         await this.invalidateCache();
-        return this.mapper.map(savedCategory, CategoryResponseDto);
+        return this.categoryMapper.mapCategoryToResponseDto(savedCategory);
     }
-    
 
-    async update(id: string, category: UpdateCategoryDTO): Promise<CategoryResponseDto> {    
-        const categoryFound = await this.findCategory(id);
+    /**
+     * Update an existing category.
+     * @param id The ID of the category to be updated.
+     * @param category The updated category data.
+     * @param file The updated image file for the category.
+     * @returns The updated category response DTO.
+     */
+    async update(id: string, category: UpdateCategoryDTO, file: Express.Multer.File): Promise<CategoryResponseDto> {    
+        const categoryFound = await this.findCategory(id);     
+        category.image = await this.saveFileAndGetImageDto(file);
         const updatedCategory = Object.assign(categoryFound, category);
         const savedCategory = await this.categoriesRepository.save(updatedCategory);
         await this.invalidateCache();
-        return this.mapper.map(savedCategory, CategoryResponseDto);
-    }
-   
-    async updateWithImage(file: Express.Multer.File, id: string, category: UpdateCategoryDTO): Promise<CategoryResponseDto> {
-        const url = await this.storageService.saveFile(file.buffer, file.mimetype);
-        if (url === undefined && url === null) {
-            this.throwInternalServerError("IMAGE_ERROR");
-        }
-        const categoryFound = await this.findCategory(id);
-        category.image = url;
-        const updatedCategory = Object.assign(categoryFound, category);
-        const savedCategory = await this.categoriesRepository.save(updatedCategory);
-        await this.invalidateCache();
-        return this.mapper.map(savedCategory, CategoryResponseDto);
+        return this.categoryMapper.mapCategoryToResponseDto(savedCategory);
     }
 
+    /**
+     * Delete a category by its ID.
+     * @param id The ID of the category to be deleted.
+     */
     async delete(id: string) {
         await this.findCategory(id);
         await this.invalidateCache();
         return this.categoriesRepository.delete(id);
     }
 
+    /**
+     * Find a category by its ID.
+     * @param id The ID of the category to be found.
+     * @returns The found category entity.
+     * @throws NotFoundException if the category is not found.
+     */
     private async findCategory(id: string) {
         const categoryFound = await this.categoriesRepository.findOneBy({ id: id });
         if (!categoryFound) {
@@ -89,9 +104,11 @@ export class CategoriesService extends SupportService {
         return categoryFound;
     }
 
+    /**
+     * Invalidate the cache storing category data.
+     * @private
+     */
     private async invalidateCache() {
         await this.cacheService.delete(this.CACHE_KEY);
     }
-
 }
-

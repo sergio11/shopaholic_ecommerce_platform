@@ -1,5 +1,7 @@
 import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
+import { Exclude } from "class-transformer";
 import { IsNotEmpty, IsString } from "class-validator";
+import { CreateImageDto } from "src/modules/images/dto/create-image.dto";
 
 export default class CreateCategoryDTO {
 
@@ -31,9 +33,9 @@ export default class CreateCategoryDTO {
      * The image file of the category
      */
     @ApiProperty({  description: `The image file of the category`, type: 'string', format: 'binary', required: true })
-    file: Express.Multer.File
+    imageFile: Express.Multer.File
     
     @ApiHideProperty()
-    image: string;
-
+    @Exclude()
+    image: CreateImageDto;
 }

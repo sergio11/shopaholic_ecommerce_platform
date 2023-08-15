@@ -1,46 +1,70 @@
-import { Entity, Column, BeforeInsert, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, BeforeInsert, ManyToMany, JoinTable, OneToOne, JoinColumn } from 'typeorm';
 import { hash } from 'bcrypt';
 import { RoleEntity } from 'src/modules/roles/role.entity';
 import { AbstractEntity } from 'src/core/abstract.entity';
-import { AutoMap } from '@automapper/classes';
+import { ImageEntity } from '../images/image.entity';
 
-@Entity({ name: 'users'})
-export class UserEntity extends AbstractEntity  {
+@Entity({ name: 'users' })
+export class UserEntity extends AbstractEntity {
 
-    @AutoMap()
-    @Column()
+    /**
+     * User's full name.
+     */
+    @Column({ length: 100 })
     name: string;
-    
-    @AutoMap()
-    @Column()
+
+    /**
+     * User's last name.
+     */
+    @Column({ length: 100 })
     lastname: string;
 
-    @AutoMap()
+    /**
+     * User's email (unique).
+     */
     @Column({ unique: true })
     email: string;
-    
-    @AutoMap()
+
+    /**
+     * User's phone number (unique).
+     */
     @Column({ unique: true })
     phone: string;
-    
-    @AutoMap()
-    @Column({ length: 4000, nullable: true })
-    image: string;
-    
+
+    /**
+     * User's profile image.
+     */
+    @OneToOne(() => ImageEntity)
+    @JoinColumn({ name: 'image_id' })
+    image: ImageEntity;
+
+    /**
+     * Hashed password of the user.
+     */
     @Column()
     password: string;
-    
-    @Column({ name: "notification_token", nullable: true })
+
+    /**
+     * Notification token associated with the user.
+     */
+    @Column({ name: 'notification_token', nullable: true })
     notificationToken: string;
-    
-    @AutoMap()
-    @Column()
+
+    /**
+     * User's country.
+     */
+    @Column({ length: 50 })
     country: string;
 
-    @AutoMap()
-    @Column()
+    /**
+     * User's preferred language.
+     */
+    @Column({ length: 10 })
     language: string;
 
+    /**
+     * Roles associated with the user.
+     */
     @JoinTable({
         name: 'user_has_roles',
         joinColumn: {
@@ -53,9 +77,11 @@ export class UserEntity extends AbstractEntity  {
     @ManyToMany(() => RoleEntity, (rol) => rol.users)
     roles: RoleEntity[];
 
+    /**
+     * Hashes the user's password before insertion.
+     */
     @BeforeInsert()
     async hashPassword() {
         this.password = await hash(this.password, Number(process.env.HASH_SALT));
     }
-
 }

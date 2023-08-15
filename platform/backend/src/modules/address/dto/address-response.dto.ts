@@ -1,21 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AutoMap } from '@automapper/classes';
+import { AbstractDto } from 'src/core/abstract.dto';
 
+export class AddressResponseDto extends AbstractDto {
 
-export class AddressResponseDto {
-    @ApiProperty({ description: 'Unique identifier of the address' })
-    @AutoMap()
-    id: string;
-
+    /**
+     * The address.
+     */
     @ApiProperty({ description: 'Address' })
-    @AutoMap()
     address: string;
 
+    /**
+     * The neighborhood.
+     */
     @ApiProperty({ description: 'Neighborhood' })
-    @AutoMap()
     neighborhood: string;
 
+    /**
+     * The user ID associated with the address.
+     */
     @ApiProperty({ description: 'User ID associated with the address' })
-    @AutoMap()
     idUser: string;
 }

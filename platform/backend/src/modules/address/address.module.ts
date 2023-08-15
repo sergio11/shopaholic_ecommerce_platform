@@ -5,13 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AddressEntity } from './address.entity';
 import { UserEntity } from '../users/user.entity';
 import { OrderEntity } from 'src/modules/orders/order.entity';
-import { AddressProfile } from './adress.mapper';
 
 @Module({
   imports: [ TypeOrmModule.forFeature([AddressEntity, UserEntity, OrderEntity]) ],
   providers: [
     AddressService, 
-    AddressProfile
+    AddressEntity
   ],
   controllers: [AddressController]
 })

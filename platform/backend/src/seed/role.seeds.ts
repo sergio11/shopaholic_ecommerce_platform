@@ -3,13 +3,11 @@ import { RoleEntity } from "src/modules/roles/role.entity";
 const roles: Partial<RoleEntity>[] = [
     {
         name: "CLIENT",
-        route: "/client",
-        image: "test"
+        route: "/client"
     },
     {
         name: "ADMIN",
-        route: "/admin",
-        image: "test"
+        route: "/admin"
     }
 ];
 

@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AddressEntity } from 'src/modules/address/address.entity';
 import { CategoryEntity } from 'src/modules/categories/category.entity';
+import { ImageEntity } from 'src/modules/images/image.entity';
 import { OrderEntity } from 'src/modules/orders/order.entity';
 import { OrderHasProductsEntity } from 'src/modules/orders/order_has_products.entity';
 import { ProductEntity } from 'src/modules/products/product.entity';
@@ -41,7 +42,8 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
         OrderHasProductsEntity,
         ProductEntity,
         RoleEntity,
-        UserEntity
+        UserEntity,
+        ImageEntity
       ],
       synchronize: true
     };

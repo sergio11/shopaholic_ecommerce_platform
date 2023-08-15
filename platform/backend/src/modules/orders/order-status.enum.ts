@@ -1,5 +1,19 @@
+/**
+ * Enum representing the status of an order.
+ */
 export enum OrderStatus {
-    PAGADO = 'PAGADO',
-    PENDIENTE = 'PENDIENTE',
-    CANCELADO = 'CANCELADO',
-  }
+  /**
+   * The order has been paid.
+   */
+  PAID = 'PAID',
+
+  /**
+   * The order is pending and awaiting processing.
+   */
+  PENDING = 'PENDING',
+
+  /**
+   * The order has been canceled.
+   */
+  CANCELLED = 'CANCELLED',
+}

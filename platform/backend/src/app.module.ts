@@ -1,6 +1,6 @@
 import { AddressModule } from './modules/address/address.module';
 import { CategoriesModule } from './modules/categories/categories.module';
-import { Module, OnApplicationBootstrap } from '@nestjs/common';
+import { ClassSerializerInterceptor, Module, OnApplicationBootstrap } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AcceptLanguageResolver, I18nModule, QueryResolver , HeaderResolver} from 'nestjs-i18n';
 import { join } from 'path';
@@ -12,19 +12,15 @@ import { CacheConfigModule } from './modules/cache/cache.module';
 import { ProductsModule } from './modules/products/products.module';
 import { TypeOrmConfigService } from './core/service/typeorm.service';
 import { getEnvPath } from './core/helper/env.helper';
-import { AutomapperModule } from '@automapper/nestjs';
-import { classes } from '@automapper/classes';
 import { SeedingService } from './core/service/seeding.service';
 import { FilesStorageModule } from './modules/storage/storage.module';
-import { PaymentsModule } from './modules/payments/payments.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ImagesModule } from './modules/images/images.module';
 
 const envFilePath: string = getEnvPath(`${__dirname}/env`);
 
 @Module({
   imports: [
-    AutomapperModule.forRoot({
-      strategyInitializer: classes(),
-    }),
     ConfigModule.forRoot({ 
       envFilePath, 
       isGlobal: true, 
@@ -50,11 +46,15 @@ const envFilePath: string = getEnvPath(`${__dirname}/env`);
     CacheConfigModule,
     AddressModule,
     ProductsModule,
-    PaymentsModule,
-    FilesStorageModule
+    FilesStorageModule,
+    ImagesModule
   ],
   providers: [
-    SeedingService
+    SeedingService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    }
   ]
 })
 export class AppModule implements OnApplicationBootstrap {

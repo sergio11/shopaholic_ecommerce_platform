@@ -1,56 +1,41 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
-import { AutoMap } from '@automapper/classes';
-import { Expose } from 'class-transformer';
+import { AbstractDto } from 'src/core/abstract.dto';
+import { ImageResponseDto } from 'src/modules/images/dto/image-response.dto';
 
-export class CategoryResponseDto {
-  @ApiProperty({
-    description: 'Unique identifier of the category',
-    example: 'c5e1e99a-7efc-4a63-83da-5ef5e6cb6d16',
-  })
-  @AutoMap()
+/**
+ * Data transfer object for category response.
+ */
+export class CategoryResponseDto extends AbstractDto {
+
+  /**
+   * Name of the clothing category
+   * @example Apparel
+   */
   @IsString()
-  @Expose({ name: 'category_id' })
-  id: string;
-
   @ApiProperty({
     description: 'Name of the clothing category',
     example: 'Apparel',
   })
-  @AutoMap()
-  @IsString()
-  @Expose({ name: 'category_name' })
   name: string;
 
+  /**
+   * Description of the clothing category
+   * @example A wide range of stylish clothing for all ages.
+   */
+  @IsString()
   @ApiProperty({
     description: 'Description of the clothing category',
     example: 'A wide range of stylish clothing for all ages.',
   })
-  @AutoMap()
-  @IsString()
   description: string;
 
+  /**
+   * Image of the clothing category
+   */
   @ApiProperty({
-    description: 'URL of the image for the clothing category',
-    example: 'https://example.com/images/apparel.jpg',
+    description: 'Image of the clothing category',
+    type: ImageResponseDto,
   })
-  @AutoMap()
-  @IsString()
-  image: string;
-
-  @ApiProperty({
-    description: 'Creation date of the clothing category',
-    example: '2023-08-15T10:30:00Z',
-  })
-  @AutoMap()
-  @Expose({ name: 'created_at' })
-  createdAt: Date;
-
-  @ApiProperty({
-    description: 'Last updated date of the clothing category',
-    example: '2023-08-15T14:45:00Z',
-  })
-  @AutoMap()
-  @Expose({ name: 'updated_at' })
-  updatedAt: Date;
+  image: ImageResponseDto;
 }

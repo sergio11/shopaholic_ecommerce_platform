@@ -1,24 +1,25 @@
-import { AutoMap } from '@automapper/classes';
-import { IsUUID, IsDate, IsOptional } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { Expose } from 'class-transformer';
 
 export class AbstractDto {
-  @AutoMap()
-  @IsUUID()
-  @IsOptional()
-  id?: string;
+  @ApiProperty({
+    description: 'Unique identifier',
+    example: 'c5e1e99a-7efc-4a63-83da-5ef5e6cb6d16',
+  })
+  @Expose({ name: 'id' })
+  id: string;
 
-  @AutoMap()
-  @IsDate()
-  @IsOptional()
-  createdAt?: Date;
+  @ApiProperty({
+    description: 'Date of creation',
+    example: '2023-08-15T10:30:00Z',
+  })
+  @Expose({ name: 'created_at' })
+  createdAt: Date;
 
-  @AutoMap()
-  @IsDate()
-  @IsOptional()
-  updatedAt?: Date;
-
-  @AutoMap()
-  @IsDate()
-  @IsOptional()
-  deletedAt?: Date;
+  @ApiProperty({
+    description: 'Date of last update',
+    example: '2023-08-15T14:45:00Z',
+  })
+  @Expose({ name: 'updated_at' })
+  updatedAt: Date;
 }

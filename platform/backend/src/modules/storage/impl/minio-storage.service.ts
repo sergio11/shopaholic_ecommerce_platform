@@ -17,7 +17,7 @@ export class MinioStorageService implements IStorageService {
 
     const minioEndpoint = this.configService.get<string>('MINIO_SERVER_HOST');
     const minioPort = Number(this.configService.get<number>('MINIO_SERVER_PORT'));
-    const minioUseSSL = Boolean(this.configService.get<boolean>('MINIO_SERVER_USE_SSL'));
+    const minioUseSSL = false;
     const minioAccessKey = this.configService.get<string>('MINIO_SERVER_ACCESS_KEY');
     const minioSecretKey = this.configService.get<string>('MINIO_SERVER_SECRET_KEY');
     this.bucketName = this.configService.get<string>('MINIO_SERVER_BUCKET_NAME');
@@ -36,8 +36,26 @@ export class MinioStorageService implements IStorageService {
     });
   }
 
-  public async saveFile(file: Buffer, contentType: string): Promise<string> {
-    const fileName = `${uuidv4()}.${contentType.split('/')[1]}`; // Generate a UUID and append it to the filename
+  public async updateFile(id: string, newFile: Buffer, contentType: string): Promise<{ id: string; url: string }> {
+    const existingObject = await this.getObjectInfo(id);
+
+    if (!existingObject) {
+      throw new Error('File not found');
+    }
+
+    try {
+      await this.minioClient.removeObject(this.bucketName, id);
+      const result = await this.saveFile(newFile, contentType);
+      return result;
+    } catch (error) {
+      console.error('Error updating file in MinIO:', error);
+      throw new Error('Error updating file in MinIO');
+    }
+  }
+
+  public async saveFile(file: Buffer, contentType: string): Promise<{ id: string; url: string }> {
+    const id = uuidv4();
+    const fileName = `${id}`; // Use the generated UUID as the filename
     const readableStream = new Readable();
     readableStream.push(file);
     readableStream.push(null); // final stream
@@ -48,13 +66,58 @@ export class MinioStorageService implements IStorageService {
 
     try {
       await this.minioClient.putObject(this.bucketName, fileName, readableStream, file.length, uploadOptions);
-      const url = this.minioClient.presignedGetObject(this.bucketName, fileName);
-      return url;
+      const url = await this.minioClient.presignedGetObject(this.bucketName, fileName);
+      return { id, url };
     } catch (error) {
       console.error('Error saving file to MinIO:', error);
       throw new Error('Error saving file to MinIO');
     }
   }
+
+  public async deleteFile(id: string): Promise<void> {
+    const existingObject = await this.getObjectInfo(id);
+
+    if (!existingObject) {
+      throw new Error('File not found');
+    }
+
+    try {
+      await this.minioClient.removeObject(this.bucketName, id);
+    } catch (error) {
+      console.error('Error deleting file from MinIO:', error);
+      throw new Error('Error deleting file from MinIO');
+    }
+  }
+
+  /**
+     * Gets information about an object in the storage bucket.
+     * @param {string} id - The ID of the object.
+     * @returns {Promise<Minio.BucketItem | null>} - The object information or null if not found.
+     */
+  private async getObjectInfo(id: string): Promise<Minio.BucketItem | null> {
+    return new Promise<Minio.BucketItem | null>((resolve, reject) => {
+        this.minioClient.statObject(this.bucketName, id, (err, stat: Minio.BucketItemStat) => {
+            if (err) {
+                if ((err as any).code === 'NotFound') { // Use type assertion here
+                    resolve(null);
+                } else {
+                    reject(err);
+                }
+            } else {
+                // Create a BucketItem-like object with the required properties
+                const bucketItem: Minio.BucketItem = {
+                  name: id,
+                  etag: stat.etag,
+                  lastModified: stat.lastModified,
+                  size: stat.size,
+                  prefix: '', // Set it to an empty string or omit it if not needed
+                };
+                resolve(bucketItem);
+            }
+        });
+    });
+  }
+
 
   private async checkAndCreateBucket(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
