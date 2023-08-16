@@ -12,11 +12,9 @@ export class ProductMapper {
 
   mapProductToResponseDto(product: ProductEntity): ProductResponseDto {
     const productDto = plainToClass(ProductResponseDto, product, { excludeExtraneousValues: true });
-
     if (product.category) {
       productDto.category = this.categoryMapper.mapCategoryToResponseDto(product.category);
     }
-
     return productDto;
   }
 
@@ -25,10 +23,10 @@ export class ProductMapper {
   }
 
   mapCreateProductDtoToEntity(dto: CreateProductDto): ProductEntity {
-    return plainToClass(ProductEntity, dto, { excludeExtraneousValues: true });
+    return plainToClass(ProductEntity, dto);
   }
 
   mapUpdateProductDtoToEntity(dto: UpdateProductDto, entity: ProductEntity): ProductEntity {
-    return Object.assign(entity, plainToClass(ProductEntity, dto, { excludeExtraneousValues: true }));
+    return Object.assign(entity, plainToClass(ProductEntity, dto));
   }
 }

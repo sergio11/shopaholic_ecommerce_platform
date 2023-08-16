@@ -19,7 +19,7 @@ export class AddressController {
     /**
      * Create a new address.
      * @param {CreateAddressDto} address - The address data to create.
-     * @returns {AddressResponseDto} The newly created address.
+     * @returns {Promise<AddressResponseDto>} The newly created address.
      */
     @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
@@ -31,13 +31,13 @@ export class AddressController {
         description: 'A new address created',
         type: AddressResponseDto,
     })
-    create(@Body() address: CreateAddressDto) {
+    async create(@Body() address: CreateAddressDto): Promise<AddressResponseDto> {
         return this.addressService.create(address);
     }
     
     /**
      * Return all addresses that have been registered.
-     * @returns {AddressResponseDto[]} A list of registered addresses.
+     * @returns {Promise<AddressResponseDto[]>} A list of registered addresses.
      */
     @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
@@ -49,14 +49,14 @@ export class AddressController {
         description: 'A list of registered addresses',
         type: AddressResponseDto,
     })
-    findAll() {
+    async findAll(): Promise<AddressResponseDto[]> {
         return this.addressService.findAll();
     }
     
     /**
      * Return all addresses that have been registered by a user.
      * @param {string} id_user - The user ID associated with the addresses.
-     * @returns {AddressResponseDto[]} A list of addresses registered by the user.
+     * @returns {Promise<AddressResponseDto[]>} A list of addresses registered by the user.
      */
     @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
@@ -68,7 +68,7 @@ export class AddressController {
         description: 'A list of addresses registered by user',
         type: AddressResponseDto,
     })
-    findByUser(@Param('id_user') id_user: string) {
+    async findByUser(@Param('id_user') id_user: string): Promise<AddressResponseDto[]> {
         return this.addressService.findByUser(id_user);
     }
 
@@ -76,7 +76,7 @@ export class AddressController {
      * Update the data of an address.
      * @param {string} id - The ID of the address to update.
      * @param {UpdateAddressDto} address - The updated address data.
-     * @returns {AddressResponseDto} The updated address.
+     * @returns {Promise<AddressResponseDto>} The updated address.
      */
     @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
@@ -88,14 +88,14 @@ export class AddressController {
         description: 'The address updated by the user',
         type: AddressResponseDto,
     })
-    update(@Param('id') id: string, @Body() address: UpdateAddressDto) {
+    async update(@Param('id') id: string, @Body() address: UpdateAddressDto): Promise<AddressResponseDto> {
         return this.addressService.update(id, address);
     }
     
     /**
      * Delete an address.
      * @param {string} id - The ID of the address to delete.
-     * @returns {AddressResponseDto} The deleted address.
+     * @returns {Promise<void>} The deleted address.
      */
     @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
@@ -107,7 +107,7 @@ export class AddressController {
         description: 'The address deleted by the user',
         type: AddressResponseDto,
     })
-    delete(@Param('id') id: string) {
+    async delete(@Param('id') id: string): Promise<void> {
         return this.addressService.delete(id);
     }
 }

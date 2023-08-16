@@ -8,13 +8,15 @@ import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { AddressResponseDto } from './dto/address-response.dto';
 import { IStorageService, STORAGE_SERVICE } from '../storage/storage.service';
-import { AddressMapper } from './adress.mapper';
+import { AddressMapper } from './address.mapper';
+import { UserEntity } from '../users/user.entity';
 
 @Injectable()
 export class AddressService extends SupportService {
 
     constructor(
         @InjectRepository(AddressEntity) private addressRepository: Repository<AddressEntity>,
+        @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
         private readonly mapper: AddressMapper,
         @Inject(STORAGE_SERVICE)
         storageService: IStorageService,
@@ -29,7 +31,9 @@ export class AddressService extends SupportService {
      * @returns {Promise<AddressResponseDto>} The newly created address.
      */
     async create(address: CreateAddressDto): Promise<AddressResponseDto> {
+        const userFound = await this.findUser(address.idUser);
         const newAddress = this.mapper.mapCreateAddressDtoToEntity(address);
+        newAddress.user = userFound;
         const savedAddress = await this.addressRepository.save(newAddress);
         return this.mapper.mapAddressToResponseDto(savedAddress);
     }
@@ -89,5 +93,13 @@ export class AddressService extends SupportService {
             this.throwNotFoundException('ADDRESS_NOT_FOUND');
         }
         return addressFound;
+    }
+
+    private async findUser(id: string): Promise<UserEntity> {
+        const userFound = await this.userRepository.findOneBy({ id: id });
+        if (!userFound) {
+            this.throwNotFoundException('USER_NOT_FOUND');
+        }
+        return userFound;
     }
 }

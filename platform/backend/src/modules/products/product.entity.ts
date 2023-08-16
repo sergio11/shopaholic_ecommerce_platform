@@ -40,7 +40,7 @@ export class ProductEntity extends AbstractEntity {
      * ID of the category to which the product belongs.
      */
     @Column({ name: "id_category"})
-    idCategory: string;
+    readonly idCategory: string;
     
     /**
      * Price of the product.

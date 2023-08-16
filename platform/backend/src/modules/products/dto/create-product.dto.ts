@@ -32,15 +32,19 @@ export class CreateProductDto {
      */
     @ApiProperty({ description: 'Product price', example: 19.99 })
     @IsNotEmpty({ message: 'Price is required' })
-    @IsNumber({}, { message: 'Price must be a number' })
-    @Min(0, { message: 'Price must be greater than or equal to 0' })
+    /*@IsNumber({
+        allowNaN: false,
+        allowInfinity: false,
+        maxDecimalPlaces: 2
+    }, { message: 'Price must be a number' })
+    @Min(0.0, { message: 'Price must be greater than or equal to 0' })*/
     price: number;
 
     /**
      * ID of the category for the product
      * @example category_id
      */
-    @ApiProperty({ description: 'ID of the category for the product', example: 'category_id' })
+    @ApiProperty({ description: 'ID of the category for the product', example: 'd3c28cf0-0e18-4b23-b503-2c1fecdc9bf4' })
     @IsNotEmpty({ message: 'Category ID is required' })
     @IsUUID(undefined, { message: 'Invalid category ID format' })
     idCategory: string;

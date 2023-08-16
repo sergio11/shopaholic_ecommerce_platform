@@ -23,7 +23,7 @@ export class UpdateProductDto {
     @ApiProperty({ description: 'Updated ID of the category for the product', example: 'updated_category_id' })
     @IsOptional()
     @IsUUID(undefined, { message: 'Invalid category ID format' })
-    id_category?: string;
+    idCategory?: string;
 
     /**
      * Image file for the main product image

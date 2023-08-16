@@ -1,10 +1,10 @@
-import { Controller, UseGuards, Get, Param, Post, Body, Put, Delete, Query, DefaultValuePipe, ParseIntPipe, UploadedFiles, Version, HttpStatus, UseInterceptors, ParseFilePipeBuilder, ParseFilePipe } from '@nestjs/common';
+import { Controller, UseGuards, Get, Param, Post, Body, Delete, Query, DefaultValuePipe, ParseIntPipe, UploadedFiles, Version, HttpStatus, UseInterceptors, ParseFilePipeBuilder, ParseFilePipe } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { HasRoles } from '../auth/jwt/has-roles';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
@@ -12,6 +12,7 @@ import { ProductEntity } from './product.entity';
 import { API } from 'src/config/config';
 import { ApiBearerAuth, ApiTags, ApiResponse, ApiConsumes } from '@nestjs/swagger';
 import { ProductResponseDto } from './dto/product-response.dto';
+import { fileValidator } from 'src/core/file.validator';
 
 /**
  * Controller handling CRUD operations for products.
@@ -20,23 +21,6 @@ import { ProductResponseDto } from './dto/product-response.dto';
 @ApiTags('products')
 @Controller('products')
 export class ProductsController {
-
-    /**
-     * Build a ParseFilePipe with specific validation rules.
-     */
-    private static parseFilePipeBuilder(fileIsRequired: boolean): ParseFilePipe {
-        return new ParseFilePipeBuilder()
-            .addFileTypeValidator({
-                fileType: '.(png|jpeg|jpg)',
-            })
-            .addMaxSizeValidator({
-                maxSize: 1024 * 1024 * 10,
-            })
-            .build({
-                fileIsRequired,
-                errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-            });
-    }
 
     /**
      * Constructs the ProductsController.
@@ -116,17 +100,21 @@ export class ProductsController {
      */
     @HasRoles(JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
-    @Version('1.0')
     @Post()
-    @UseInterceptors(FileInterceptor('mainImageFile'), FileInterceptor('secondaryImageFile'))
+    @UseInterceptors(FileFieldsInterceptor([
+        { name: 'mainImageFile', maxCount: 1 },
+        { name: 'secondaryImageFile', maxCount: 1 },
+      ],{
+        fileFilter: fileValidator(['.jpg', '.jpeg', '.png'], 1024 * 1024 * 10, false)
+      }))
     @ApiConsumes('multipart/form-data')
+    @Version('1.0')
     @ApiResponse({ status: 201, description: 'Product created successfully.', type: ProductResponseDto })
     async create(
-        @UploadedFiles(ProductsController.parseFilePipeBuilder(true)) mainImageFile: Express.Multer.File,
-        @UploadedFiles(ProductsController.parseFilePipeBuilder(true)) secondaryImageFile: Express.Multer.File,
+        @UploadedFiles() files: { mainImageFile: Express.Multer.File, secondaryImageFile: Express.Multer.File },
         @Body() product: CreateProductDto
     ): Promise<ProductResponseDto> {
-        return this.productsService.create([mainImageFile, secondaryImageFile], product);
+        return this.productsService.create([files.mainImageFile, files.secondaryImageFile], product);
     }
 
     /**
@@ -140,17 +128,21 @@ export class ProductsController {
     @HasRoles(JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
-    @Put(':id')
-    @UseInterceptors(FileInterceptor('mainImageFile'), FileInterceptor('secondaryImageFile'))
+    @Post(':id')
+    @UseInterceptors(FileFieldsInterceptor([
+        { name: 'mainImageFile', maxCount: 1 },
+        { name: 'secondaryImageFile', maxCount: 1 },
+      ],{
+        fileFilter: fileValidator(['.jpg', '.jpeg', '.png'], 1024 * 1024 * 10, true)
+      }))
     @ApiConsumes('multipart/form-data')
     @ApiResponse({ status: 200, description: 'Product updated successfully.', type: ProductResponseDto })
     async update(
-        @UploadedFiles(ProductsController.parseFilePipeBuilder(false)) mainImageFile: Express.Multer.File,
-        @UploadedFiles(ProductsController.parseFilePipeBuilder(false)) secondaryImageFile: Express.Multer.File,
+        @UploadedFiles() files: { mainImageFile?: Express.Multer.File, secondaryImageFile?: Express.Multer.File },
         @Param('id') id: string,
         @Body() product: UpdateProductDto
     ): Promise<ProductResponseDto> {
-        return this.productsService.update(id, product, [mainImageFile, secondaryImageFile]);
+        return this.productsService.update(id, product, [files.mainImageFile, files.secondaryImageFile]);
     }
 
     /**

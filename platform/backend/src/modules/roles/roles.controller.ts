@@ -8,6 +8,7 @@ import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
 import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { RoleResponseDto } from './dto/role-response.dto';
 
 @ApiBearerAuth()
 @ApiTags('roles')
@@ -44,10 +45,10 @@ export class RolesController {
     @ApiConsumes('multipart/form-data')
     @ApiOperation({ summary: 'Create new role' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    create(
+    async create(
         @UploadedFile(RolesController.parseFilePipeBuilder(true)) file: Express.Multer.File,
         @Body() role: CreateRoleDto
-    ) {
+    ): Promise<RoleResponseDto> {
         return this.rolesService.create(file, role);
     }
 
@@ -66,11 +67,11 @@ export class RolesController {
     @ApiOperation({ summary: 'Update role by ID' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
     @UseInterceptors(FileInterceptor('imageFile'))
-    update(
+    async update(
         @UploadedFile(RolesController.parseFilePipeBuilder(false)) file: Express.Multer.File,
         @Param('id') id: string, 
         @Body() role: UpdateRoleDto
-    ) {
+    ): Promise<RoleResponseDto> {
         return this.rolesService.update(id, role, file);
     }
 
@@ -84,7 +85,7 @@ export class RolesController {
     @Delete(':id')
     @ApiOperation({ summary: 'Delete role by ID' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    delete(@Param('id') id: string) {
+    async delete(@Param('id') id: string): Promise<void> {
         return this.rolesService.delete(id);
     }
 }

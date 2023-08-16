@@ -16,10 +16,10 @@ export class RoleMapper {
   }
 
   mapCreateRoleDtoToEntity(dto: CreateRoleDto): RoleEntity {
-    return plainToClass(RoleEntity, dto, { excludeExtraneousValues: true });
+    return plainToClass(RoleEntity, dto);
   }
 
   mapUpdateRoleDtoToEntity(dto: UpdateRoleDto, entity: RoleEntity): RoleEntity {
-    return Object.assign(entity, plainToClass(RoleEntity, dto, { excludeExtraneousValues: true }));
+    return Object.assign(entity, plainToClass(RoleEntity, dto));
   }
 }

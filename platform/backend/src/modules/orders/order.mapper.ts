@@ -5,7 +5,7 @@ import { OrderResponseDto } from './dto/order-response.dto';
 import { OrderHasProductResponseDto } from './dto/order-has-product-response.dto';
 import { UserMapper } from '../users/user.mapper';
 import { OrderHasProductsEntity } from './order_has_products.entity';
-import { AddressMapper } from '../address/adress.mapper';
+import { AddressMapper } from '../address/address.mapper';
 
 @Injectable()
 export class OrderMapper {

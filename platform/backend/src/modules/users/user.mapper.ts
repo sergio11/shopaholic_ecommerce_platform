@@ -21,10 +21,10 @@ export class UserMapper {
   }
 
   mapCreateUserDtoToEntity(createUserDto: CreateUserDto): UserEntity {
-    return plainToClass(UserEntity, createUserDto, { excludeExtraneousValues: true });
+    return plainToClass(UserEntity, createUserDto);
   }
 
   mapUpdateUserDtoToEntity(updateUserDto: UpdateUserDto, userEntity: UserEntity): UserEntity {
-    return Object.assign(userEntity, plainToClass(UserEntity, updateUserDto, { excludeExtraneousValues: true }));
+    return Object.assign(userEntity, plainToClass(UserEntity, updateUserDto));
   }
 }

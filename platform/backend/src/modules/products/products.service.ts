@@ -11,6 +11,7 @@ import { IStorageService, STORAGE_SERVICE } from '../storage/storage.service';
 import { ProductResponseDto } from './dto/product-response.dto';
 import { CacheService } from '../cache/cache.service';
 import { ProductMapper } from './product.mapper';
+import { CategoryEntity } from '../categories/category.entity';
 
 @Injectable()
 export class ProductsService extends SupportService {
@@ -19,6 +20,7 @@ export class ProductsService extends SupportService {
 
     constructor(
         @InjectRepository(ProductEntity) private productsRepository: Repository<ProductEntity>,
+        @InjectRepository(CategoryEntity) private categoriesRepository: Repository<CategoryEntity>,
         @Inject(STORAGE_SERVICE)
         storageService: IStorageService,
         private readonly mapper: ProductMapper,
@@ -82,6 +84,7 @@ export class ProductsService extends SupportService {
         if (files.length === 0) {
             this.throwBadRequestException('NO_IMAGES_PROVIDED');
         }
+        const categoryFound = await this.findCategory(product.idCategory);
         await this.asyncForEach(files, async (file: Express.Multer.File, index: number) => {
           const response = await this.saveFileAndGetImageDto(file);
           if (index === 0) {
@@ -91,6 +94,7 @@ export class ProductsService extends SupportService {
           }
         });
         const newProduct = this.mapper.mapCreateProductDtoToEntity(product);
+        newProduct.category = categoryFound;
         const savedProduct = await this.productsRepository.save(newProduct);
         return this.mapper.mapProductToResponseDto(savedProduct);
     }
@@ -104,6 +108,7 @@ export class ProductsService extends SupportService {
      */
     async update(id: string, product: UpdateProductDto, files: Array<Express.Multer.File>): Promise<ProductResponseDto> {
       const productFound = await this.findProduct(id);
+      const categoryFound = await this.findCategory(product.idCategory);
       await this.asyncForEach(files, async (file: Express.Multer.File, index: number) => {
         const response = await this.saveFileAndGetImageDto(file);
         if(response) {
@@ -115,6 +120,7 @@ export class ProductsService extends SupportService {
         }
       });
       const productToUpdate = this.mapper.mapUpdateProductDtoToEntity(product, productFound);
+      productToUpdate.category = categoryFound;
       const productUpdated = await this.productsRepository.save(productToUpdate);
       return this.mapper.mapProductToResponseDto(productUpdated);
     }
@@ -135,5 +141,13 @@ export class ProductsService extends SupportService {
           this.throwNotFoundException('PRODUCT_NOT_FOUND');
         }
         return productFound;
+    }
+
+    private async findCategory(id: string): Promise<CategoryEntity> {
+      const categoryFound = await this.categoriesRepository.findOne({ where: { id }})
+      if (!categoryFound) {
+        this.throwNotFoundException('CATEGORY_NOT_FOUND');
+      }
+      return categoryFound;
     }
 }

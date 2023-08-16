@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class UpdateAddressDto {
 
@@ -11,7 +11,7 @@ export class UpdateAddressDto {
         example: '456 Elm Street',
     })
     @IsString({ message: 'Address must be a string' })
-    address?: string;
+    name?: string;
     
     /**
      * The updated neighborhood.
@@ -22,14 +22,4 @@ export class UpdateAddressDto {
     })
     @IsString({ message: 'Neighborhood must be a string' })
     neighborhood?: string;
-
-    /**
-     * The updated user ID associated with the address.
-     */
-    @ApiProperty({
-        description: 'The updated user ID associated with the address',
-        example: 2,
-    })
-    @IsNumber({}, { message: 'User ID must be a number' })
-    idUser?: number;
 }

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class CreateAddressDto {
 
@@ -12,7 +12,7 @@ export class CreateAddressDto {
     })
     @IsNotEmpty({ message: 'Address is required' })
     @IsString({ message: 'Address must be a string' })
-    address: string;
+    name: string;
     
     /**
      * The neighborhood.
@@ -28,10 +28,8 @@ export class CreateAddressDto {
     /**
      * The user ID associated with the address.
      */
-    @ApiProperty({
-        description: 'The user ID associated with the address',
-        example: 1,
-    })
+    @ApiProperty({ description: 'The user ID associated with the address', example: 'd3c28cf0-0e18-4b23-b503-2c1fecdc9bf4' })
     @IsNotEmpty({ message: 'User ID is required' })
-    idUser: number;
+    @IsUUID(undefined, { message: 'Invalid User ID format' })
+    idUser: string;
 }

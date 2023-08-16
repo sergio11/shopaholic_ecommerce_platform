@@ -119,7 +119,7 @@ namespace :shopaholic do
 			puts `docker-compose -f ./redis_cluster/docker-compose.yml stop 2>&1`
 		end
 
-	end	
+ 	end	
 
 
 	## Deploy Platform

@@ -1,8 +1,9 @@
-import { Entity, Column, BeforeInsert, ManyToMany, JoinTable, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, BeforeInsert, ManyToMany, JoinTable, OneToOne, JoinColumn, OneToMany } from 'typeorm';
 import { hash } from 'bcrypt';
 import { RoleEntity } from 'src/modules/roles/role.entity';
 import { AbstractEntity } from 'src/core/abstract.entity';
 import { ImageEntity } from '../images/image.entity';
+import { AddressEntity } from '../address/address.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends AbstractEntity {
@@ -61,6 +62,12 @@ export class UserEntity extends AbstractEntity {
      */
     @Column({ length: 10 })
     language: string;
+
+    /**
+     * Addresses associated with this user.
+     */
+    @OneToMany(() => AddressEntity, address => address.user)
+    addresses: AddressEntity[];
 
     /**
      * Roles associated with the user.

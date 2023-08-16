@@ -16,10 +16,10 @@ export class AddressMapper {
     }
 
     mapCreateAddressDtoToEntity(createAddressDto: CreateAddressDto): AddressEntity {
-        return plainToClass(AddressEntity, createAddressDto, { excludeExtraneousValues: true });
+        return plainToClass(AddressEntity, createAddressDto);
     }
 
     mapUpdateAddressDtoToEntity(updateAddressDto: UpdateAddressDto): AddressEntity {
-        return plainToClass(AddressEntity, updateAddressDto, { excludeExtraneousValues: true });
+        return plainToClass(AddressEntity, updateAddressDto);
     }
 }
