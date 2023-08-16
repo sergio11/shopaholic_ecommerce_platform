@@ -50,6 +50,34 @@ export class CreateProductDto {
     idCategory: string;
 
     /**
+     * ID of the brand for the product
+     * @example brand_id
+     */
+    @ApiProperty({ description: 'ID of the brand for the product', example: 'd3c28cf0-0e18-4b23-b503-2c1fecdc9bf4' })
+    @IsNotEmpty({ message: 'Brand ID is required' })
+    @IsUUID(undefined, { message: 'Invalid brand ID format' })
+    idBrand: string;
+
+    /**
+     * Product code
+     * @example PROD123
+     */
+    @ApiProperty({ description: 'Product code', example: 'PROD123' })
+    @IsNotEmpty({ message: 'Product code is required' })
+    @IsString({ message: 'Product code must be a string' })
+    productCode: string;
+
+    /**
+     * Stock quantity
+     * @example 100
+     */
+    @ApiProperty({ description: 'Stock quantity', example: 100 })
+    @IsNotEmpty({ message: 'Stock quantity is required' })
+    @IsNumber({}, { message: 'Stock quantity must be a number' })
+    @Min(0, { message: 'Stock quantity must be greater than or equal to 0' })
+    stock: number;
+
+    /**
      * Image file for the main product image
      * @format binary
      */

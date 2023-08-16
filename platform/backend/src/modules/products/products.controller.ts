@@ -114,6 +114,7 @@ export class ProductsController {
         @UploadedFiles() files: { mainImageFile: Express.Multer.File, secondaryImageFile: Express.Multer.File },
         @Body() product: CreateProductDto
     ): Promise<ProductResponseDto> {
+        console.log(files);
         return this.productsService.create([files.mainImageFile, files.secondaryImageFile], product);
     }
 

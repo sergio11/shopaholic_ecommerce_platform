@@ -16,6 +16,7 @@ import { SeedingService } from './core/service/seeding.service';
 import { FilesStorageModule } from './modules/storage/storage.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ImagesModule } from './modules/images/images.module';
+import { BrandModule } from './modules/brands/brand.module';
 
 const envFilePath: string = getEnvPath(`${__dirname}/env`);
 
@@ -47,7 +48,8 @@ const envFilePath: string = getEnvPath(`${__dirname}/env`);
     AddressModule,
     ProductsModule,
     FilesStorageModule,
-    ImagesModule
+    ImagesModule,
+    BrandModule
   ],
   providers: [
     SeedingService,

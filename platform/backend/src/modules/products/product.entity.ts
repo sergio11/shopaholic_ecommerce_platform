@@ -3,6 +3,7 @@ import { CategoryEntity } from '../categories/category.entity';
 import { OrderHasProductsEntity } from '../orders/order_has_products.entity';
 import { AbstractEntity } from 'src/core/abstract.entity';
 import { ImageEntity } from '../images/image.entity';
+import { BrandsEntity } from '../brands/brand.entity';
 
 /**
  * Entity representing a product.
@@ -23,6 +24,20 @@ export class ProductEntity extends AbstractEntity {
     description: string;
 
     /**
+     * The available stock of the product.
+     * @example 50
+     */
+    @Column({ type: 'int', default: 0, nullable: false })
+    stock: number;
+
+    /**
+     * The unique product code of the product.
+     * @example PROD12345
+     */
+    @Column({ unique: true, nullable: false })
+    productCode: string;
+
+    /**
      * Main image of the product.
      */
     @OneToOne(() => ImageEntity)
@@ -41,12 +56,25 @@ export class ProductEntity extends AbstractEntity {
      */
     @Column({ name: "id_category"})
     readonly idCategory: string;
+
+    /**
+     * ID of the brand associated with the product.
+     */
+    @Column({ name: "id_brand"})
+    readonly idBrand: string;
     
     /**
      * Price of the product.
      */
     @Column({ name: "price", type: 'decimal', precision: 10, scale: 2 })
     price: number;
+
+    /**
+     * ID of the brand associated with the product.
+     */
+    @ManyToOne(() => BrandsEntity, (brand) => brand.products)
+    @JoinColumn({name: 'id_brand'})
+    brand: BrandsEntity;
 
     /**
      * Category to which the product belongs.
