@@ -1,0 +1,72 @@
+<nz-page-header nzBackIcon [nzGhost]="false">
+  <nz-page-header-title>Categories</nz-page-header-title>
+  <nz-page-header-extra>
+    <nz-input-group nzSize="large" nzSearch [nzAddOnAfter]="suffixIconButton">
+      <input
+        type="text"
+        nz-input
+        placeholder="Search..."
+        (keyup)="onChangeSearch($event)"
+      />
+    </nz-input-group>
+    <ng-template #suffixIconButton>
+      <button nz-button nzType="primary" nzSearch>Search</button>
+    </ng-template>
+  </nz-page-header-extra>
+</nz-page-header>
+<ng-container>
+  <button
+    (click)="onOpenCreateModal()"
+    nz-button
+    nzType="primary"
+    style="margin-bottom: 15px"
+  >
+    <i nz-icon nzType="edit" nzTheme="outline"></i>Create
+  </button>
+  <nz-table
+    #basicTable
+    [nzData]="categories.data"
+    [nzBordered]="true"
+    [nzFrontPagination]="false"
+    nzShowPagination
+    [nzTotal]="categories?.total"
+    [nzPageSize]="categories?.take"
+    [nzLoading]="filterLoading"
+    (nzPageIndexChange)="onChangePage($event)"
+  >
+    <thead>
+      <tr>
+        <th style="width: 60px">Image</th>
+        <th>Name</th>
+        <th style="text-align: right">CreatedAt</th>
+        <th style="text-align: right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td><img style="height: 45px" [src]="data.image || 'N/A'" alt="" /></td>
+        <td>{{ data.name }}</td>
+        <td style="text-align: right; width: 200px">
+          {{ data.createdAt | date }}
+        </td>
+        <td style="text-align: right; width: 200px">
+          <app-category-update [data]="data"></app-category-update>
+          <a
+            nz-popconfirm
+            nzPopconfirmTitle="Are you sure delete this?"
+            nzPopconfirmPlacement="top"
+            (nzOnConfirm)="onDelete(data.id)"
+          >
+            <button nz-button nzType="danger" nzShape="circle">
+              <i nz-icon nzType="delete" nzTheme="outline"></i></button
+          ></a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</ng-container>
+
+<app-create-category
+  (onClose)="onCloseCreateModal()"
+  [isOpen]="isOpenCreateModal"
+></app-create-category>

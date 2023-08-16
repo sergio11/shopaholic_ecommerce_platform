@@ -125,34 +125,70 @@ namespace :shopaholic do
 	## Deploy Platform
 	namespace :platform do
 
-		desc "Check Platform Deployment File"
-		task :check_deployment_file do
-			puts "Check Platform Deployment File ..."
-			raise "Deployment file not found, please check availability" unless File.file?("./platform/backend/docker-compose.yml")
-			puts "Platform Deployment File OK!"
+		namespace :backend do
+
+			desc "Check Platform Deployment File"
+			task :check_deployment_file do
+				puts "Check Platform Deployment File ..."
+				raise "Deployment file not found, please check availability" unless File.file?("./platform/backend/docker-compose.yml")
+				puts "Platform Deployment File OK!"
+			end
+
+			desc "Start Platform NodeJS Containers"
+			task :start => [ :check_docker_task, :login, :check_deployment_file  ] do
+				puts "Start Platform Containers"
+				puts `docker-compose -f ./platform/backend/docker-compose.yml up -d 2>&1`
+			end
+
+			desc "Stop Platform NodeJS Containers"
+			task :stop => [ :check_docker_task, :login, :check_deployment_file  ] do
+				puts "Stop Platform Containers"
+				puts `docker-compose -f ./platform/backend/docker-compose.yml stop 2>&1`
+			end
+
+			desc "Build Docker Image"
+			task :build => [:check_docker_task, :login] do
+				microservicesFolder = "./platform/backend"
+				apiServiceDockerImage = "ssanchez11/shopaholic_api_service:0.0.1"
+				puts "Build Docker Image #{apiServiceDockerImage}"
+				puts `docker build --target production -t #{apiServiceDockerImage} -f #{microservicesFolder}/Dockerfile #{microservicesFolder}`
+				puts "Docker image #{apiServiceDockerImage} has been created! trying to upload it!"
+				puts `docker push #{apiServiceDockerImage}`
+				puts `docker images`
+			end
 		end
 
-		desc "Start Platform NodeJS Containers"
-		task :start => [ :check_docker_task, :login, :check_deployment_file  ] do
-			puts "Start Platform Containers"
-			puts `docker-compose -f ./platform/backend/docker-compose.yml up -d 2>&1`
-		end
+		namespace :backoffice do
 
-		desc "Stop Platform NodeJS Containers"
-		task :stop => [ :check_docker_task, :login, :check_deployment_file  ] do
-			puts "Stop Platform Containers"
-			puts `docker-compose -f ./platform/backend/docker-compose.yml stop 2>&1`
-		end
+			desc "Check Platform Deployment File"
+			task :check_deployment_file do
+				puts "Check Platform Deployment File ..."
+				raise "Deployment file not found, please check availability" unless File.file?("./platform/backoffice/docker-compose.yml")
+				puts "Platform Deployment File OK!"
+			end
 
-		desc "Build Docker Image"
-		task :build_image => [:check_docker_task, :login] do
-		    microservicesFolder = "./platform/backend"
-			apiServiceDockerImage = "ssanchez11/shopaholic_api_service:0.0.1"
-			puts "Build Docker Image #{apiServiceDockerImage}"
-			puts `docker build --target production -t #{apiServiceDockerImage} -f #{microservicesFolder}/Dockerfile #{microservicesFolder}`
-			puts "Docker image #{apiServiceDockerImage} has been created! trying to upload it!"
-			puts `docker push #{apiServiceDockerImage}`
-			puts `docker images`
+			desc "Start Platform NodeJS Containers"
+			task :start => [ :check_docker_task, :login, :check_deployment_file  ] do
+				puts "Start Platform Containers"
+				puts `docker-compose -f ./platform/backoffice/docker-compose.yml up -d 2>&1`
+			end
+
+			desc "Stop Platform NodeJS Containers"
+			task :stop => [ :check_docker_task, :login, :check_deployment_file  ] do
+				puts "Stop Platform Containers"
+				puts `docker-compose -f ./platform/backoffice/docker-compose.yml stop 2>&1`
+			end
+
+			desc "Build Docker Image"
+			task :build => [:check_docker_task, :login] do
+				backofficeFolder = "./platform/backoffice"
+				backofficeDockerImage = "ssanchez11/shopaholic_backoffice:0.0.1"
+				puts "Build Docker Image #{backofficeDockerImage}"
+				puts `docker build -t #{backofficeDockerImage} -f #{backofficeFolder}/Dockerfile #{backofficeFolder}`
+				puts "Docker image #{backofficeDockerImage} has been created! trying to upload it!"
+				puts `docker push #{backofficeDockerImage}`
+				puts `docker images`
+			end
 		end
 
 	end

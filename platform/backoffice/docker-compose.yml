@@ -1,0 +1,8 @@
+version: '3'
+services:
+  backoffice:
+    container_name: backoffice
+    image: ssanchez11/shopaholic_backoffice:0.0.1
+    ports:
+      - '80:80'
+    restart: always

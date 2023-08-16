@@ -1,0 +1,124 @@
+<nz-layout class="app-layout">
+  <nz-sider
+    class="menu-sidebar"
+    nzCollapsible
+    nzWidth="200px"
+    nzBreakpoint="lg"
+    [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null"
+  >
+    <div class="sidebar-logo">
+      <a [routerLink]="[routesConstant.ordersList]">
+        <img src="../assets/logo-icon.png" alt="logo" />
+        <h1>IShop</h1>
+      </a>
+    </div>
+    <ul
+      nz-menu
+      nzTheme="dark"
+      nzMode="inline"
+      [nzInlineCollapsed]="isCollapsed"
+    >
+      <li nz-menu-item nzMatchRouter>
+        <a [routerLink]="[routesConstant.productsList]">
+          <i nz-icon nzType="code-sandbox" nzTheme="outline"></i>
+          <span>Products</span></a
+        >
+      </li>
+      <li nz-menu-item nzMatchRouter>
+        <a [routerLink]="[routesConstant.admins]">
+          <i nz-icon nzType="wifi" nzTheme="outline"></i>
+          <span>Admins</span></a
+        >
+      </li>
+      <li nz-menu-item nzMatchRouter>
+        <a [routerLink]="[routesConstant.customers]">
+          <i nz-icon nzType="usergroup-add" nzTheme="outline"></i>
+          <span>Customers</span></a
+        >
+      </li>
+      <li nz-menu-item nzMatchRouter>
+        <a [routerLink]="[routesConstant.vendors]">
+          <i nz-icon nzType="user-switch" nzTheme="outline"></i>
+          <span>Vendors</span></a
+        >
+      </li>
+      <li nz-menu-item nzMatchRouter>
+        <a [routerLink]="[routesConstant.department]">
+          <i nz-icon nzType="send" nzTheme="outline"></i>
+          <span>Department</span></a
+        >
+      </li>
+      <li nz-menu-item nzMatchRouter>
+        <a [routerLink]="[routesConstant.categoryList]">
+          <i nz-icon nzType="select" nzTheme="outline"></i>
+          <span>Categories</span></a
+        >
+      </li>
+      <li nz-menu-item nzMatchRouter>
+        <a [routerLink]="[routesConstant.bannerList]">
+          <i nz-icon nzType="number" nzTheme="outline"></i>
+          <span>Banners</span></a
+        >
+      </li>
+      <li nz-menu-item nzMatchRouter>
+        <a [routerLink]="[routesConstant.brandList]">
+          <i nz-icon nzType="idcard" nzTheme="outline"></i>
+          <span>Brands</span></a
+        >
+      </li>
+      <li nz-menu-item nzMatchRouter>
+        <a [routerLink]="[routesConstant.ordersList]">
+          <i nz-icon nzType="fund" nzTheme="outline"></i> <span>Orders</span></a
+        >
+      </li>
+    </ul>
+  </nz-sider>
+
+  <nz-layout>
+    <nz-header>
+      <div class="app-header">
+        <div class="custom-app-header">
+          <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+            <i
+              class="trigger"
+              nz-icon
+              [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+            ></i>
+          </span>
+          <nz-button-group
+            style="padding-right: 24px"
+            nz-dropdown
+            [nzDropdownMenu]="menu2"
+            nzPlacement="bottomRight"
+            nzTrigger="click"
+          >
+            <button nz-button>Welcome</button>
+            <button nz-button>
+              <i nz-icon nzType="user"></i>
+            </button>
+          </nz-button-group>
+        </div>
+      </div>
+    </nz-header>
+    <nz-content>
+      <div class="inner-content">
+        <main [@fadeInAnimation]="getRouterOutletState(o)">
+          <router-outlet #o="outlet"></router-outlet>
+        </main>
+      </div>
+    </nz-content>
+  </nz-layout>
+</nz-layout>
+
+<nz-dropdown-menu #menu2="nzDropdownMenu">
+  <ul nz-menu>
+    <li nz-menu-item routerLinkActive="router-link-active">
+      <a [routerLink]="[routesConstant.userProfile]">My Account </a>
+    </li>
+    <li nz-menu-item>
+      <a [routerLink]="[routesConstant.userSecurity]">Security</a>
+    </li>
+    <li nz-menu-item (click)="logout()">Logout</li>
+  </ul>
+</nz-dropdown-menu>
