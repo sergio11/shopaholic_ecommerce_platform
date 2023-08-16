@@ -3,13 +3,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BrandsEntity } from './brand.entity';
 import { BrandService } from './brands.service';
 import { BrandController } from './brands.controller';
+import { BrandsMapper } from './brands.mapper';
 
 @Module({
     imports: [ 
         TypeOrmModule.forFeature([BrandsEntity])
     ],
-    providers: [BrandService, BrandService],
+    providers: [BrandService, BrandsMapper],
     controllers: [BrandController],
-    exports: [BrandService, BrandService]
+    exports: [BrandService, BrandsMapper]
 })
 export class BrandModule {}
