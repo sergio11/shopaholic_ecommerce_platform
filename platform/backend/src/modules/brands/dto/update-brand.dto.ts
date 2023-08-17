@@ -1,5 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { CreateImageDto } from 'src/modules/images/dto/create-image.dto';
 
 /**
  * Data transfer object for updating a brand.
@@ -29,4 +31,8 @@ export class UpdateBrandDTO {
   */
   @ApiProperty({ description: 'Image file for the Brand', type: 'string', format: 'binary' })
   readonly imageFile?: Express.Multer.File;
+
+  @ApiHideProperty()
+  @Exclude()
+  image?: CreateImageDto;
 }

@@ -65,6 +65,12 @@ export class UserEntity extends AbstractEntity {
     country?: string;
 
     /**
+     * is user account enable or disable
+     */
+    @Column({ name: 'is_enabled', default: true })
+    isEnabled: boolean;
+
+    /**
      * User's preferred language.
      */
     @Column({ length: 50 })

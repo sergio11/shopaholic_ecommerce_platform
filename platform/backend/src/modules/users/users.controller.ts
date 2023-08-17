@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, UseGuards, Put, Param, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Version, ParseFilePipeBuilder, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards, Put, Param, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Version, ParseFilePipeBuilder, HttpStatus, Delete } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/modules/auth/jwt/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -10,6 +10,9 @@ import { JwtRole } from 'src/modules/auth/jwt/jwt-role';
 import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserResponseDto } from './dto/user-response.dto';
 
+/**
+ * Controller for managing user operations.
+ */
 @ApiBearerAuth()
 @ApiTags('users')
 @Controller('users')
@@ -76,5 +79,37 @@ export class UsersController {
         @Body() user: UpdateUserDto
     ) {
         return this.usersService.update(id, user, file);
+    }
+
+    /**
+     * Delete a user by ID.
+     * @param id - The ID of the user to delete.
+     * @returns Success message.
+     */
+    @HasRoles(JwtRole.ADMIN)
+    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Delete(':id')
+    @ApiOperation({ summary: 'Delete user by ID' })
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
+    async delete(@Param('id') id: string) {
+        await this.usersService.delete(id);
+    }
+
+    /**
+     * Search for users by name.
+     * @param name - The name to search for.
+     * @returns List of users matching the name.
+     */
+    @HasRoles(JwtRole.ADMIN)
+    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Get('search/:name')
+    @ApiOperation({ summary: 'Search users by name' })
+    @ApiResponse({
+        status: 200,
+        description: 'List of users matching the name',
+        type: [UserResponseDto],
+    })
+    async searchByName(@Param('name') name: string) {
+        return this.usersService.searchByName(name);
     }
 }

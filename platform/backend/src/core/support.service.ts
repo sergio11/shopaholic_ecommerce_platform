@@ -50,4 +50,8 @@ export abstract class SupportService {
     protected throwForbiddenException(key: string) {
         throw new HttpException(this.resolveString(key), HttpStatus.FORBIDDEN);
     }
+
+    protected throwUnAuthorizedException(key: string) {
+        throw new HttpException(this.resolveString(key), HttpStatus.UNAUTHORIZED);
+    }
 }

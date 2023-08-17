@@ -101,6 +101,17 @@ export class AuthService extends SupportService {
         return this.generateAndSignJwt(userFound);
     }
 
+    async validateUserById(email: string): Promise<UserEntity> {
+        const userFound = await this.usersRepository.findOne({ 
+            where: { email: email },
+            relations: ['roles']
+        })
+        if (!userFound) {
+            this.throwUnAuthorizedException("INVALID_CREDENTIALS");
+        }
+        return userFound;
+      }
+
     /**
      * Generates a JWT token and constructs the AuthResponseDto.
      * @param {UserEntity} user - The user entity.

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BrandsMapper } from './brands.mapper';
@@ -6,16 +6,25 @@ import { BrandResponseDTO } from './dto/brand-response.dto';
 import { BrandsEntity } from './brand.entity';
 import { CreateBrandDTO } from './dto/create-brand.dto';
 import { UpdateBrandDTO } from './dto/update-brand.dto';
+import { SupportService } from 'src/core/support.service';
+import { I18nService } from 'nestjs-i18n';
+import { IStorageService, STORAGE_SERVICE } from '../storage/storage.service';
 
 /**
  * Service responsible for handling brand-related operations.
  */
 @Injectable()
-export class BrandService {
+export class BrandService extends SupportService {
+
   constructor(
     @InjectRepository(BrandsEntity) private brandRepository: Repository<BrandsEntity>,
     private readonly brandMapper: BrandsMapper,
-  ) {}
+    @Inject(STORAGE_SERVICE)
+    storageService: IStorageService,
+    i18n: I18nService
+  ) {
+    super(i18n, storageService);
+  }
 
   /**
    * Retrieves all brands.
@@ -43,6 +52,7 @@ export class BrandService {
    * @returns A BrandResponseDto representing the newly created brand.
    */
   async create(createBrandDto: CreateBrandDTO): Promise<BrandResponseDTO> {
+    createBrandDto.image = await this.saveFileAndGetImageDto(createBrandDto.imageFile);
     const brandEntity = this.brandMapper.mapCreateBrandDtoToEntity(createBrandDto);
     const createdBrand = await this.brandRepository.save(brandEntity);
     return this.brandMapper.mapBrandToResponseDto(createdBrand);
@@ -56,6 +66,7 @@ export class BrandService {
    * @throws NotFoundException if the brand with the provided ID is not found.
    */
   async update(id: string, updateBrandDto: UpdateBrandDTO): Promise<BrandResponseDTO> {
+    updateBrandDto.image = await this.saveFileAndGetImageDto(updateBrandDto.imageFile);
     const brandToUpdate = await this.findBrand(id);
     const updatedBrandEntity = this.brandMapper.mapUpdateBrandDtoToEntity(updateBrandDto, brandToUpdate);
     const updatedBrand = await this.brandRepository.save(updatedBrandEntity);
@@ -75,7 +86,7 @@ export class BrandService {
   private async findBrand(id: string): Promise<BrandsEntity> {
     const brand = await this.brandRepository.findOne({ where: { id: id } });
     if (!brand) {
-      throw new NotFoundException('Brand not found');
+      this.throwNotFoundException("BRAND_NOT_FOUND");
     }
     return brand;
   }

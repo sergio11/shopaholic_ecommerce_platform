@@ -4,7 +4,7 @@ import { HasRoles } from '../auth/jwt/has-roles';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
-import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
@@ -13,6 +13,7 @@ import { API } from 'src/config/config';
 import { ApiBearerAuth, ApiTags, ApiResponse, ApiConsumes } from '@nestjs/swagger';
 import { ProductResponseDto } from './dto/product-response.dto';
 import { fileValidator } from 'src/core/file.validator';
+import { AccountEnabledGuard } from '../auth/account-enabled.guard';
 
 /**
  * Controller handling CRUD operations for products.
@@ -33,7 +34,7 @@ export class ProductsController {
      * @returns An array of ProductResponseDto representing all products.
      */
     @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @UseGuards(JwtAuthGuard, JwtRolesGuard, AccountEnabledGuard)
     @Version('1.0')
     @Get()
     @ApiResponse({ status: 200, description: 'Retrieved all products.', type: ProductResponseDto, isArray: true })
@@ -48,7 +49,7 @@ export class ProductsController {
      * @returns A Pagination object containing paginated products.
      */
     @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @UseGuards(JwtAuthGuard, JwtRolesGuard, AccountEnabledGuard)
     @Version('1.0')
     @Get('pagination')
     @ApiResponse({ status: 200, description: 'Retrieved paginated products.', type: Pagination, isArray: false })
@@ -69,7 +70,7 @@ export class ProductsController {
      * @returns An array of ProductResponseDto representing products in the category.
      */
     @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @UseGuards(JwtAuthGuard, JwtRolesGuard, AccountEnabledGuard)
     @Version('1.0')
     @Get('category/:id_category')
     @ApiResponse({ status: 200, description: 'Retrieved products by category.', type: ProductResponseDto, isArray: true })
@@ -83,7 +84,7 @@ export class ProductsController {
      * @returns An array of ProductResponseDto matching the provided name.
      */
     @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @UseGuards(JwtAuthGuard, JwtRolesGuard, AccountEnabledGuard)
     @Version('1.0')
     @Get('search/:name')
     @ApiResponse({ status: 200, description: 'Retrieved products by name.', type: ProductResponseDto, isArray: true })
@@ -99,7 +100,7 @@ export class ProductsController {
      * @returns The created ProductResponseDto.
      */
     @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @UseGuards(JwtAuthGuard, JwtRolesGuard, AccountEnabledGuard)
     @Post()
     @UseInterceptors(FileFieldsInterceptor([
         { name: 'mainImageFile', maxCount: 1 },
@@ -127,7 +128,7 @@ export class ProductsController {
      * @returns The updated ProductResponseDto.
      */
     @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @UseGuards(JwtAuthGuard, JwtRolesGuard, AccountEnabledGuard)
     @Version('1.0')
     @Post(':id')
     @UseInterceptors(FileFieldsInterceptor([
@@ -152,7 +153,7 @@ export class ProductsController {
      * @param id - The ID of the product to delete.
      */
     @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @UseGuards(JwtAuthGuard, JwtRolesGuard, AccountEnabledGuard)
     @Version('1.0')
     @Delete(':id')
     @ApiResponse({ status: 200, description: 'Product deleted successfully.' })

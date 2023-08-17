@@ -68,6 +68,31 @@ export class UsersService extends SupportService {
     }
 
     /**
+     * Search for users by name (case-insensitive).
+     * @param name The name to search for.
+     * @returns List of users matching the name.
+     */
+    async searchByName(name: string): Promise<UserResponseDto[]> {
+        const users = await this.usersRepository
+            .createQueryBuilder('user')
+            .where('LOWER(user.name) LIKE :name', { name: `%${name.toLowerCase()}%` })
+            .getMany();
+        return this.userMapper.mapUsersToResponseDtos(users);
+    }
+
+    /**
+     * Deletes a user by ID.
+     * @param id ID of the user to be deleted.
+     * @returns The deleted user entity.
+     * @throws NotFoundException if user is not found.
+     */
+    async delete(id: string): Promise<UserEntity> {
+        const userToDelete = await this.findUser(id);
+        await this.usersRepository.remove(userToDelete);
+        return userToDelete;
+    }
+
+    /**
      * Finds a user by their ID.
      * @param id ID of the user to be found.
      * @returns The found user entity.

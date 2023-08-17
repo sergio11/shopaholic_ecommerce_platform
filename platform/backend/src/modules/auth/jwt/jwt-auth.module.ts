@@ -1,13 +1,11 @@
-import { Global, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { JwtModule, JwtService } from "@nestjs/jwt";
 import { jwtConstants } from "./jwt.constants";
 import { JwtStrategy } from "./jwt.strategy";
 import { JwtAuthGuard } from "./jwt-auth.guard";
 import { JwtRolesGuard } from "./jwt-roles.guard";
-import { HasRoles } from "./has-roles";
 
 
-@Global()
 @Module({
   imports: [ 
     JwtModule.register({
