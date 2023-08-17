@@ -4,6 +4,7 @@ import { RoleEntity } from 'src/modules/roles/role.entity';
 import { AbstractEntity } from 'src/core/abstract.entity';
 import { ImageEntity } from '../images/image.entity';
 import { AddressEntity } from '../address/address.entity';
+import { GenderEnum } from './gender.enum';
 
 @Entity({ name: 'users' })
 export class UserEntity extends AbstractEntity {
@@ -52,16 +53,40 @@ export class UserEntity extends AbstractEntity {
     notificationToken: string;
 
     /**
+     * User's city.
+     */
+    @Column({ nullable: true, length: 100 })
+	city?: string
+
+    /**
      * User's country.
      */
-    @Column({ length: 50 })
-    country: string;
+    @Column({ nullable: true, length: 100 })
+    country?: string;
 
     /**
      * User's preferred language.
      */
-    @Column({ length: 10 })
-    language: string;
+    @Column({ length: 50 })
+    language?: string;
+
+    /**
+     * User's birthDate
+     */
+    @Column({ name: 'birth_date', nullable: true })
+	birthDate?: Date
+
+    /**
+     * User's Phone number
+     */
+    @Column({ nullable: true, unique: true })
+	phoneNumber?: string
+
+    /**
+     * User's Gender
+     */
+    @Column({ type: "enum", enum: GenderEnum, nullable: true })
+	gender?: GenderEnum
 
     /**
      * Addresses associated with this user.

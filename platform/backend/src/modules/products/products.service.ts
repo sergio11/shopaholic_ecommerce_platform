@@ -12,6 +12,7 @@ import { ProductResponseDto } from './dto/product-response.dto';
 import { CacheService } from '../cache/cache.service';
 import { ProductMapper } from './product.mapper';
 import { CategoryEntity } from '../categories/category.entity';
+import { BrandsEntity } from '../brands/brand.entity';
 
 @Injectable()
 export class ProductsService extends SupportService {
@@ -21,6 +22,7 @@ export class ProductsService extends SupportService {
     constructor(
         @InjectRepository(ProductEntity) private productsRepository: Repository<ProductEntity>,
         @InjectRepository(CategoryEntity) private categoriesRepository: Repository<CategoryEntity>,
+        @InjectRepository(BrandsEntity) private brandsRepository: Repository<BrandsEntity>,
         @Inject(STORAGE_SERVICE)
         storageService: IStorageService,
         private readonly mapper: ProductMapper,
@@ -76,25 +78,17 @@ export class ProductsService extends SupportService {
     
     /**
      * Create a new product.
-     * @param {Array<Express.Multer.File>} files - Array of image files.
-     * @param {CreateProductDto} product - Product data.
+     * @param {CreateProductDto} createProductDto - Product data.
      * @returns {Promise<ProductResponseDto>} - Created product response DTO.
      */
-    async create(files: Array<Express.Multer.File>, product: CreateProductDto): Promise<ProductResponseDto> {
-        if (files.length === 0) {
-            this.throwBadRequestException('NO_IMAGES_PROVIDED');
-        }
-        const categoryFound = await this.findCategory(product.idCategory);
-        await this.asyncForEach(files, async (file: Express.Multer.File, index: number) => {
-          const response = await this.saveFileAndGetImageDto(file);
-          if (index === 0) {
-            product.mainImage = response;
-          } else if (index === 1) {
-            product.secondaryImage = response;
-          }
-        });
-        const newProduct = this.mapper.mapCreateProductDtoToEntity(product);
+    async create(createProductDto: CreateProductDto): Promise<ProductResponseDto> {
+        const categoryFound = await this.findCategory(createProductDto.idCategory);
+        const brandFound = await this.findBrand(createProductDto.idBrand);
+        createProductDto.mainImage = await this.saveFileAndGetImageDto(createProductDto.mainImageFile);
+        createProductDto.secondaryImage = await this.saveFileAndGetImageDto(createProductDto.secondaryImageFile);
+        const newProduct = this.mapper.mapCreateProductDtoToEntity(createProductDto);
         newProduct.category = categoryFound;
+        newProduct.brand = brandFound;
         const savedProduct = await this.productsRepository.save(newProduct);
         return this.mapper.mapProductToResponseDto(savedProduct);
     }
@@ -102,25 +96,18 @@ export class ProductsService extends SupportService {
     /**
      * Update a product.
      * @param {string} id - Product ID.
-     * @param {UpdateProductDto} product - Updated product data.
-     * @param {Array<Express.Multer.File>} files - Array of image files.
+     * @param {UpdateProductDto} updateProductDto - Updated product data.
      * @returns {Promise<ProductResponseDto>} - Updated product response DTO.
      */
-    async update(id: string, product: UpdateProductDto, files: Array<Express.Multer.File>): Promise<ProductResponseDto> {
+    async update(id: string, updateProductDto: UpdateProductDto): Promise<ProductResponseDto> {
       const productFound = await this.findProduct(id);
-      const categoryFound = await this.findCategory(product.idCategory);
-      await this.asyncForEach(files, async (file: Express.Multer.File, index: number) => {
-        const response = await this.saveFileAndGetImageDto(file);
-        if(response) {
-          if (index === 0) {
-            product.mainImage = response;
-          } else if (index === 1) {
-            product.secondaryImage = response;
-          }
-        }
-      });
-      const productToUpdate = this.mapper.mapUpdateProductDtoToEntity(product, productFound);
+      const categoryFound = await this.findCategory(updateProductDto.idCategory);
+      const brandFound = await this.findBrand(updateProductDto.idBrand);
+      updateProductDto.mainImage = await this.saveFileAndGetImageDto(updateProductDto.mainImageFile);
+      updateProductDto.secondaryImage = await this.saveFileAndGetImageDto(updateProductDto.secondaryImageFile);
+      const productToUpdate = this.mapper.mapUpdateProductDtoToEntity(updateProductDto, productFound);
       productToUpdate.category = categoryFound;
+      productToUpdate.brand = brandFound;
       const productUpdated = await this.productsRepository.save(productToUpdate);
       return this.mapper.mapProductToResponseDto(productUpdated);
     }
@@ -149,5 +136,13 @@ export class ProductsService extends SupportService {
         this.throwNotFoundException('CATEGORY_NOT_FOUND');
       }
       return categoryFound;
+    }
+
+    private async findBrand(id: string): Promise<BrandsEntity> {
+      const brandFound = await this.brandsRepository.findOne({ where: { id }})
+      if (!brandFound) {
+        this.throwNotFoundException('BRAND_NOT_FOUND');
+      }
+      return brandFound;
     }
 }

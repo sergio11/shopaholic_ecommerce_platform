@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AddressEntity } from 'src/modules/address/address.entity';
+import { BrandsEntity } from 'src/modules/brands/brand.entity';
 import { CategoryEntity } from 'src/modules/categories/category.entity';
 import { ImageEntity } from 'src/modules/images/image.entity';
 import { OrderEntity } from 'src/modules/orders/order.entity';
@@ -43,7 +44,8 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
         ProductEntity,
         RoleEntity,
         UserEntity,
-        ImageEntity
+        ImageEntity,
+        BrandsEntity
       ],
       synchronize: true
     };

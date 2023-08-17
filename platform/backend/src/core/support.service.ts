@@ -10,9 +10,10 @@ export abstract class SupportService {
         private readonly storageService: IStorageService
     ) {}
 
-    protected async saveFileAndGetImageDto(file: Express.Multer.File): Promise<CreateImageDto> {
+    protected async saveFileAndGetImageDto(file?: Express.Multer.File): Promise<CreateImageDto> {
         if (file) {
-            const response = await this.storageService.saveFile(file.buffer, file.mimetype);
+            console.log("saveFileAndGetImageDto : ", file);
+            const response = await this.storageService.saveFile(file.buffer, file.mimetype, file.size);
             if (!response) {
                 this.throwInternalServerError("IMAGE_ERROR");
             }
@@ -49,15 +50,4 @@ export abstract class SupportService {
     protected throwForbiddenException(key: string) {
         throw new HttpException(this.resolveString(key), HttpStatus.FORBIDDEN);
     }
-
-    protected async asyncForEach<T>(
-        array: T[],
-        callback: (item: T, index: number, array: T[]) => Promise<void>
-      ): Promise<void> {
-        for (let index = 0; index < array.length; index++) {
-          await callback(array[index], index, array);
-        }
-      }
-    
-
 }

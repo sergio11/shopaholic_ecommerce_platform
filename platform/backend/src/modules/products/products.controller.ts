@@ -111,11 +111,11 @@ export class ProductsController {
     @Version('1.0')
     @ApiResponse({ status: 201, description: 'Product created successfully.', type: ProductResponseDto })
     async create(
-        @UploadedFiles() files: { mainImageFile: Express.Multer.File, secondaryImageFile: Express.Multer.File },
-        @Body() product: CreateProductDto
+        @UploadedFiles() files: { mainImageFile: Express.Multer.File, secondaryImageFile: Express.Multer.File }, 
+        @Body() productData: CreateProductDto
     ): Promise<ProductResponseDto> {
-        console.log(files);
-        return this.productsService.create([files.mainImageFile, files.secondaryImageFile], product);
+        const product = { ...productData, mainImageFile: files.mainImageFile, secondaryImageFile: files.secondaryImageFile };
+        return this.productsService.create(product);
     }
 
     /**
@@ -141,9 +141,10 @@ export class ProductsController {
     async update(
         @UploadedFiles() files: { mainImageFile?: Express.Multer.File, secondaryImageFile?: Express.Multer.File },
         @Param('id') id: string,
-        @Body() product: UpdateProductDto
+        @Body() productData: UpdateProductDto
     ): Promise<ProductResponseDto> {
-        return this.productsService.update(id, product, [files.mainImageFile, files.secondaryImageFile]);
+        const product = { ...productData, mainImageFile: files.mainImageFile, secondaryImageFile: files.secondaryImageFile };
+        return this.productsService.update(id, product);
     }
 
     /**

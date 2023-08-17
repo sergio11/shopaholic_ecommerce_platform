@@ -15,7 +15,7 @@ export class ProductMapper {
     ) {}
 
   mapProductToResponseDto(product: ProductEntity): ProductResponseDto {
-    const productDto = plainToClass(ProductResponseDto, product, { excludeExtraneousValues: true });
+    const productDto = plainToClass(ProductResponseDto, product, { excludeExtraneousValues: true, exposeUnsetFields: false });
     if (product.category) {
       productDto.category = this.categoryMapper.mapCategoryToResponseDto(product.category);
     }

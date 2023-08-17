@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class MinioStorageService implements IStorageService {
   private readonly minioClient: Minio.Client;
   private readonly bucketName: string;
+  private readonly regionName: string;
 
   constructor(
     @Inject(ConfigService)
@@ -21,6 +22,7 @@ export class MinioStorageService implements IStorageService {
     const minioAccessKey = this.configService.get<string>('MINIO_SERVER_ACCESS_KEY');
     const minioSecretKey = this.configService.get<string>('MINIO_SERVER_SECRET_KEY');
     this.bucketName = this.configService.get<string>('MINIO_SERVER_BUCKET_NAME');
+    this.regionName = this.configService.get<string>('MINIO_SERVER_REGION_NAME');
 
 
     this.minioClient = new Minio.Client({
@@ -36,7 +38,7 @@ export class MinioStorageService implements IStorageService {
     });
   }
 
-  public async updateFile(id: string, newFile: Buffer, contentType: string): Promise<{ id: string; url: string }> {
+  public async updateFile(id: string, newFile: Buffer, contentType: string, length: number): Promise<{ id: string; url: string }> {
     const existingObject = await this.getObjectInfo(id);
 
     if (!existingObject) {
@@ -45,7 +47,7 @@ export class MinioStorageService implements IStorageService {
 
     try {
       await this.minioClient.removeObject(this.bucketName, id);
-      const result = await this.saveFile(newFile, contentType);
+      const result = await this.saveFile(newFile, contentType, length);
       return result;
     } catch (error) {
       console.error('Error updating file in MinIO:', error);
@@ -53,7 +55,7 @@ export class MinioStorageService implements IStorageService {
     }
   }
 
-  public async saveFile(file: Buffer, contentType: string): Promise<{ id: string; url: string }> {
+  public async saveFile(file: Buffer, contentType: string, length: number): Promise<{ id: string; url: string }> {
     const id = uuidv4();
     const fileName = `${id}`; // Use the generated UUID as the filename
     const readableStream = new Readable();
@@ -65,7 +67,7 @@ export class MinioStorageService implements IStorageService {
     };
 
     try {
-      await this.minioClient.putObject(this.bucketName, fileName, readableStream, file.length, uploadOptions);
+      await this.minioClient.putObject(this.bucketName, fileName, readableStream, length, uploadOptions);
       const url = await this.minioClient.presignedGetObject(this.bucketName, fileName);
       return { id, url };
     } catch (error) {
@@ -126,7 +128,7 @@ export class MinioStorageService implements IStorageService {
           reject(err);
         } else {
           if (!exists) {
-            this.minioClient.makeBucket(this.bucketName, 'us-east-1', (err) => {
+            this.minioClient.makeBucket(this.bucketName, this.regionName, (err) => {
               if (err) {
                 reject(err);
               } else {
