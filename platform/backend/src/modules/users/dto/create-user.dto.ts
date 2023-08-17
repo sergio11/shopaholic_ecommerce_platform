@@ -1,7 +1,8 @@
-import { IsNotEmpty, IsEmail, IsString, MinLength, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsEmail, IsString, MinLength, IsOptional, IsEnum } from 'class-validator';
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { CreateImageDto } from 'src/modules/images/dto/create-image.dto';
 import { Exclude } from 'class-transformer';
+import { GenderEnum } from '../gender.enum';
 
 export class CreateUserDto {
     /**
@@ -44,7 +45,7 @@ export class CreateUserDto {
         description: "The phone number of the user.",
         example: "1234567890"
     })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     phone: string;
 
@@ -73,26 +74,64 @@ export class CreateUserDto {
     notificationToken?: string;
 
     /**
+     * The birth date of the user
+     */
+    @ApiProperty({
+        description: "The birth date of the user.",
+        example: "1990-01-01",
+        required: false
+    })
+    @IsOptional()
+    @IsString()
+    birthDate?: string;
+
+    /**
+     * The gender of the user.
+     */
+    @ApiProperty({
+        description: "The gender of the user.",
+        enum: GenderEnum,
+        required: false
+    })
+    @IsOptional()
+    @IsEnum(GenderEnum, { message: 'Invalid gender' })
+    gender?: GenderEnum;
+
+    /**
+     * The city where the user is located.
+     */
+    @ApiProperty({
+        description: "The city where the user is located.",
+        example: "New York",
+        required: false
+    })
+    @IsOptional()
+    @IsString()
+    city?: string;
+
+    /**
      * The country where the user is located.
      */
     @ApiProperty({
         description: "The country where the user is located.",
-        example: "United States"
+        example: "United States",
+        required: false
     })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
-    country: string;
+    country?: string;
 
     /**
      * The preferred language of the user.
      */
     @ApiProperty({
         description: "The preferred language of the user.",
-        example: "en"
+        example: "en",
+        required: false
     })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
-    language: string;
+    language?: string;
 
     /**
      * The image file associated with the user.

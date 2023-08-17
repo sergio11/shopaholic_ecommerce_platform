@@ -12,7 +12,7 @@ export class UpdateBrandDTO {
   @ApiProperty({ description: 'Brand name', example: 'Updated Brand Name' })
   @IsNotEmpty({ message: 'Name is required' })
   @IsString({ message: 'Name must be a string' })
-  name: string;
+  readonly name: string;
 
   /**
    * Brand slug
@@ -21,14 +21,12 @@ export class UpdateBrandDTO {
   @ApiProperty({ description: 'Brand slug', example: 'updated-brand-slug' })
   @IsNotEmpty({ message: 'Slug is required' })
   @IsString({ message: 'Slug must be a string' })
-  slug: string;
+  readonly slug: string;
 
   /**
-   * Brand image URL
-   * @example https://example.com/updated-brand.jpg
-   */
-  @ApiProperty({ description: 'Brand image URL', example: 'https://example.com/updated-brand.jpg' })
-  @IsNotEmpty({ message: 'Image is required' })
-  @IsString({ message: 'Image must be a string' })
-  image: string;
+    * Image file for the brand
+    * @format binary
+  */
+  @ApiProperty({ description: 'Image file for the Brand', type: 'string', format: 'binary' })
+  readonly imageFile?: Express.Multer.File;
 }

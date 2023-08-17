@@ -30,8 +30,8 @@ export class UserEntity extends AbstractEntity {
     /**
      * User's phone number (unique).
      */
-    @Column({ unique: true })
-    phone: string;
+    @Column({ nullable: true, unique: true })
+    phone?: string;
 
     /**
      * User's profile image.
@@ -75,12 +75,6 @@ export class UserEntity extends AbstractEntity {
      */
     @Column({ name: 'birth_date', nullable: true })
 	birthDate?: Date
-
-    /**
-     * User's Phone number
-     */
-    @Column({ nullable: true, unique: true })
-	phoneNumber?: string
 
     /**
      * User's Gender

@@ -1,6 +1,7 @@
 import { AbstractEntity } from 'src/core/abstract.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { ProductEntity } from '../products/product.entity';
+import { ImageEntity } from '../images/image.entity';
 
 /**
  * Entity representing a brand.
@@ -21,12 +22,12 @@ export class BrandsEntity extends AbstractEntity {
     @Column({ nullable: false, unique: true })
     slug: string;
 
-    /**
-     * The image URL for the brand.
-     * @example http://example.com/brand-image.jpg
+     /**
+     * The associated image for the category.
      */
-    @Column({ nullable: true })
-    image: string;
+     @OneToOne(() => ImageEntity)
+     @JoinColumn({ name: 'image_id' })
+     image: ImageEntity;
 
     /**
      * Products associated with this brand.

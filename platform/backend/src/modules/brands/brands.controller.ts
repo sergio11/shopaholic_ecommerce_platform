@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, ParseUUIDPipe, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, ParseUUIDPipe, HttpStatus, UseGuards, Version, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiResponse, ApiConsumes, ApiOkResponse } from '@nestjs/swagger';
 import { BrandService } from './brands.service';
 import { JwtRole } from '../auth/jwt/jwt-role';
@@ -6,6 +6,10 @@ import { HasRoles } from '../auth/jwt/has-roles';
 import { BrandResponseDTO } from './dto/brand-response.dto';
 import { CreateBrandDTO } from './dto/create-brand.dto';
 import { UpdateBrandDTO } from './dto/update-brand.dto';
+import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
+import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { fileValidator } from 'src/core/file.validator';
 
 /**
  * Controller responsible for managing brands.
@@ -21,6 +25,8 @@ export class BrandController {
    * @returns An array of BrandResponseDto representing the brands.
    */
   @HasRoles(JwtRole.ADMIN)
+  @UseGuards(JwtAuthGuard, JwtRolesGuard)
+  @Version('1.0')
   @Get()
   @ApiOkResponse({ description: 'Retrieved all brands.', type: BrandResponseDTO, isArray: true })
   async findAll(): Promise<BrandResponseDTO[]> {
@@ -32,6 +38,9 @@ export class BrandController {
    * @param id - The ID of the brand.
    * @returns A BrandResponseDto representing the brand.
    */
+  @HasRoles(JwtRole.CLIENT, JwtRole.ADMIN)
+  @UseGuards(JwtAuthGuard, JwtRolesGuard)
+  @Version('1.0')
   @Get(':id')
   @ApiResponse({ status: HttpStatus.OK, description: 'Retrieved a brand by ID.', type: BrandResponseDTO })
   async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<BrandResponseDTO> {
@@ -44,11 +53,20 @@ export class BrandController {
    * @returns A BrandResponseDto representing the created brand.
    */
   @HasRoles(JwtRole.ADMIN)
+  @UseGuards(JwtAuthGuard, JwtRolesGuard)
+  @Version('1.0')
   @Post()
-  @ApiConsumes('application/json')
+  @UseInterceptors(FileInterceptor('imageFile', {
+    fileFilter: fileValidator(['.jpg', '.jpeg', '.png'], 1024 * 1024 * 10, true)
+  }))
+  @ApiConsumes('multipart/form-data')
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Brand created successfully.', type: BrandResponseDTO })
-  async create(@Body() createBrandDto: CreateBrandDTO): Promise<BrandResponseDTO> {
-    return this.brandService.create(createBrandDto);
+  async create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() createBrandDto: CreateBrandDTO
+  ): Promise<BrandResponseDTO> {
+    const brand = { ...createBrandDto, imageFile: file};
+    return this.brandService.create(brand);
   }
 
   /**
@@ -58,11 +76,21 @@ export class BrandController {
    * @returns A BrandResponseDto representing the updated brand.
    */
   @HasRoles(JwtRole.ADMIN)
-  @Put(':id')
-  @ApiConsumes('application/json')
+  @UseGuards(JwtAuthGuard, JwtRolesGuard)
+  @Version('1.0')
+  @Post(':id')
+  @UseInterceptors(FileInterceptor('imageFile', {
+    fileFilter: fileValidator(['.jpg', '.jpeg', '.png'], 1024 * 1024 * 10, false)
+  }))
+  @ApiConsumes('multipart/form-data')
   @ApiResponse({ status: HttpStatus.OK, description: 'Brand updated successfully.', type: BrandResponseDTO })
-  async update(@Param('id', ParseUUIDPipe) id: string, @Body() updateBrandDto: UpdateBrandDTO): Promise<BrandResponseDTO> {
-    return this.brandService.update(id, updateBrandDto);
+  async update(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateBrandDto: UpdateBrandDTO
+  ): Promise<BrandResponseDTO> {
+    const brand = { ...updateBrandDto, imageFile: file};
+    return this.brandService.update(id, brand);
   }
 
   /**
@@ -70,6 +98,8 @@ export class BrandController {
    * @param id - The ID of the brand to delete.
    */
   @HasRoles(JwtRole.ADMIN)
+  @UseGuards(JwtAuthGuard, JwtRolesGuard)
+  @Version('1.0')
   @Delete(':id')
   @ApiResponse({ status: HttpStatus.OK, description: 'Brand deleted successfully.' })
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {

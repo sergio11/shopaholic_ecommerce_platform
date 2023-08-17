@@ -24,11 +24,9 @@ export class CreateBrandDTO {
   slug: string;
 
   /**
-   * Brand image URL
-   * @example https://example.com/brand.jpg
-   */
-  @ApiProperty({ description: 'Brand image URL', example: 'https://example.com/brand.jpg' })
-  @IsNotEmpty({ message: 'Image is required' })
-  @IsString({ message: 'Image must be a string' })
-  image: string;
+    * Image file for the brand
+    * @format binary
+  */
+  @ApiProperty({ description: 'Image file for the Brand', type: 'string', format: 'binary' })
+  readonly imageFile: Express.Multer.File;
 }

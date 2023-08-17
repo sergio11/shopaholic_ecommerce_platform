@@ -3,7 +3,11 @@ import { Expose } from 'class-transformer';
 import { AbstractDto } from 'src/core/abstract.dto';
 import { ImageResponseDto } from 'src/modules/images/dto/image-response.dto';
 import { RoleResponseDto } from 'src/modules/roles/dto/role-response.dto';
+import { GenderEnum } from '../gender.enum';
 
+/**
+ * Data transfer object for user response.
+ */
 export class UserResponseDto extends AbstractDto {
 
     /**
@@ -73,4 +77,28 @@ export class UserResponseDto extends AbstractDto {
     @ApiProperty({ description: 'User preferred language', example: 'en' })
     @Expose()
     language: string;
+
+    /**
+     * User city
+     * @example New York
+     */
+    @ApiProperty({ description: 'User city', example: 'New York' })
+    @Expose()
+    city?: string;
+
+    /**
+     * User birth date
+     * @example 1990-01-01
+     */
+    @ApiProperty({ description: 'User birth date', example: '1990-01-01' })
+    @Expose()
+    birthDate?: string;
+
+    /**
+     * User gender
+     * @enum {GenderEnum}
+     */
+    @ApiProperty({ description: 'User gender', enum: GenderEnum })
+    @Expose()
+    gender?: GenderEnum;
 }

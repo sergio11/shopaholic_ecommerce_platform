@@ -2,7 +2,11 @@ import { IsString, IsOptional } from 'class-validator';
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { CreateImageDto } from 'src/modules/images/dto/create-image.dto';
+import { GenderEnum } from '../gender.enum';
 
+/**
+ * Data transfer object for updating a user.
+ */
 export class UpdateUserDto {
     /**
      * The updated first name of the user.
@@ -74,15 +78,52 @@ export class UpdateUserDto {
     language?: string;
 
     /**
-     * The image file associated with the role.
+     * The updated image file associated with the user.
      */
-    @ApiProperty({  description: `The image file associated with the role`, type: 'string', format: 'binary' })
+    @ApiProperty({ description: `The updated image file associated with the user`, type: 'string', format: 'binary' })
     imageFile?: Express.Multer.File;
-    
+
     /**
      * Hidden property for internal use.
      */
     @ApiHideProperty()
     @Exclude()
     image?: CreateImageDto;
+
+    /**
+     * The updated city of the user.
+     */
+    @ApiProperty({
+        description: "The updated city of the user.",
+        example: "New York",
+        required: false
+    })
+    @IsOptional()
+    @IsString()
+    city?: string;
+
+    /**
+     * The updated birth date of the user.
+     */
+    @ApiProperty({
+        description: "The updated birth date of the user.",
+        example: "1990-01-01",
+        required: false
+    })
+    @IsOptional()
+    @IsString()
+    birthDate?: string;
+
+    /**
+     * The updated gender of the user.
+     * @enum {GenderEnum}
+     */
+    @ApiProperty({
+        description: "The updated gender of the user.",
+        enum: GenderEnum,
+        required: false
+    })
+    @IsOptional()
+    @IsString()
+    gender?: GenderEnum;
 }
