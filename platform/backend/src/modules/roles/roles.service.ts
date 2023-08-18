@@ -25,13 +25,12 @@ export class RolesService extends SupportService {
 
     /**
      * Creates a new role with the given information and image file.
-     * @param file - The image file associated with the role.
      * @param role - The data to create the new role.
      * @returns The newly created role.
      */
-    async create(file: Express.Multer.File, role: CreateRoleDto): Promise<RoleResponseDto> {
-        role.image = await this.saveFileAndGetImageDto(file);
-        const newRole = this.mapper.mapCreateRoleDtoToEntity(role);
+    async create(createRoleDto: CreateRoleDto): Promise<RoleResponseDto> {
+        createRoleDto.image = await this.saveFileAndGetImageDto(createRoleDto.imageFile);
+        const newRole = this.mapper.mapCreateRoleDtoToEntity(createRoleDto);
         const savedRole = await this.rolesRepository.save(newRole);
         return this.mapper.mapRoleToResponseDto(savedRole);
     }
@@ -49,12 +48,12 @@ export class RolesService extends SupportService {
      * Updates an existing role with the given information and image file.
      * @param id - The ID of the role to update.
      * @param role - The updated data for the role.
-     * @param file - The new image file associated with the role.
      * @returns The updated role.
      */
-    async update(id: string, role: UpdateRoleDto, file: Express.Multer.File): Promise<RoleResponseDto> {
+    async update(id: string, updateRoleDto: UpdateRoleDto): Promise<RoleResponseDto> {
         const roleToUpdate = await this.findRole(id);
-        const updatedRole = this.mapper.mapUpdateRoleDtoToEntity(role, roleToUpdate);
+        updateRoleDto.image = await this.saveFileAndGetImageDto(updateRoleDto.imageFile);
+        const updatedRole = this.mapper.mapUpdateRoleDtoToEntity(updateRoleDto, roleToUpdate);
         const savedRole = await this.rolesRepository.save(updatedRole);
         return this.mapper.mapRoleToResponseDto(savedRole);
     }

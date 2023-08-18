@@ -52,13 +52,12 @@ export class CategoriesService extends SupportService {
 
     /**
      * Create a new category.
-     * @param file The image file for the category.
-     * @param category The data for creating the category.
+     * @param createCategoryDto The data for creating the category.
      * @returns The created category response DTO.
      */
-    async create(file: Express.Multer.File, category: CreateCategoryDTO): Promise<CategoryResponseDto> {
-        category.image = await this.saveFileAndGetImageDto(file);
-        const newCategory = this.categoriesRepository.create(category);
+    async create(createCategoryDto: CreateCategoryDTO): Promise<CategoryResponseDto> {
+        createCategoryDto.image = await this.saveFileAndGetImageDto(createCategoryDto.imageFile);
+        const newCategory = this.categoriesRepository.create(createCategoryDto);
         const savedCategory = await this.categoriesRepository.save(newCategory);
         await this.invalidateCache();
         return this.categoryMapper.mapCategoryToResponseDto(savedCategory);

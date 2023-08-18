@@ -8,8 +8,7 @@ import { CreateBrandDTO } from './dto/create-brand.dto';
 import { UpdateBrandDTO } from './dto/update-brand.dto';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { fileValidator } from 'src/core/file.validator';
+import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
 
 /**
  * Controller responsible for managing brands.
@@ -56,9 +55,7 @@ export class BrandController {
   @UseGuards(JwtAuthGuard, JwtRolesGuard)
   @Version('1.0')
   @Post()
-  @UseInterceptors(FileInterceptor('imageFile', {
-    fileFilter: fileValidator(['.jpg', '.jpeg', '.png'], 1024 * 1024 * 10, true)
-  }))
+  @DefaultUploadFileValidationDecorator()
   @ApiConsumes('multipart/form-data')
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Brand created successfully.', type: BrandResponseDTO })
   async create(
@@ -79,9 +76,7 @@ export class BrandController {
   @UseGuards(JwtAuthGuard, JwtRolesGuard)
   @Version('1.0')
   @Post(':id')
-  @UseInterceptors(FileInterceptor('imageFile', {
-    fileFilter: fileValidator(['.jpg', '.jpeg', '.png'], 1024 * 1024 * 10, false)
-  }))
+  @DefaultUploadFileValidationDecorator({ isOptional: true })
   @ApiConsumes('multipart/form-data')
   @ApiResponse({ status: HttpStatus.OK, description: 'Brand updated successfully.', type: BrandResponseDTO })
   async update(

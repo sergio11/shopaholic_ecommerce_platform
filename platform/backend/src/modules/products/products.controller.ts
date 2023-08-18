@@ -1,10 +1,9 @@
-import { Controller, UseGuards, Get, Param, Post, Body, Delete, Query, DefaultValuePipe, ParseIntPipe, UploadedFiles, Version, HttpStatus, UseInterceptors, ParseFilePipeBuilder, ParseFilePipe } from '@nestjs/common';
+import { Controller, UseGuards, Get, Param, Post, Body, Delete, Query, DefaultValuePipe, ParseIntPipe, UploadedFiles, Version } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { HasRoles } from '../auth/jwt/has-roles';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
-import { FileFieldsInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
@@ -12,8 +11,8 @@ import { ProductEntity } from './product.entity';
 import { API } from 'src/config/config';
 import { ApiBearerAuth, ApiTags, ApiResponse, ApiConsumes } from '@nestjs/swagger';
 import { ProductResponseDto } from './dto/product-response.dto';
-import { fileValidator } from 'src/core/file.validator';
 import { AccountEnabledGuard } from '../auth/account-enabled.guard';
+import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
 
 /**
  * Controller handling CRUD operations for products.
@@ -52,7 +51,12 @@ export class ProductsController {
     @UseGuards(JwtAuthGuard, JwtRolesGuard, AccountEnabledGuard)
     @Version('1.0')
     @Get('pagination')
-    @ApiResponse({ status: 200, description: 'Retrieved paginated products.', type: Pagination, isArray: false })
+    @ApiResponse({ 
+        status: 200, 
+        description: 'Retrieved paginated products.', 
+        type: Pagination,
+        isArray: false
+    })
     async pagination(
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
         @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number = 5,
@@ -102,12 +106,11 @@ export class ProductsController {
     @HasRoles(JwtRole.ADMIN)
     @UseGuards(JwtAuthGuard, JwtRolesGuard, AccountEnabledGuard)
     @Post()
-    @UseInterceptors(FileFieldsInterceptor([
+    @DefaultUploadFileValidationDecorator({ uploadFields: [
         { name: 'mainImageFile', maxCount: 1 },
         { name: 'secondaryImageFile', maxCount: 1 },
-      ],{
-        fileFilter: fileValidator(['.jpg', '.jpeg', '.png'], 1024 * 1024 * 10, false)
-      }))
+      ]
+    })
     @ApiConsumes('multipart/form-data')
     @Version('1.0')
     @ApiResponse({ status: 201, description: 'Product created successfully.', type: ProductResponseDto })
@@ -131,12 +134,12 @@ export class ProductsController {
     @UseGuards(JwtAuthGuard, JwtRolesGuard, AccountEnabledGuard)
     @Version('1.0')
     @Post(':id')
-    @UseInterceptors(FileFieldsInterceptor([
+    @DefaultUploadFileValidationDecorator({ uploadFields: [
         { name: 'mainImageFile', maxCount: 1 },
         { name: 'secondaryImageFile', maxCount: 1 },
-      ],{
-        fileFilter: fileValidator(['.jpg', '.jpeg', '.png'], 1024 * 1024 * 10, true)
-      }))
+      ],
+      isOptional: true
+    })
     @ApiConsumes('multipart/form-data')
     @ApiResponse({ status: 200, description: 'Product updated successfully.', type: ProductResponseDto })
     async update(

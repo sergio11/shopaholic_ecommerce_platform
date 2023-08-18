@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, HttpStatus, Param, ParseFilePipe, ParseFilePipeBuilder, Post, Put, UploadedFile, UseGuards, UseInterceptors, Version } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post, UploadedFile, UseGuards, UseInterceptors, Version } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
@@ -9,25 +9,12 @@ import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
 import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RoleResponseDto } from './dto/role-response.dto';
+import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
 
 @ApiBearerAuth()
 @ApiTags('roles')
 @Controller('roles')
 export class RolesController {
-
-    private static parseFilePipeBuilder(fileIsRequired: boolean): ParseFilePipe {
-        return new ParseFilePipeBuilder()
-            .addFileTypeValidator({
-                fileType: '.(png|jpeg|jpg)',
-            })
-            .addMaxSizeValidator({
-                maxSize: 1024 * 1024 * 10,
-            })
-            .build({
-                fileIsRequired,
-                errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-            });
-    }
 
     constructor(private rolesService: RolesService) {}
 
@@ -41,15 +28,16 @@ export class RolesController {
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
     @Post()
-    @UseInterceptors(FileInterceptor('imageFile'))
+    @DefaultUploadFileValidationDecorator()
     @ApiConsumes('multipart/form-data')
     @ApiOperation({ summary: 'Create new role' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
     async create(
-        @UploadedFile(RolesController.parseFilePipeBuilder(true)) file: Express.Multer.File,
-        @Body() role: CreateRoleDto
+        @UploadedFile() file: Express.Multer.File,
+        @Body() roleData: CreateRoleDto
     ): Promise<RoleResponseDto> {
-        return this.rolesService.create(file, role);
+        const role = { ...roleData, imageFile: file};
+        return this.rolesService.create(role);
     }
 
     /**
@@ -63,16 +51,18 @@ export class RolesController {
     @UseGuards(JwtAuthGuard, JwtRolesGuard)
     @Version('1.0')
     @Post(':id')
+    @DefaultUploadFileValidationDecorator({ isOptional: true })
     @ApiConsumes('multipart/form-data')
     @ApiOperation({ summary: 'Update role by ID' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
     @UseInterceptors(FileInterceptor('imageFile'))
     async update(
-        @UploadedFile(RolesController.parseFilePipeBuilder(false)) file: Express.Multer.File,
+        @UploadedFile() file: Express.Multer.File,
         @Param('id') id: string, 
-        @Body() role: UpdateRoleDto
+        @Body() roleData: UpdateRoleDto
     ): Promise<RoleResponseDto> {
-        return this.rolesService.update(id, role, file);
+        const role = { ...roleData, imageFile: file};
+        return this.rolesService.update(id, role);
     }
 
     /**

@@ -34,14 +34,14 @@ export class UsersService extends SupportService {
     
     /**
      * Creates a new user with provided data and image.
-     * @param user User data to be created.
-     * @param file Image file for the user.
-     * @returns The created user entity.
+     * @param createUserDto User data to be created.
+     * @returns The created user.
      */
-    async create(user: CreateUserDto, file: Express.Multer.File): Promise<UserEntity> {
-        user.image = await this.saveFileAndGetImageDto(file);
-        const newUser = this.userMapper.mapCreateUserDtoToEntity(user);
-        return this.usersRepository.save(newUser);
+    async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
+        createUserDto.image = await this.saveFileAndGetImageDto(createUserDto.imageFile);
+        const newUser = this.userMapper.mapCreateUserDtoToEntity(createUserDto);
+        const userCreated = await this.usersRepository.save(newUser);
+        return this.userMapper.mapUserToResponseDto(userCreated);
     }
 
     /**
@@ -56,15 +56,15 @@ export class UsersService extends SupportService {
     /**
      * Updates an existing user's data and image.
      * @param id ID of the user to be updated.
-     * @param user Updated user data.
-     * @param file Updated image file for the user.
-     * @returns The updated user entity.
+     * @param updateUserDto Updated user data.
+     * @returns The updated user.
      */
-    async update(id: string, user: UpdateUserDto, file: Express.Multer.File): Promise<UserEntity> {
+    async update(id: string, updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
         const userFound = await this.findUser(id);
-        user.image = await this.saveFileAndGetImageDto(file);
-        const updatedUser = this.userMapper.mapUpdateUserDtoToEntity(user, userFound);
-        return this.usersRepository.save(updatedUser);
+        updateUserDto.image = await this.saveFileAndGetImageDto(updateUserDto.imageFile);
+        const updatedUser = this.userMapper.mapUpdateUserDtoToEntity(updateUserDto, userFound);
+        const userUpdated = await this.usersRepository.save(updatedUser);
+        return this.userMapper.mapUserToResponseDto(userUpdated);
     }
 
     /**
@@ -83,13 +83,13 @@ export class UsersService extends SupportService {
     /**
      * Deletes a user by ID.
      * @param id ID of the user to be deleted.
-     * @returns The deleted user entity.
+     * @returns The deleted user.
      * @throws NotFoundException if user is not found.
      */
-    async delete(id: string): Promise<UserEntity> {
+    async delete(id: string): Promise<UserResponseDto> {
         const userToDelete = await this.findUser(id);
         await this.usersRepository.remove(userToDelete);
-        return userToDelete;
+        return this.userMapper.mapUserToResponseDto(userToDelete);
     }
 
     /**

@@ -32,7 +32,7 @@ export class AuthController {
         description: 'Successfully registered and authenticated',
         type: AuthResponseDto,
     })
-    signup(@Body() signUpData: SignUpAuthDto): Promise<AuthResponseDto> {
+    async signup(@Body() signUpData: SignUpAuthDto): Promise<AuthResponseDto> {
         return this.authService.signup(signUpData);
     }
     
@@ -49,7 +49,7 @@ export class AuthController {
         description: 'Successfully authenticated',
         type: AuthResponseDto,
     })
-    signin(@Body() signInData: SignInAuthDto): Promise<AuthResponseDto> {
+    async signin(@Body() signInData: SignInAuthDto): Promise<AuthResponseDto> {
         return this.authService.signin(signInData);
     }
 }

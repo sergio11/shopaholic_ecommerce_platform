@@ -16,6 +16,7 @@ export class AccountEnabledGuard implements CanActivate {
     if (!decodedToken) {
       return false;
     }
+    console.log(decodedToken);
     const user = await this.authService.validateUserById(decodedToken.sub);
     if (!user && !user.isEnabled) {
       return false;
