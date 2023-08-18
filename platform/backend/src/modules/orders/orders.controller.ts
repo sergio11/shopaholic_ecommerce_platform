@@ -1,13 +1,13 @@
-import { Controller, Put, Param, Get, Version } from '@nestjs/common';
+import { Put, Param, Get, Version } from '@nestjs/common';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { OrdersService } from './orders.service';
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { OrderResponseDto } from './dto/order-response.dto';
 import { Auth } from '../auth/decorator/auth.decorator';
+import { ApiController } from 'src/core/decorator/default-api.decorator';
 
-@ApiBearerAuth()
-@ApiTags('orders')
-@Controller('orders')
+
+@ApiController('orders')
 export class OrdersController {
 
     constructor(private ordersService: OrdersService) {}

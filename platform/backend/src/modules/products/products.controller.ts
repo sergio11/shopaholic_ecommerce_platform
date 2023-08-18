@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, Delete, Query, DefaultValuePipe, ParseIntPipe, UploadedFiles, Version } from '@nestjs/common';
+import { Get, Param, Post, Body, Delete, Query, DefaultValuePipe, ParseIntPipe, UploadedFiles, Version } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -6,17 +6,16 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { ProductEntity } from './product.entity';
 import { API } from 'src/config/config';
-import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ApiResponse } from '@nestjs/swagger';
 import { ProductResponseDto } from './dto/product-response.dto';
 import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
 import { Auth } from '../auth/decorator/auth.decorator';
+import { ApiController } from 'src/core/decorator/default-api.decorator';
 
 /**
  * Controller handling CRUD operations for products.
  */
-@ApiBearerAuth()
-@ApiTags('products')
-@Controller('products')
+@ApiController('products')
 export class ProductsController {
 
     /**

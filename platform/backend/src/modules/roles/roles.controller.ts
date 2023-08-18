@@ -1,16 +1,16 @@
-import { Body, Controller, Delete, Param, Post, UploadedFile, Version } from '@nestjs/common';
+import { Body, Delete, Param, Post, UploadedFile, Version } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { JwtRole } from '../auth/jwt/jwt-role';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { RoleResponseDto } from './dto/role-response.dto';
 import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
 import { Auth } from '../auth/decorator/auth.decorator';
+import { ApiController } from 'src/core/decorator/default-api.decorator';
 
-@ApiBearerAuth()
-@ApiTags('roles')
-@Controller('roles')
+
+@ApiController('roles')
 export class RolesController {
 
     constructor(private rolesService: RolesService) {}

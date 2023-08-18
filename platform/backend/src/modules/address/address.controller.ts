@@ -1,15 +1,14 @@
-import { Controller, Put, Param, Body, Post, Get, Delete, Version } from '@nestjs/common';
+import { Put, Param, Body, Post, Get, Delete, Version } from '@nestjs/common';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { AddressService } from './address.service';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AddressResponseDto } from './dto/address-response.dto';
 import { Auth } from '../auth/decorator/auth.decorator';
+import { ApiController } from 'src/core/decorator/default-api.decorator';
 
-@ApiBearerAuth()
-@ApiTags('address')
-@Controller('address')
+@ApiController('address')
 export class AddressController {
 
     constructor(private addressService: AddressService) {}

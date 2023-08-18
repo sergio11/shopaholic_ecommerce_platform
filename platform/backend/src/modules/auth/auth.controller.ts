@@ -1,16 +1,15 @@
-import { Body, Controller, Post, Version } from '@nestjs/common';
+import { Body, Post, Version } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpAuthDto } from './dto/signup-auth.dto';
 import { SignInAuthDto } from './dto/signin-auth.dto';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthResponseDto } from './dto/auth-response.dto';
+import { ApiController } from 'src/core/decorator/default-api.decorator';
 
 /**
  * Controller for authentication-related endpoints.
  */
-@ApiBearerAuth()
-@ApiTags('auth')
-@Controller('auth')
+@ApiController('auth')
 export class AuthController {
 
     /**

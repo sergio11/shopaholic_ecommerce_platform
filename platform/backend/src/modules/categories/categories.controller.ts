@@ -1,19 +1,16 @@
-import { Controller, UseGuards, UploadedFile, Param, Body, Post, Get, Delete, Version} from '@nestjs/common';
+import { UploadedFile, Param, Body, Post, Get, Delete, Version} from '@nestjs/common';
 import { CategoriesService } from './categories.service';
-import { HasRoles } from '../auth/jwt/has-roles';
 import { JwtRole } from '../auth/jwt/jwt-role';
-import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
-import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
 import CreateCategoryDTO from './dto/create-category.dto';
 import UpdateCategoryDTO from './dto/update-category.dto';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CategoryResponseDto } from './dto/category-response.dto';
 import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
 import { Auth } from '../auth/decorator/auth.decorator';
+import { ApiController } from 'src/core/decorator/default-api.decorator';
 
-@ApiBearerAuth()
-@ApiTags('categories')
-@Controller('categories')
+
+@ApiController('categories')
 export class CategoriesController {
 
     constructor(private categoriesService: CategoriesService) {}

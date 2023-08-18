@@ -1,19 +1,18 @@
-import { Body, Controller, Post, Get, Param, UploadedFile, Version, Delete } from '@nestjs/common';
+import { Body, Post, Get, Param, UploadedFile, Version, Delete } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtRole } from 'src/modules/auth/jwt/jwt-role';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UserResponseDto } from './dto/user-response.dto';
 import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
 import { Auth } from '../auth/decorator/auth.decorator';
+import { ApiController } from 'src/core/decorator/default-api.decorator';
 
 /**
  * Controller for managing user operations.
  */
-@ApiBearerAuth()
-@ApiTags('users')
-@Controller('users')
+@ApiController('users')
 export class UsersController {
 
     constructor(private usersService: UsersService) {}

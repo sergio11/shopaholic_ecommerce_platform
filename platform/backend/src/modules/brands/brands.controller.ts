@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Param, Delete, ParseUUIDPipe, HttpStatus, Version, UploadedFile } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiResponse, ApiOkResponse } from '@nestjs/swagger';
+import { Get, Post, Body, Param, Delete, ParseUUIDPipe, HttpStatus, Version, UploadedFile } from '@nestjs/common';
+import { ApiResponse, ApiOkResponse } from '@nestjs/swagger';
 import { BrandService } from './brands.service';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { BrandResponseDTO } from './dto/brand-response.dto';
@@ -7,13 +7,12 @@ import { CreateBrandDTO } from './dto/create-brand.dto';
 import { UpdateBrandDTO } from './dto/update-brand.dto';
 import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
 import { Auth } from '../auth/decorator/auth.decorator';
+import { ApiController } from 'src/core/decorator/default-api.decorator';
 
 /**
  * Controller responsible for managing brands.
  */
-@ApiBearerAuth()
-@ApiTags('brands')
-@Controller('brands')
+@ApiController('brands')
 export class BrandController {
   constructor(private readonly brandService: BrandService) {}
 
