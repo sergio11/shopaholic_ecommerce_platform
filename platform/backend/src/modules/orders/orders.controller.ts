@@ -1,11 +1,9 @@
-import { Controller, UseGuards, Put, Param, Get, Version } from '@nestjs/common';
-import { HasRoles } from '../auth/jwt/has-roles';
+import { Controller, Put, Param, Get, Version } from '@nestjs/common';
 import { JwtRole } from '../auth/jwt/jwt-role';
-import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
-import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
 import { OrdersService } from './orders.service';
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OrderResponseDto } from './dto/order-response.dto';
+import { Auth } from '../auth/decorator/auth.decorator';
 
 @ApiBearerAuth()
 @ApiTags('orders')
@@ -18,8 +16,7 @@ export class OrdersController {
     * Retrieve a list of all orders.
     * @returns {Promise<OrderResponseDto[]>} List of orders.
     */
-    @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN)
     @Version('1.0')
     @Get()
     @ApiOperation({ summary: 'Retrieve a list of all orders' })
@@ -33,8 +30,7 @@ export class OrdersController {
     * @param {string} idClient - ID of the client.
     * @returns {Promise<OrderResponseDto[]>} List of orders.
     */
-    @HasRoles(JwtRole.CLIENT, JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.CLIENT, JwtRole.ADMIN)
     @Version('1.0')
     @Get(':id_client')
     @ApiOperation({ summary: 'Retrieve orders by client ID' })
@@ -49,8 +45,7 @@ export class OrdersController {
      * @param {string} id - ID of the order.
      * @returns {Promise<OrderResponseDto>} Updated order with new status.
     */
-    @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN)
     @Version('1.0')
     @Put(':id')
     @ApiOperation({ summary: 'Update the status of an order' })

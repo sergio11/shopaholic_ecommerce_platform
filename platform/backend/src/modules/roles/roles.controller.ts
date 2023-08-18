@@ -1,15 +1,12 @@
-import { Body, Controller, Delete, Param, Post, UploadedFile, UseGuards, UseInterceptors, Version } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post, UploadedFile, Version } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
-import { HasRoles } from '../auth/jwt/has-roles';
 import { JwtRole } from '../auth/jwt/jwt-role';
-import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
-import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
-import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RoleResponseDto } from './dto/role-response.dto';
 import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
+import { Auth } from '../auth/decorator/auth.decorator';
 
 @ApiBearerAuth()
 @ApiTags('roles')
@@ -24,12 +21,10 @@ export class RolesController {
      * @param role - The data to create the new role.
      * @returns The newly created role.
      */
-    @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN)
     @Version('1.0')
     @Post()
     @DefaultUploadFileValidationDecorator()
-    @ApiConsumes('multipart/form-data')
     @ApiOperation({ summary: 'Create new role' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
     async create(
@@ -47,15 +42,12 @@ export class RolesController {
      * @param role - The updated data for the role.
      * @returns The updated role.
      */
-    @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN)
     @Version('1.0')
     @Post(':id')
     @DefaultUploadFileValidationDecorator({ isOptional: true })
-    @ApiConsumes('multipart/form-data')
     @ApiOperation({ summary: 'Update role by ID' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
-    @UseInterceptors(FileInterceptor('imageFile'))
     async update(
         @UploadedFile() file: Express.Multer.File,
         @Param('id') id: string, 
@@ -69,8 +61,7 @@ export class RolesController {
      * Deletes a role with the specified ID.
      * @param id - The ID of the role to delete.
      */
-    @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN)
     @Version('1.0')
     @Delete(':id')
     @ApiOperation({ summary: 'Delete role by ID' })

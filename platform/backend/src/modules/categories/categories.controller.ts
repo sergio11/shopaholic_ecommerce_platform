@@ -6,9 +6,10 @@ import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
 import CreateCategoryDTO from './dto/create-category.dto';
 import UpdateCategoryDTO from './dto/update-category.dto';
-import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CategoryResponseDto } from './dto/category-response.dto';
 import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
+import { Auth } from '../auth/decorator/auth.decorator';
 
 @ApiBearerAuth()
 @ApiTags('categories')
@@ -21,8 +22,7 @@ export class CategoriesController {
      * Get all registered categories.
      * @returns An array of category response DTOs.
      */
-    @HasRoles(JwtRole.CLIENT, JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.CLIENT, JwtRole.ADMIN)
     @Version('1.0')
     @Get()
     @ApiOperation({ summary: 'Return all categories registered' })
@@ -42,12 +42,10 @@ export class CategoriesController {
      * @param category The data for creating the category.
      * @returns The created category response DTO.
      */
-    @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN)
     @Version('1.0')
     @Post()
     @DefaultUploadFileValidationDecorator()
-    @ApiConsumes('multipart/form-data')
     @ApiOperation({ summary: 'Allow us to create a new category' })
     @ApiResponse({
         status: 200,
@@ -69,12 +67,10 @@ export class CategoriesController {
      * @param category The updated category data.
      * @returns The updated category response DTO.
      */
-    @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN)
     @Version('1.0')
     @Post(':id')
     @DefaultUploadFileValidationDecorator({ isOptional: true })
-    @ApiConsumes('multipart/form-data')
     @ApiOperation({ summary: 'Allow us to update an existing category' })
     @ApiResponse({
         status: 200,
@@ -84,17 +80,17 @@ export class CategoriesController {
     async update(
         @UploadedFile() file: Express.Multer.File,
         @Param('id') id: string,
-        @Body() category: UpdateCategoryDTO
+        @Body() categoryData: UpdateCategoryDTO
     ): Promise<CategoryResponseDto> {
-        return this.categoriesService.update(id, category, file);
+        const category = { ...categoryData, imageFile: file}
+        return this.categoriesService.update(id, category);
     }
 
     /**
      * Delete a category by its ID.
      * @param id The ID of the category to be deleted.
      */
-    @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN)
     @Version('1.0')
     @Delete(':id')
     @ApiOperation({ summary: 'Allow us to delete a category' })

@@ -7,7 +7,7 @@ import { RoleEntity } from 'src/modules/roles/role.entity';
 import { JwtAuthModule } from './jwt/jwt-auth.module';
 import { RolesModule } from '../roles/roles.module';
 import { UsersModule } from '../users/users.module';
-import { AccountEnabledGuard } from './account-enabled.guard';
+import { AccountEnabledGuard } from './guard/account-enabled.guard';
 
 @Global()
 @Module({

@@ -2,6 +2,7 @@ import { UseInterceptors, applyDecorators } from '@nestjs/common';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { fileValidator } from '../file.validator';
 import { MulterField } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
+import { ApiConsumes } from '@nestjs/swagger';
 
 const defaultFieldName = 'imageFile';
 const defaultAllowedExtensions = ['.png', '.jpeg', '.jpg'];
@@ -27,6 +28,7 @@ export function DefaultUploadFileValidationDecorator(
     return applyDecorators(
         UseInterceptors(FileFieldsInterceptor(uploadFields, {
             fileFilter: fileValidator(allowedExtensions, maxSize, isOptional)
-        }))
+        })),
+        ApiConsumes('multipart/form-data')
     );
 }

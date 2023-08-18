@@ -1,13 +1,11 @@
-import { Controller, UseGuards, Put, Param, Body, Post, Get, Delete, Version } from '@nestjs/common';
-import { HasRoles } from '../auth/jwt/has-roles';
+import { Controller, Put, Param, Body, Post, Get, Delete, Version } from '@nestjs/common';
 import { JwtRole } from '../auth/jwt/jwt-role';
-import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
-import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
 import { AddressService } from './address.service';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AddressResponseDto } from './dto/address-response.dto';
+import { Auth } from '../auth/decorator/auth.decorator';
 
 @ApiBearerAuth()
 @ApiTags('address')
@@ -21,8 +19,7 @@ export class AddressController {
      * @param {CreateAddressDto} address - The address data to create.
      * @returns {Promise<AddressResponseDto>} The newly created address.
      */
-    @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
     @Version('1.0')
     @Post()
     @ApiOperation({ summary: 'Create a new address' })
@@ -39,8 +36,7 @@ export class AddressController {
      * Return all addresses that have been registered.
      * @returns {Promise<AddressResponseDto[]>} A list of registered addresses.
      */
-    @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
     @Version('1.0')
     @Get()
     @ApiOperation({ summary: 'Return all addresses that have been registered' })
@@ -58,8 +54,7 @@ export class AddressController {
      * @param {string} id_user - The user ID associated with the addresses.
      * @returns {Promise<AddressResponseDto[]>} A list of addresses registered by the user.
      */
-    @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
     @Version('1.0')
     @Get('user/:id_user')
     @ApiOperation({ summary: 'Return all addresses that have been registered by user' })
@@ -78,8 +73,7 @@ export class AddressController {
      * @param {UpdateAddressDto} address - The updated address data.
      * @returns {Promise<AddressResponseDto>} The updated address.
      */
-    @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
     @Version('1.0')
     @Put(':id')
     @ApiOperation({ summary: 'Allow us to update the data of an address' })
@@ -97,8 +91,7 @@ export class AddressController {
      * @param {string} id - The ID of the address to delete.
      * @returns {Promise<void>} The deleted address.
      */
-    @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
     @Version('1.0')
     @Delete(':id')
     @ApiOperation({ summary: 'Allow us to delete an address' })

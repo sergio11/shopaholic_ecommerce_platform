@@ -57,7 +57,7 @@ export class CategoriesService extends SupportService {
      */
     async create(createCategoryDto: CreateCategoryDTO): Promise<CategoryResponseDto> {
         createCategoryDto.image = await this.saveFileAndGetImageDto(createCategoryDto.imageFile);
-        const newCategory = this.categoriesRepository.create(createCategoryDto);
+        const newCategory = this.categoryMapper.mapCreateCategoryDtoToEntity(createCategoryDto);
         const savedCategory = await this.categoriesRepository.save(newCategory);
         await this.invalidateCache();
         return this.categoryMapper.mapCategoryToResponseDto(savedCategory);
@@ -66,14 +66,13 @@ export class CategoriesService extends SupportService {
     /**
      * Update an existing category.
      * @param id The ID of the category to be updated.
-     * @param category The updated category data.
-     * @param file The updated image file for the category.
+     * @param updateCategoryDto The updated category data.
      * @returns The updated category response DTO.
      */
-    async update(id: string, category: UpdateCategoryDTO, file: Express.Multer.File): Promise<CategoryResponseDto> {    
+    async update(id: string, updateCategoryDto: UpdateCategoryDTO): Promise<CategoryResponseDto> {    
         const categoryFound = await this.findCategory(id);     
-        category.image = await this.saveFileAndGetImageDto(file);
-        const updatedCategory = Object.assign(categoryFound, category);
+        updateCategoryDto.image = await this.saveFileAndGetImageDto(updateCategoryDto.imageFile);
+        const updatedCategory = this.categoryMapper.mapUpdateCategoryDtoToEntity(updateCategoryDto, categoryFound);
         const savedCategory = await this.categoriesRepository.save(updatedCategory);
         await this.invalidateCache();
         return this.categoryMapper.mapCategoryToResponseDto(savedCategory);

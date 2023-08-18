@@ -1,18 +1,15 @@
-import { Controller, UseGuards, Get, Param, Post, Body, Delete, Query, DefaultValuePipe, ParseIntPipe, UploadedFiles, Version } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Delete, Query, DefaultValuePipe, ParseIntPipe, UploadedFiles, Version } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { HasRoles } from '../auth/jwt/has-roles';
 import { JwtRole } from '../auth/jwt/jwt-role';
-import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
-import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { ProductEntity } from './product.entity';
 import { API } from 'src/config/config';
-import { ApiBearerAuth, ApiTags, ApiResponse, ApiConsumes } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { ProductResponseDto } from './dto/product-response.dto';
-import { AccountEnabledGuard } from '../auth/account-enabled.guard';
 import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
+import { Auth } from '../auth/decorator/auth.decorator';
 
 /**
  * Controller handling CRUD operations for products.
@@ -32,8 +29,7 @@ export class ProductsController {
      * Retrieves a list of all products.
      * @returns An array of ProductResponseDto representing all products.
      */
-    @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard, AccountEnabledGuard)
+    @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
     @Version('1.0')
     @Get()
     @ApiResponse({ status: 200, description: 'Retrieved all products.', type: ProductResponseDto, isArray: true })
@@ -47,8 +43,7 @@ export class ProductsController {
      * @param limit - Number of items per page.
      * @returns A Pagination object containing paginated products.
      */
-    @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard, AccountEnabledGuard)
+    @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
     @Version('1.0')
     @Get('pagination')
     @ApiResponse({ 
@@ -73,8 +68,7 @@ export class ProductsController {
      * @param id_category - The ID of the category.
      * @returns An array of ProductResponseDto representing products in the category.
      */
-    @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard, AccountEnabledGuard)
+    @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
     @Version('1.0')
     @Get('category/:id_category')
     @ApiResponse({ status: 200, description: 'Retrieved products by category.', type: ProductResponseDto, isArray: true })
@@ -87,8 +81,7 @@ export class ProductsController {
      * @param name - The product name or part of it.
      * @returns An array of ProductResponseDto matching the provided name.
      */
-    @HasRoles(JwtRole.ADMIN, JwtRole.CLIENT)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard, AccountEnabledGuard)
+    @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
     @Version('1.0')
     @Get('search/:name')
     @ApiResponse({ status: 200, description: 'Retrieved products by name.', type: ProductResponseDto, isArray: true })
@@ -103,15 +96,13 @@ export class ProductsController {
      * @param product - The product data.
      * @returns The created ProductResponseDto.
      */
-    @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard, AccountEnabledGuard)
+    @Auth(JwtRole.ADMIN)
     @Post()
     @DefaultUploadFileValidationDecorator({ uploadFields: [
         { name: 'mainImageFile', maxCount: 1 },
         { name: 'secondaryImageFile', maxCount: 1 },
       ]
     })
-    @ApiConsumes('multipart/form-data')
     @Version('1.0')
     @ApiResponse({ status: 201, description: 'Product created successfully.', type: ProductResponseDto })
     async create(
@@ -130,8 +121,7 @@ export class ProductsController {
      * @param product - The updated product data.
      * @returns The updated ProductResponseDto.
      */
-    @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard, AccountEnabledGuard)
+    @Auth(JwtRole.ADMIN)
     @Version('1.0')
     @Post(':id')
     @DefaultUploadFileValidationDecorator({ uploadFields: [
@@ -140,7 +130,6 @@ export class ProductsController {
       ],
       isOptional: true
     })
-    @ApiConsumes('multipart/form-data')
     @ApiResponse({ status: 200, description: 'Product updated successfully.', type: ProductResponseDto })
     async update(
         @UploadedFiles() files: { mainImageFile?: Express.Multer.File, secondaryImageFile?: Express.Multer.File },
@@ -155,8 +144,7 @@ export class ProductsController {
      * Deletes a product by ID.
      * @param id - The ID of the product to delete.
      */
-    @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard, AccountEnabledGuard)
+    @Auth(JwtRole.ADMIN)
     @Version('1.0')
     @Delete(':id')
     @ApiResponse({ status: 200, description: 'Product deleted successfully.' })

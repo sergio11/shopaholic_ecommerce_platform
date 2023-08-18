@@ -1,14 +1,12 @@
-import { Body, Controller, Post, Get, UseGuards, Param, UploadedFile, Version, Delete } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/modules/auth/jwt/jwt-auth.guard';
+import { Body, Controller, Post, Get, Param, UploadedFile, Version, Delete } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
-import { HasRoles } from 'src/modules/auth/jwt/has-roles';
 import { JwtRole } from 'src/modules/auth/jwt/jwt-role';
-import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserResponseDto } from './dto/user-response.dto';
 import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
+import { Auth } from '../auth/decorator/auth.decorator';
 
 /**
  * Controller for managing user operations.
@@ -24,8 +22,7 @@ export class UsersController {
      * Get a list of all users.
      * @returns A list of user response DTOs.
      */
-    @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN)
     @Version('1.0')
     @Get()
     @ApiOperation({ summary: 'Get users' })
@@ -44,12 +41,10 @@ export class UsersController {
      * @param userData The data for creating the user.
      * @returns The created user response DTO.
      */
-    @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN)
     @Post()
     @Version('1.0')
     @DefaultUploadFileValidationDecorator()
-    @ApiConsumes('multipart/form-data')
     @ApiOperation({ summary: 'Create new user' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
     async create(
@@ -67,12 +62,10 @@ export class UsersController {
      * @param userData The updated user data.
      * @returns The updated user response DTO.
      */
-    @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN)
     @Version('1.0')
     @Post(':id')
     @DefaultUploadFileValidationDecorator({ isOptional: true })
-    @ApiConsumes('multipart/form-data')
     @ApiOperation({ summary: 'Update user and profile picture' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
     async update(
@@ -88,8 +81,7 @@ export class UsersController {
      * Delete a user by ID.
      * @param id The ID of the user to delete.
      */
-    @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN)
     @Delete(':id')
     @ApiOperation({ summary: 'Delete user by ID' })
     @ApiResponse({ status: 403, description: 'Forbidden.' })
@@ -102,8 +94,7 @@ export class UsersController {
      * @param name The name to search for.
      * @returns A list of users matching the name.
      */
-    @HasRoles(JwtRole.ADMIN)
-    @UseGuards(JwtAuthGuard, JwtRolesGuard)
+    @Auth(JwtRole.ADMIN)
     @Get('search/:name')
     @ApiOperation({ summary: 'Search users by name' })
     @ApiResponse({
