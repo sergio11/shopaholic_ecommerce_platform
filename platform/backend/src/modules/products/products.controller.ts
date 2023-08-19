@@ -6,7 +6,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { ProductEntity } from './product.entity';
 import { API } from 'src/config/config';
-import { ApiBody, ApiNotFoundResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ProductResponseDto } from './dto/product-response.dto';
 import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
 import { Auth } from '../auth/decorator/auth.decorator';
@@ -162,6 +162,17 @@ export class ProductsController {
         return this.productsService.delete(id);
     }
 
+    @ApiOperation({ summary: 'Get reviews for a product' })
+    @ApiOkResponse({ status: 200, description: 'Reviews retrieved successfully.', type: [ProductReviewResponseDto] })
+    @ApiNotFoundResponse({ description: 'Product not found.' })
+    @Version('1.0')
+    @Get(':id/reviews')
+    async getProductReviews(
+        @Param('id') idProduct: string
+    ): Promise<ProductReviewResponseDto[]> {
+        return this.productReviewService.getProductReviews(idProduct);
+    }
+
     /**
      * Creates a new review for a product.
      * @param idProduct - The ID of the product to review.
@@ -222,5 +233,39 @@ export class ProductsController {
     @Delete('reviews/:reviewId')
     async deleteReview(@Param('reviewId') reviewId: string): Promise<string> {
         return await this.productReviewService.delete(reviewId);
+    }
+
+    /**
+     * Like a product review.
+     * @param reviewId - The ID of the review to like.
+     * @param userId - The ID of the authenticated user.
+     * @returns A Promise indicating success.
+     */
+    @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
+    @Version('1.0')
+    @Post('reviews/:reviewId/like')
+    @ApiResponse({ status: 200, description: 'Review liked successfully.' })
+    async likeReview(
+        @Param('reviewId') reviewId: string, 
+        @AuthUserId() userId: string
+    ): Promise<string> {
+        return await this.productReviewService.likeReview(reviewId, userId);
+    }
+
+    /**
+     * Dislike a product review.
+     * @param reviewId - The ID of the review to dislike.
+     * @param userId - The ID of the authenticated user.
+     * @returns A Promise indicating success.
+     */
+    @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
+    @Version('1.0')
+    @Post('reviews/:reviewId/dislike')
+    @ApiResponse({ status: 200, description: 'Review disliked successfully.' })
+    async dislikeReview(
+        @Param('id') reviewId: string, 
+        @AuthUserId() userId: string
+    ): Promise<string> {
+        return await this.productReviewService.dislikeReview(reviewId, userId);
     }
 }

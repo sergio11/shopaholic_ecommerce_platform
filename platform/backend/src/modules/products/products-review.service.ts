@@ -8,6 +8,7 @@ import { ProductReviewMapper } from './product-review.mapper';
 import { CreateProductReviewDto } from './dto/create-product-review.dto';
 import { UpdateProductReviewDto } from './dto/update-product-review.dto';
 import { ProductReviewResponseDto } from './dto/product-review-response.dto';
+import { UserEntity } from '../users/user.entity';
 
 /**
  * Service handling CRUD operations for product reviews.
@@ -18,6 +19,8 @@ export class ProductReviewService extends SupportService {
     constructor(
         @InjectRepository(ProductReviewEntity)
         private readonly productReviewRepository: Repository<ProductReviewEntity>,
+        @InjectRepository(UserEntity)
+        private readonly userRepository: Repository<UserEntity>,
         private readonly productReviewMapper: ProductReviewMapper,
         i18n: I18nService
     ) {
@@ -59,8 +62,89 @@ export class ProductReviewService extends SupportService {
         return this.resolveString("PRODUCT_REVIEW_DELETED_SUCCESSFULLY");
     }
 
-    private async findProductReview(id: string): Promise<ProductReviewEntity> {
-        const review = await this.productReviewRepository.findOne({ where: {id} });
+    /**
+     * Retrieves reviews of a product, sorted by creation date and excluding hidden reviews.
+     * @param {string} idProduct - The ID of the product to retrieve reviews for.
+     * @returns {Promise<ProductReviewResponseDto[]>} - An array of ProductReviewResponseDto representing the reviews.
+     */
+    async getProductReviews(idProduct: string): Promise<ProductReviewResponseDto[]> {
+        const productReviews = await this.productReviewRepository.find({
+            where: { idProduct, isHidden: false },
+            order: { createdAt: 'DESC' },
+        });
+        return this.productReviewMapper.mapProductReviewsToResponseDtos(productReviews);
+    }
+
+    /**
+     * Toggles the "like" reaction on a product review for a user.
+     * @param {string} reviewId - The ID of the product review.
+     * @param {string} idUser - The ID of the user reacting.
+     * @returns {Promise<ProductReviewEntity>}  Successfully message
+     */
+    async likeReview(reviewId: string, idUser: string): Promise<string> {
+        await this.toggleReaction(reviewId, idUser, 'likes');
+        return this.resolveString("LIKE_REVIEW_SUCCESSFULLY");
+    }
+
+    /**
+     * Toggles the "dislike" reaction on a product review for a user.
+     * @param {string} reviewId - The ID of the product review.
+     * @param {string} idUser - The ID of the user reacting.
+     * @returns {Promise<string>} Successfully message
+     */
+    async dislikeReview(reviewId: string, idUser: string): Promise<string> {
+        this.toggleReaction(reviewId, idUser, 'dislikes');
+        return this.resolveString("DISLIKE_REVIEW_SUCCESSFULLY");
+    }
+
+    /**
+     * Toggles a reaction (like or dislike) on a product review for a user.
+     * @param {string} reviewId - The ID of the product review.
+     * @param {string} idUser - The ID of the user reacting.
+     * @param {'likes' | 'dislikes'} reactionField - The reaction field to toggle.
+     * @returns {Promise<ProductReviewEntity>} The updated product review entity.
+     * @throws {NotFoundException} If the product review is not found or if the user is not found.
+     */
+    private async toggleReaction(
+        reviewId: string,
+        idUser: string,
+        reactionField: 'likes' | 'dislikes'
+    ): Promise<ProductReviewEntity> {
+        const review = await this.findProductReview(reviewId, [reactionField]);
+        const otherReactionField = reactionField === 'likes' ? 'dislikes' : 'likes';
+
+        // Encuentra el usuario por su id
+        const user = await this.userRepository.findOne({ where: { id: idUser }});
+        if (!user) {
+            throw this.throwNotFoundException("USER_NOT_FOUND");
+        }
+
+        if (review[reactionField].some(reactionUser => reactionUser.id === idUser)) {
+            // User has already reacted, remove the reaction
+            review[reactionField] = review[reactionField].filter(reactionUser => reactionUser.id !== idUser);
+        } else {
+            // User has not reacted, add the reaction
+            review[reactionField].push(user);
+            // Remove other reaction if the user has reacted before
+            review[otherReactionField] = review[otherReactionField].filter(otherReactionUser => otherReactionUser.id !== idUser);
+        }
+
+        await this.productReviewRepository.save(review);
+        return review;
+    }
+
+    /**
+     * Finds a product review by its ID with optional relations.
+     * @param {string} id - The ID of the product review.
+     * @param {string[]} relations - Optional relations to load with the query.
+     * @returns {Promise<ProductReviewEntity>} The found product review entity.
+     * @throws {NotFoundException} If the product review is not found.
+     */
+    private async findProductReview(id: string, relations?: string[]): Promise<ProductReviewEntity> {
+        const review = await this.productReviewRepository.findOne({
+            where: { id },
+            relations: relations || [],
+        });
         if (!review) {
             this.throwNotFoundException('PRODUCT_REVIEW_NOT_FOUND');
         }
