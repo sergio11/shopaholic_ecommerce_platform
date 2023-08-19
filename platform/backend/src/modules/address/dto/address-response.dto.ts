@@ -19,6 +19,34 @@ export class AddressResponseDto extends AbstractDto {
     neighborhood: string;
 
     /**
+     * The city.
+     */
+    @ApiProperty({ description: 'City' })
+    @Expose()
+    city: string;
+
+    /**
+     * The state.
+     */
+    @ApiProperty({ description: 'State' })
+    @Expose()
+    state: string;
+
+    /**
+     * The postal code.
+     */
+    @ApiProperty({ description: 'Postal code' })
+    @Expose()
+    postalCode: string;
+
+    /**
+     * The country.
+     */
+    @ApiProperty({ description: 'Country' })
+    @Expose()
+    country: string;
+
+    /**
      * The user ID associated with the address.
      */
     @ApiProperty({ description: 'User ID associated with the address' })

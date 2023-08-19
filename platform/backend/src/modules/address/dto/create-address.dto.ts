@@ -26,6 +26,50 @@ export class CreateAddressDto {
     neighborhood: string;
 
     /**
+     * The city.
+     */
+    @ApiProperty({
+        description: 'The city',
+        example: 'New York',
+    })
+    @IsNotEmpty({ message: 'City is required' })
+    @IsString({ message: 'City must be a string' })
+    city: string;
+
+    /**
+     * The state.
+     */
+    @ApiProperty({
+        description: 'The state',
+        example: 'California',
+    })
+    @IsNotEmpty({ message: 'State is required' })
+    @IsString({ message: 'State must be a string' })
+    state: string;
+
+    /**
+     * The postal code.
+     */
+    @ApiProperty({
+        description: 'The postal code',
+        example: '12345',
+    })
+    @IsNotEmpty({ message: 'Postal code is required' })
+    @IsString({ message: 'Postal code must be a string' })
+    postalCode: string;
+
+    /**
+     * The country.
+     */
+    @ApiProperty({
+        description: 'The country',
+        example: 'United States',
+    })
+    @IsNotEmpty({ message: 'Country is required' })
+    @IsString({ message: 'Country must be a string' })
+    country: string;
+
+    /**
      * The user ID associated with the address.
      */
     @ApiProperty({ description: 'The user ID associated with the address', example: 'd3c28cf0-0e18-4b23-b503-2c1fecdc9bf4' })
