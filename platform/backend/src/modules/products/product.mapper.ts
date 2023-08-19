@@ -9,15 +9,30 @@ import { BrandsMapper } from '../brands/brands.mapper';
 
 @Injectable()
 export class ProductMapper {
+  /**
+   * Creates an instance of ProductMapper.
+   * @param categoryMapper - An instance of CategoryMapper.
+   * @param brandsMapper - An instance of BrandsMapper.
+   */
   constructor(
     private readonly categoryMapper: CategoryMapper,
-    private readonly brandsMapper: BrandsMapper
-    ) {}
+    private readonly brandsMapper: BrandsMapper,
+  ) {}
 
+  /**
+   * Maps a ProductEntity instance to a ProductResponseDto instance.
+   * @param product - The ProductEntity instance to map.
+   * @returns The mapped ProductResponseDto instance.
+   */
   mapProductToResponseDto(product: ProductEntity): ProductResponseDto {
-    const productDto = plainToClass(ProductResponseDto, product, { excludeExtraneousValues: true, exposeUnsetFields: false });
+    const productDto = plainToClass(ProductResponseDto, product, {
+      excludeExtraneousValues: true,
+      exposeUnsetFields: false,
+    });
     if (product.category) {
-      productDto.category = this.categoryMapper.mapCategoryToResponseDto(product.category);
+      productDto.category = this.categoryMapper.mapCategoryToResponseDto(
+        product.category,
+      );
     }
     if (product.brand) {
       productDto.brand = this.brandsMapper.mapBrandToResponseDto(product.brand);
@@ -25,15 +40,34 @@ export class ProductMapper {
     return productDto;
   }
 
+  /**
+   * Maps an array of ProductEntity instances to an array of ProductResponseDto instances.
+   * @param products - The array of ProductEntity instances to map.
+   * @returns The array of mapped ProductResponseDto instances.
+   */
   mapProductsToResponseDtos(products: ProductEntity[]): ProductResponseDto[] {
-    return products.map(product => this.mapProductToResponseDto(product));
+    return products.map((product) => this.mapProductToResponseDto(product));
   }
 
+  /**
+   * Maps a CreateProductDto instance to a ProductEntity instance.
+   * @param dto - The CreateProductDto instance to map.
+   * @returns The mapped ProductEntity instance.
+   */
   mapCreateProductDtoToEntity(dto: CreateProductDto): ProductEntity {
     return plainToClass(ProductEntity, dto);
   }
 
-  mapUpdateProductDtoToEntity(dto: UpdateProductDto, entity: ProductEntity): ProductEntity {
+  /**
+   * Maps an UpdateProductDto instance to an existing ProductEntity instance.
+   * @param dto - The UpdateProductDto instance to map.
+   * @param entity - The existing ProductEntity instance to update.
+   * @returns The updated ProductEntity instance.
+   */
+  mapUpdateProductDtoToEntity(
+    dto: UpdateProductDto,
+    entity: ProductEntity,
+  ): ProductEntity {
     return Object.assign(entity, plainToClass(ProductEntity, dto));
   }
 }

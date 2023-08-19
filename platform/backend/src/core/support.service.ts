@@ -18,6 +18,7 @@ export abstract class SupportService {
    * @param id - The ID of the entity to find.
    * @param repository - The repository to search in.
    * @param errorMessage - The error message to display if the entity is not found.
+   * @param relations - Optional array of relation names to be loaded.
    * @returns The found entity.
    * @throws HttpException with status HttpStatus.NOT_FOUND if the entity is not found.
    */
@@ -25,9 +26,15 @@ export abstract class SupportService {
     id: string,
     repository: Repository<T>,
     errorMessage: string,
+    relations?: string[],
   ): Promise<T> {
-    const queryBuilder = repository.createQueryBuilder();
-    queryBuilder.where({ id: id });
+    const queryBuilder = repository.createQueryBuilder('entity');
+    queryBuilder.where('entity.id = :id', { id });
+    if (relations && relations.length > 0) {
+      relations.forEach((relation) => {
+        queryBuilder.leftJoinAndSelect(`entity.${relation}`, relation);
+      });
+    }
     const entityFound = await queryBuilder.getOne();
     if (!entityFound) {
       this.throwNotFoundException(errorMessage);

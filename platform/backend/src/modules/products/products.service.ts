@@ -247,8 +247,8 @@ export class ProductsService extends SupportService {
     return review;
   }
 
-  private async findProduct(id: string): Promise<ProductEntity> {
-    return await this.findEntityById(id, this.productsRepository, 'PRODUCT_NOT_FOUND');
+  private async findProduct(id: string, relations?: string[]): Promise<ProductEntity> {
+    return await this.findEntityById(id, this.productsRepository, 'PRODUCT_NOT_FOUND', relations);
   }
 
   private async findCategory(id: string): Promise<CategoryEntity> {
