@@ -15,14 +15,30 @@ import { ProductReviewService } from './products-review.service';
 import { ProductReviewMapper } from './product-review.mapper';
 
 @Module({
-  imports: [ 
-    TypeOrmModule.forFeature([ ProductEntity, CategoryEntity, OrderHasProductsEntity, BrandsEntity, ProductReviewEntity ]),
+  imports: [
+    TypeOrmModule.forFeature([
+      ProductEntity,
+      CategoryEntity,
+      OrderHasProductsEntity,
+      BrandsEntity,
+      ProductReviewEntity,
+    ]),
     CategoriesModule,
     BrandModule,
-    FilesStorageModule
-   ],
+    FilesStorageModule,
+  ],
   controllers: [ProductsController],
-  providers: [ProductsService, ProductMapper, ProductReviewService, ProductReviewMapper],
-  exports: [ProductsService, ProductMapper, ProductReviewService, ProductReviewMapper]
+  providers: [
+    ProductsService,
+    ProductMapper,
+    ProductReviewService,
+    ProductReviewMapper,
+  ],
+  exports: [
+    ProductsService,
+    ProductMapper,
+    ProductReviewService,
+    ProductReviewMapper,
+  ],
 })
 export class ProductsModule {}

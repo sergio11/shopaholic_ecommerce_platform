@@ -1,10 +1,11 @@
-import { AfterLoad, Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import { AfterLoad, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { CategoryEntity } from '../categories/category.entity';
 import { OrderHasProductsEntity } from '../orders/order_has_products.entity';
 import { AbstractEntity } from 'src/core/abstract.entity';
 import { ImageEntity } from '../images/image.entity';
 import { BrandsEntity } from '../brands/brand.entity';
 import { ProductReviewEntity } from './product-review.entity';
+import { UserEntity } from '../users/user.entity';
 
 /**
  * Entity representing a product.
@@ -121,17 +122,96 @@ export class ProductEntity extends AbstractEntity {
     @OneToMany(() => ProductReviewEntity, review => review.product)
     reviews: ProductReviewEntity[];
 
+    /**
+     * The users who liked the product.
+     */
+    @ManyToMany(() => UserEntity)
+    @JoinTable({
+        name: 'product_dislikes',
+        joinColumn: {
+            name: 'product_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'user_id',
+            referencedColumnName: 'id',
+        },
+    })
+    likes: UserEntity[];
 
+    /**
+     * The users who disliked the product.
+     */
+    @ManyToMany(() => UserEntity)
+    @JoinTable({
+        name: 'product_dislikes',
+        joinColumn: {
+            name: 'product_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'user_id',
+            referencedColumnName: 'id',
+        },
+    })
+    dislikes: UserEntity[];
+
+    /**
+     * The number of likes received by the product.
+     * This property is calculated after the entity is loaded.
+     */
+    likesCount: number;
+
+    /**
+     * The number of dislikes received by the product.
+     * This property is calculated after the entity is loaded.
+     */
+    dislikesCount: number;
+
+    /**
+     * Indicates if the review has the best rating among all reviews for the product.
+     */
+    @Column({ name: 'is_best_rated', type: 'boolean', default: false })
+    isBestRated: boolean;
+
+    /**
+     * Indicates if the review has the worst rating among all reviews for the product.
+     */
+    @Column({ name: 'is_worst_rated', type: 'boolean', default: false })
+    isWorstRated: boolean;
+
+    /**
+     * Calculates the number of likes and dislikes after the entity is loaded.
+     * This method is automatically invoked by the @AfterLoad decorator.
+     */
+    @AfterLoad()
+    protected calculateLikesAndDislikesCounts() {
+        this.likesCount = this.likes.length;
+        this.dislikesCount = this.dislikes.length;
+    }
+
+    /**
+     * Calculates the number of reviews for the product after loading from the database.
+     * Updates the `numberOfReviews` property.
+     */
     @AfterLoad()
     protected calculateNumberOfReviews() {
         this.numberOfReviews = this.reviews ? this.reviews.length : 0;
     }
 
+    /**
+     * Calculates the number of purchases for the product after loading from the database.
+     * Updates the `numberOfPurchases` property.
+     */
     @AfterLoad()
     protected calculateNumberOfPurchases() {
         this.numberOfPurchases = this.orderHasProducts ? this.orderHasProducts.length : 0;
     }
 
+    /**
+     * Calculates the average rating for the product after loading from the database.
+     * Updates the `averageRating` property.
+     */
     @AfterLoad()
     protected calculateAverageRating() {
         if (this.reviews && this.reviews.length > 0) {

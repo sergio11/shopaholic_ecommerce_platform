@@ -100,6 +100,18 @@ export class ProductReviewEntity extends AbstractEntity {
     dislikesCount: number;
 
     /**
+     * Indicates if the review has the best rating among all reviews for the product.
+     */
+    @Column({ name: 'is_best_rated', type: 'boolean', default: false })
+    isBestRated: boolean;
+
+    /**
+     * Indicates if the review has the worst rating among all reviews for the product.
+     */
+    @Column({ name: 'is_worst_rated', type: 'boolean', default: false })
+    isWorstRated: boolean;
+
+    /**
      * Calculates the number of likes and dislikes after the entity is loaded.
      * This method is automatically invoked by the @AfterLoad decorator.
      */
