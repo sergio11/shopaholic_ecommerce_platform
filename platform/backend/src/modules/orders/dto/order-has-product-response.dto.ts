@@ -7,7 +7,6 @@ import { ProductResponseDto } from 'src/modules/products/dto/product-response.dt
  * DTO for representing the relationship between an order and a product in the response.
  */
 export class OrderHasProductResponseDto extends AbstractDto {
-
   /**
    * Order ID associated with the relationship.
    * @type {string}

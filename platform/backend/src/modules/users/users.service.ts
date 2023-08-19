@@ -126,10 +126,6 @@ export class UsersService extends SupportService {
    * @throws NotFoundException if user is not found.
    */
   private async findUser(id: string): Promise<UserEntity> {
-    const userFound = await this.usersRepository.findOneBy({ id: id });
-    if (!userFound) {
-      this.throwNotFoundException('app.USER_NOT_FOUND');
-    }
-    return userFound;
+    return this.findEntityById(id, this.usersRepository, "USER_NOT_FOUND");
   }
 }

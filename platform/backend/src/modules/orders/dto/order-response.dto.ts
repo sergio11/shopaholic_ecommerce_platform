@@ -9,7 +9,6 @@ import { Expose } from 'class-transformer';
  * DTO for representing an order in the response.
  */
 export class OrderResponseDto extends AbstractDto {
-
   /**
    * Client information.
    * @type {UserResponseDto}

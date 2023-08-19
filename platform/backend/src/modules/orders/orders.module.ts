@@ -12,13 +12,19 @@ import { AddressModule } from '../address/address.module';
 import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [ 
-    TypeOrmModule.forFeature([ OrderEntity, OrderHasProductsEntity, UserEntity, AddressEntity, ProductEntity ]),
+  imports: [
+    TypeOrmModule.forFeature([
+      OrderEntity,
+      OrderHasProductsEntity,
+      UserEntity,
+      AddressEntity,
+      ProductEntity,
+    ]),
     AddressModule,
-    UsersModule
-   ],
-  providers: [ OrdersService, OrderMapper],
+    UsersModule,
+  ],
+  providers: [OrdersService, OrderMapper],
   controllers: [OrdersController],
-  exports: [OrdersService, OrderMapper] 
+  exports: [OrdersService, OrderMapper],
 })
 export class OrdersModule {}

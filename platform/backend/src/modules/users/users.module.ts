@@ -11,13 +11,18 @@ import { AddressSubscriber } from './subscribers/address.subscriber';
 import { ProductReviewSubscriber } from './subscribers/product-review.subscriber';
 
 @Module({
-  imports: [ 
-    TypeOrmModule.forFeature([UserEntity, RoleEntity]), 
+  imports: [
+    TypeOrmModule.forFeature([UserEntity, RoleEntity]),
     RolesModule,
-    FilesStorageModule
+    FilesStorageModule,
   ],
-  providers: [UsersService, UserMapper, AddressSubscriber, ProductReviewSubscriber],
+  providers: [
+    UsersService,
+    UserMapper,
+    AddressSubscriber,
+    ProductReviewSubscriber,
+  ],
   controllers: [UsersController],
-  exports: [UsersService, UserMapper]
+  exports: [UsersService, UserMapper],
 })
 export class UsersModule {}

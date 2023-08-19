@@ -11,37 +11,53 @@ import { AddressMapper } from '../address/address.mapper';
 export class OrderMapper {
   constructor(
     private readonly userMapper: UserMapper,
-    private readonly addressMapper: AddressMapper
+    private readonly addressMapper: AddressMapper,
   ) {}
 
   mapOrderToResponseDto(order: OrderEntity): OrderResponseDto {
-    const orderDto = plainToClass(OrderResponseDto, order, { excludeExtraneousValues: true });
+    const orderDto = plainToClass(OrderResponseDto, order, {
+      excludeExtraneousValues: true,
+    });
 
     if (order.user) {
       orderDto.client = this.userMapper.mapUserToResponseDto(order.user);
     }
 
     if (order.address) {
-      orderDto.address = this.addressMapper.mapAddressToResponseDto(order.address);
+      orderDto.address = this.addressMapper.mapAddressToResponseDto(
+        order.address,
+      );
     }
 
     if (order.orderHasProducts) {
-      orderDto.orderHasProducts = this.mapOrderHasProductsToResponseDtos(order.orderHasProducts);
+      orderDto.orderHasProducts = this.mapOrderHasProductsToResponseDtos(
+        order.orderHasProducts,
+      );
     }
 
     return orderDto;
   }
 
   mapOrdersToResponseDtos(orders: OrderEntity[]): OrderResponseDto[] {
-    return orders.map(order => this.mapOrderToResponseDto(order));
+    return orders.map((order) => this.mapOrderToResponseDto(order));
   }
 
-  private mapOrderHasProductToResponseDto(orderHasProduct: OrderHasProductsEntity): OrderHasProductResponseDto {
-    const orderHasProductDto = plainToClass(OrderHasProductResponseDto, orderHasProduct, { excludeExtraneousValues: true });
+  private mapOrderHasProductToResponseDto(
+    orderHasProduct: OrderHasProductsEntity,
+  ): OrderHasProductResponseDto {
+    const orderHasProductDto = plainToClass(
+      OrderHasProductResponseDto,
+      orderHasProduct,
+      { excludeExtraneousValues: true },
+    );
     return orderHasProductDto;
   }
 
-  private mapOrderHasProductsToResponseDtos(orderHasProducts: OrderHasProductsEntity[]): OrderHasProductResponseDto[] {
-    return orderHasProducts.map(orderHasProduct => this.mapOrderHasProductToResponseDto(orderHasProduct));
+  private mapOrderHasProductsToResponseDtos(
+    orderHasProducts: OrderHasProductsEntity[],
+  ): OrderHasProductResponseDto[] {
+    return orderHasProducts.map((orderHasProduct) =>
+      this.mapOrderHasProductToResponseDto(orderHasProduct),
+    );
   }
 }
