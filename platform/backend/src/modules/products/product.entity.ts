@@ -104,18 +104,21 @@ export class ProductEntity extends AbstractEntity {
    * Derived attribute representing the number of reviews for this product.
    * @type {number}
    */
-  numberOfReviews: number;
+  @Column({ name: 'reviews_count', default: 0 })
+  reviewsCount: number;
 
   /**
    * Derived attribute representing the number of times this product has been purchased.
    * @type {number}
    */
-  numberOfPurchases: number;
+  @Column({ name: 'purchases_count', default: 0 })
+  purchasesCount: number;
 
   /**
    * Derived attribute for calculating the average rating
    * @type {number}
    */
+  @Column({ name: 'average_rating', default: 0 })
   averageRating: number;
 
   /**
@@ -167,14 +170,14 @@ export class ProductEntity extends AbstractEntity {
 
   /**
    * The number of likes received by the product.
-   * This property is calculated after the entity is loaded.
    */
+  @Column({ name: 'likes_count', default: 0 })
   likesCount: number;
 
   /**
    * The number of dislikes received by the product.
-   * This property is calculated after the entity is loaded.
    */
+  @Column({ name: 'dislikes_count', default: 0 })
   dislikesCount: number;
 
   /**
@@ -188,51 +191,4 @@ export class ProductEntity extends AbstractEntity {
    */
   @Column({ name: 'is_worst_rated', type: 'boolean', default: false })
   isWorstRated: boolean;
-
-  /**
-   * Calculates the number of likes and dislikes after the entity is loaded.
-   * This method is automatically invoked by the @AfterLoad decorator.
-   */
-  @AfterLoad()
-  protected calculateLikesAndDislikesCounts() {
-    this.likesCount = this.likes.length;
-    this.dislikesCount = this.dislikes.length;
-  }
-
-  /**
-   * Calculates the number of reviews for the product after loading from the database.
-   * Updates the `numberOfReviews` property.
-   */
-  @AfterLoad()
-  protected calculateNumberOfReviews() {
-    this.numberOfReviews = this.reviews ? this.reviews.length : 0;
-  }
-
-  /**
-   * Calculates the number of purchases for the product after loading from the database.
-   * Updates the `numberOfPurchases` property.
-   */
-  @AfterLoad()
-  protected calculateNumberOfPurchases() {
-    this.numberOfPurchases = this.orderHasProducts
-      ? this.orderHasProducts.length
-      : 0;
-  }
-
-  /**
-   * Calculates the average rating for the product after loading from the database.
-   * Updates the `averageRating` property.
-   */
-  @AfterLoad()
-  protected calculateFAverageRating() {
-    if (this.reviews && this.reviews.length > 0) {
-      const totalRating = this.reviews.reduce(
-        (sum, review) => sum + review.rating,
-        0,
-      );
-      this.averageRating = totalRating / this.reviews.length;
-    } else {
-      this.averageRating = 0;
-    }
-  }
 }

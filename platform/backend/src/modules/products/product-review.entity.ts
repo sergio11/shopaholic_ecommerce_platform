@@ -1,5 +1,4 @@
 import {
-  AfterLoad,
   Column,
   Entity,
   JoinColumn,
@@ -20,13 +19,13 @@ export class ProductReviewEntity extends AbstractEntity {
    * Textual review provided by the customer.
    */
   @Column({ name: 'review_text', type: 'text', nullable: false })
-  reviewText: string;
+  readonly reviewText: string;
 
   /**
    * Numeric rating given by the customer (0 to 5).
    */
   @Column({ type: 'float', nullable: false, precision: 2, scale: 1 })
-  rating: number;
+  readonly rating: number;
 
   /**
    * Product review is hidden
@@ -98,14 +97,14 @@ export class ProductReviewEntity extends AbstractEntity {
 
   /**
    * The number of likes received by the review.
-   * This property is calculated after the entity is loaded.
    */
+  @Column({ name: 'likes_count', default: 0 })
   likesCount: number;
 
   /**
    * The number of dislikes received by the review.
-   * This property is calculated after the entity is loaded.
    */
+  @Column({ name: 'dislikes_count', default: 0 })
   dislikesCount: number;
 
   /**
@@ -119,14 +118,4 @@ export class ProductReviewEntity extends AbstractEntity {
    */
   @Column({ name: 'is_worst_rated', type: 'boolean', default: false })
   isWorstRated: boolean;
-
-  /**
-   * Calculates the number of likes and dislikes after the entity is loaded.
-   * This method is automatically invoked by the @AfterLoad decorator.
-   */
-  @AfterLoad()
-  protected calculateLikesAndDislikesCounts() {
-    this.likesCount = this.likes.length;
-    this.dislikesCount = this.dislikes.length;
-  }
 }

@@ -9,6 +9,7 @@ import { CreateProductReviewDto } from './dto/create-product-review.dto';
 import { UpdateProductReviewDto } from './dto/update-product-review.dto';
 import { ProductReviewResponseDto } from './dto/product-review-response.dto';
 import { UserEntity } from '../users/user.entity';
+import { ProductEntity } from './product.entity';
 
 /**
  * Service handling CRUD operations for product reviews.
@@ -20,6 +21,8 @@ export class ProductReviewService extends SupportService {
     private readonly productReviewRepository: Repository<ProductReviewEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(ProductEntity)
+    private readonly productRepository: Repository<ProductEntity>,
     private readonly productReviewMapper: ProductReviewMapper,
     i18n: I18nService,
   ) {
@@ -36,6 +39,7 @@ export class ProductReviewService extends SupportService {
   ): Promise<ProductReviewResponseDto> {
     const newReview = this.productReviewMapper.mapCreateDtoToEntity(createDto);
     const savedReview = await this.productReviewRepository.save(newReview);
+    this.updateProductStats(savedReview.product); // Update product stats asynchronously
     return this.productReviewMapper.mapProductReviewToResponseDto(savedReview);
   }
 
@@ -66,6 +70,7 @@ export class ProductReviewService extends SupportService {
   async delete(id: string): Promise<string> {
     const reviewToDelete = await this.findProductReview(id);
     await this.productReviewRepository.remove(reviewToDelete);
+    this.updateProductStats(reviewToDelete.product); // Update product stats asynchronously
     return this.resolveString('PRODUCT_REVIEW_DELETED_SUCCESSFULLY');
   }
 
@@ -154,9 +159,10 @@ export class ProductReviewService extends SupportService {
         }
       }
 
-      // Recalculate isBestRated and isWorstRated for other reviews
       const likesCount = r.likes.length;
       const dislikesCount = r.dislikes.length;
+      r.likesCount = likesCount;
+      r.dislikesCount = dislikesCount;
       r.isBestRated = likesCount >= dislikesCount;
       r.isWorstRated = dislikesCount > likesCount;
 
@@ -164,6 +170,8 @@ export class ProductReviewService extends SupportService {
     }
 
     if (targetReview) {
+      targetReview.likesCount = targetReview.likes.length;
+      targetReview.dislikesCount = targetReview.dislikes.length;
       targetReview.isBestRated =
         targetReview.likes.length >= targetReview.dislikes.length;
       targetReview.isWorstRated =
@@ -173,6 +181,24 @@ export class ProductReviewService extends SupportService {
 
     await this.productReviewRepository.save(updatedReviews);
     return review;
+  }
+
+
+  private async updateProductStats(product: ProductEntity): Promise<void> {
+    const reviews = await this.productReviewRepository.find({
+      where: { idProduct: product.id, isHidden: false },
+    });
+
+    const reviewsCount = reviews.length;
+    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+    const averageRating = totalRating / reviewsCount;
+
+    product.reviewsCount = reviewsCount;
+    product.averageRating = averageRating;
+
+    // Perform the save operation asynchronously
+    await this.productRepository.save(product);
+    console.log(`Product statistics updated for product ${product.id}`);
   }
 
   /**

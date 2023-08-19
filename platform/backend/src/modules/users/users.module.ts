@@ -7,6 +7,8 @@ import { RoleEntity } from 'src/modules/roles/role.entity';
 import { UserMapper } from './user.mapper';
 import { RolesModule } from '../roles/roles.module';
 import { FilesStorageModule } from '../storage/storage.module';
+import { AddressSubscriber } from './subscribers/address.subscriber';
+import { ProductReviewSubscriber } from './subscribers/product-review.subscriber';
 
 @Module({
   imports: [ 
@@ -14,7 +16,7 @@ import { FilesStorageModule } from '../storage/storage.module';
     RolesModule,
     FilesStorageModule
   ],
-  providers: [UsersService, UserMapper],
+  providers: [UsersService, UserMapper, AddressSubscriber, ProductReviewSubscriber],
   controllers: [UsersController],
   exports: [UsersService, UserMapper]
 })

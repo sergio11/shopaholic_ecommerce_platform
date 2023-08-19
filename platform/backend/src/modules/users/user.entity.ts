@@ -90,6 +90,18 @@ export class UserEntity extends AbstractEntity {
 	gender?: GenderEnum
 
     /**
+     * Number of reviews made by the user.
+     */
+    @Column({ name: 'review_count', default: 0})
+    reviewCount: number;
+
+    /**
+     * Number of addresses registered by the user.
+     */
+    @Column({ name: 'address_count', default: 0})
+    addressCount: number;
+
+    /**
      * Addresses associated with this user.
      */
     @OneToMany(() => AddressEntity, address => address.user)
