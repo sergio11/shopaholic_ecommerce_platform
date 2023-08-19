@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductEntity } from './product.entity';
@@ -7,12 +7,12 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
-import { IStorageService, STORAGE_SERVICE } from '../storage/storage.service';
 import { ProductResponseDto } from './dto/product-response.dto';
 import { CacheService } from '../cache/cache.service';
 import { ProductMapper } from './product.mapper';
 import { CategoryEntity } from '../categories/category.entity';
 import { BrandsEntity } from '../brands/brand.entity';
+import { StorageMixin } from 'src/modules/storage/mixin/storage.mixin';
 
 @Injectable()
 export class ProductsService extends SupportService {
@@ -23,13 +23,12 @@ export class ProductsService extends SupportService {
         @InjectRepository(ProductEntity) private productsRepository: Repository<ProductEntity>,
         @InjectRepository(CategoryEntity) private categoriesRepository: Repository<CategoryEntity>,
         @InjectRepository(BrandsEntity) private brandsRepository: Repository<BrandsEntity>,
-        @Inject(STORAGE_SERVICE)
-        storageService: IStorageService,
         private readonly mapper: ProductMapper,
         private readonly cacheService: CacheService<ProductResponseDto[]>,
+        private readonly fileSavingMixin: StorageMixin,
         i18n: I18nService
     ) {
-        super(i18n, storageService);
+        super(i18n);
     }
 
     /**
@@ -84,8 +83,8 @@ export class ProductsService extends SupportService {
     async create(createProductDto: CreateProductDto): Promise<ProductResponseDto> {
         const categoryFound = await this.findCategory(createProductDto.idCategory);
         const brandFound = await this.findBrand(createProductDto.idBrand);
-        createProductDto.mainImage = await this.saveFileAndGetImageDto(createProductDto.mainImageFile);
-        createProductDto.secondaryImage = await this.saveFileAndGetImageDto(createProductDto.secondaryImageFile);
+        createProductDto.mainImage = await this.fileSavingMixin.saveImageFile(createProductDto.mainImageFile);
+        createProductDto.secondaryImage = await this.fileSavingMixin.saveImageFile(createProductDto.secondaryImageFile);
         const newProduct = this.mapper.mapCreateProductDtoToEntity(createProductDto);
         newProduct.category = categoryFound;
         newProduct.brand = brandFound;
@@ -103,8 +102,8 @@ export class ProductsService extends SupportService {
       const productFound = await this.findProduct(id);
       const categoryFound = await this.findCategory(updateProductDto.idCategory);
       const brandFound = await this.findBrand(updateProductDto.idBrand);
-      updateProductDto.mainImage = await this.saveFileAndGetImageDto(updateProductDto.mainImageFile);
-      updateProductDto.secondaryImage = await this.saveFileAndGetImageDto(updateProductDto.secondaryImageFile);
+      updateProductDto.mainImage = await this.fileSavingMixin.saveImageFile(updateProductDto.mainImageFile, productFound.mainImage);
+      updateProductDto.secondaryImage = await this.fileSavingMixin.saveImageFile(updateProductDto.secondaryImageFile, productFound.secondaryImage);
       const productToUpdate = this.mapper.mapUpdateProductDtoToEntity(updateProductDto, productFound);
       productToUpdate.category = categoryFound;
       productToUpdate.brand = brandFound;
@@ -115,11 +114,14 @@ export class ProductsService extends SupportService {
     /**
      * Delete a product.
      * @param {string} id - Product ID.
-     * @returns {Promise<void>}
+     * @returns {Promise<string>}
      */
-    async delete(id: string): Promise<void> {
-        await this.findProduct(id);
+    async delete(id: string): Promise<string> {
+        const product = await this.findProduct(id);
+        await this.fileSavingMixin.removeImageFile(product.mainImage);
+        await this.fileSavingMixin.removeImageFile(product.secondaryImage);
         await this.productsRepository.delete(id);
+        return this.resolveString("PRODUCT_DELETED_SUCCESSFULLY");
     }
     
     private async findProduct(id: string): Promise<ProductEntity> {

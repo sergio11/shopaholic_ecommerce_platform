@@ -65,8 +65,7 @@ export class RolesController {
     @Version('1.0')
     @Delete(':id')
     @ApiOperation({ summary: 'Delete role by ID' })
-    @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async delete(@Param('id') id: string): Promise<void> {
+    async delete(@Param('id') id: string): Promise<string> {
         return this.rolesService.delete(id);
     }
 }

@@ -9,12 +9,14 @@ import { ProductMapper } from './product.mapper';
 import { CategoriesModule } from '../categories/categories.module';
 import { BrandsEntity } from '../brands/brand.entity';
 import { BrandModule } from '../brands/brand.module';
+import { FilesStorageModule } from '../storage/storage.module';
 
 @Module({
   imports: [ 
     TypeOrmModule.forFeature([ ProductEntity, CategoryEntity, OrderHasProductsEntity, BrandsEntity ]),
     CategoriesModule,
-    BrandModule
+    BrandModule,
+    FilesStorageModule
    ],
   controllers: [ProductsController],
   providers: [ProductsService, ProductMapper],

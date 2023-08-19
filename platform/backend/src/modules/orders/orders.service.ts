@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OrderEntity } from './order.entity';
@@ -7,25 +7,21 @@ import { I18nService } from 'nestjs-i18n';
 import { OrderResponseDto } from './dto/order-response.dto';
 import { OrderStatus } from './order-status.enum';
 import { OrderMapper } from './order.mapper';
-import { IStorageService, STORAGE_SERVICE } from '../storage/storage.service';
 
 @Injectable()
 export class OrdersService extends SupportService {
     /**
      * Constructor of the OrdersService class.
      * @param {Repository<OrderEntity>} ordersRepository - The repository for OrderEntity.
-     * @param {IStorageService} storageService - The storage service.
      * @param {OrderMapper} mapper - The mapper for orders.
      * @param {I18nService} i18n - The internationalization service.
      */
     constructor(
         @InjectRepository(OrderEntity) private ordersRepository: Repository<OrderEntity>,
-        @Inject(STORAGE_SERVICE)
-        storageService: IStorageService,
         private readonly mapper: OrderMapper,
         i18n: I18nService
     ) {
-        super(i18n, storageService);
+        super(i18n);
     }
 
     /**

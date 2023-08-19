@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import CreateCategoryDTO from './dto/create-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryEntity } from './category.entity';
@@ -6,33 +6,25 @@ import { Repository } from 'typeorm';
 import UpdateCategoryDTO from './dto/update-category.dto';
 import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
-import { IStorageService, STORAGE_SERVICE } from '../storage/storage.service';
 import { CategoryResponseDto } from './dto/category-response.dto';
 import { CacheService } from '../cache/cache.service';
 import { CategoryMapper } from './category.mapper';
+import { StorageMixin } from 'src/modules/storage/mixin/storage.mixin';
 
 @Injectable()
 export class CategoriesService extends SupportService {
 
     private readonly CACHE_KEY = 'all-categories';
 
-    /**
-     * Constructor of the CategoriesService class.
-     * @param categoriesRepository The repository for CategoryEntity.
-     * @param storageService The storage service to handle file uploads.
-     * @param cacheService The cache service to store category data.
-     * @param i18n The internationalization service.
-     * @param categoryMapper The mapper for category data.
-     */
+    
     constructor(
         @InjectRepository(CategoryEntity) private categoriesRepository: Repository<CategoryEntity>,
-        @Inject(STORAGE_SERVICE)
-        storageService: IStorageService,
         private readonly cacheService: CacheService<CategoryResponseDto[]>,
+        private readonly fileSavingMixin: StorageMixin,
         i18n: I18nService,
         private readonly categoryMapper: CategoryMapper,
     ) {
-        super(i18n, storageService);
+        super(i18n);
     }
 
     /**
@@ -56,7 +48,7 @@ export class CategoriesService extends SupportService {
      * @returns The created category response DTO.
      */
     async create(createCategoryDto: CreateCategoryDTO): Promise<CategoryResponseDto> {
-        createCategoryDto.image = await this.saveFileAndGetImageDto(createCategoryDto.imageFile);
+        createCategoryDto.image = await this.fileSavingMixin.saveImageFile(createCategoryDto.imageFile);
         const newCategory = this.categoryMapper.mapCreateCategoryDtoToEntity(createCategoryDto);
         const savedCategory = await this.categoriesRepository.save(newCategory);
         await this.invalidateCache();
@@ -70,8 +62,8 @@ export class CategoriesService extends SupportService {
      * @returns The updated category response DTO.
      */
     async update(id: string, updateCategoryDto: UpdateCategoryDTO): Promise<CategoryResponseDto> {    
-        const categoryFound = await this.findCategory(id);     
-        updateCategoryDto.image = await this.saveFileAndGetImageDto(updateCategoryDto.imageFile);
+        const categoryFound = await this.findCategory(id);   
+        updateCategoryDto.image = await this.fileSavingMixin.saveImageFile(updateCategoryDto.imageFile, categoryFound.image);
         const updatedCategory = this.categoryMapper.mapUpdateCategoryDtoToEntity(updateCategoryDto, categoryFound);
         const savedCategory = await this.categoriesRepository.save(updatedCategory);
         await this.invalidateCache();
@@ -82,10 +74,12 @@ export class CategoriesService extends SupportService {
      * Delete a category by its ID.
      * @param id The ID of the category to be deleted.
      */
-    async delete(id: string) {
-        await this.findCategory(id);
+    async delete(id: string): Promise<string> {
+        const category = await this.findCategory(id);
         await this.invalidateCache();
-        return this.categoriesRepository.delete(id);
+        await this.fileSavingMixin.removeImageFile(category.image);
+        await this.categoriesRepository.delete(id);
+        return this.resolveString("CATEGORY_DELETED_SUCCESSFULLY");
     }
 
     /**

@@ -4,10 +4,12 @@ import { CategoriesController } from './categories.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryEntity } from './category.entity';
 import { CategoryMapper } from './category.mapper';
+import { FilesStorageModule } from '../storage/storage.module';
 
 @Module({
   imports: [ 
-    TypeOrmModule.forFeature([CategoryEntity])
+    TypeOrmModule.forFeature([CategoryEntity]),
+    FilesStorageModule
   ],
   providers: [CategoriesService, CategoryMapper],
   controllers: [CategoriesController],

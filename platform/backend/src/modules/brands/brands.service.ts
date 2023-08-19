@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BrandsMapper } from './brands.mapper';
@@ -8,7 +8,7 @@ import { CreateBrandDTO } from './dto/create-brand.dto';
 import { UpdateBrandDTO } from './dto/update-brand.dto';
 import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
-import { IStorageService, STORAGE_SERVICE } from '../storage/storage.service';
+import { StorageMixin } from '../storage/mixin/storage.mixin';
 
 /**
  * Service responsible for handling brand-related operations.
@@ -16,14 +16,14 @@ import { IStorageService, STORAGE_SERVICE } from '../storage/storage.service';
 @Injectable()
 export class BrandService extends SupportService {
 
+  
   constructor(
-    @InjectRepository(BrandsEntity) private brandRepository: Repository<BrandsEntity>,
-    private readonly brandMapper: BrandsMapper,
-    @Inject(STORAGE_SERVICE)
-    storageService: IStorageService,
-    i18n: I18nService
+      @InjectRepository(BrandsEntity) private brandRepository: Repository<BrandsEntity>,
+      private readonly brandMapper: BrandsMapper,
+      private readonly fileSavingMixin: StorageMixin,
+      i18n: I18nService
   ) {
-    super(i18n, storageService);
+    super(i18n);
   }
 
   /**
@@ -52,7 +52,7 @@ export class BrandService extends SupportService {
    * @returns A BrandResponseDto representing the newly created brand.
    */
   async create(createBrandDto: CreateBrandDTO): Promise<BrandResponseDTO> {
-    createBrandDto.image = await this.saveFileAndGetImageDto(createBrandDto.imageFile);
+    createBrandDto.image = await this.fileSavingMixin.saveImageFile(createBrandDto.imageFile);
     const brandEntity = this.brandMapper.mapCreateBrandDtoToEntity(createBrandDto);
     const createdBrand = await this.brandRepository.save(brandEntity);
     return this.brandMapper.mapBrandToResponseDto(createdBrand);
@@ -66,8 +66,8 @@ export class BrandService extends SupportService {
    * @throws NotFoundException if the brand with the provided ID is not found.
    */
   async update(id: string, updateBrandDto: UpdateBrandDTO): Promise<BrandResponseDTO> {
-    updateBrandDto.image = await this.saveFileAndGetImageDto(updateBrandDto.imageFile);
     const brandToUpdate = await this.findBrand(id);
+    updateBrandDto.image = await this.fileSavingMixin.saveImageFile(updateBrandDto.imageFile, brandToUpdate.image);
     const updatedBrandEntity = this.brandMapper.mapUpdateBrandDtoToEntity(updateBrandDto, brandToUpdate);
     const updatedBrand = await this.brandRepository.save(updatedBrandEntity);
     return this.brandMapper.mapBrandToResponseDto(updatedBrand);
@@ -78,9 +78,11 @@ export class BrandService extends SupportService {
    * @param id - The ID of the brand to remove.
    * @throws NotFoundException if the brand with the provided ID is not found.
    */
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<string> {
     const brandToRemove = await this.findBrand(id);
+    await this.fileSavingMixin.removeImageFile(brandToRemove.image);
     await this.brandRepository.remove(brandToRemove);
+    return this.resolveString("BRAND_REMOVED_SUCCESFULLY");
   }
 
   private async findBrand(id: string): Promise<BrandsEntity> {

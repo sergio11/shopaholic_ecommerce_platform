@@ -87,7 +87,7 @@ export class BrandController {
   @Version('1.0')
   @Delete(':id')
   @ApiResponse({ status: HttpStatus.OK, description: 'Brand deleted successfully.' })
-  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<string> {
     return this.brandService.remove(id);
   }
 }

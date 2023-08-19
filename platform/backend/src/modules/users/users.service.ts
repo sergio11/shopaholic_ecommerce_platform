@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
@@ -6,9 +6,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
-import { IStorageService, STORAGE_SERVICE } from '../storage/storage.service';
 import { UserResponseDto } from './dto/user-response.dto';
 import { UserMapper } from './user.mapper';
+import { StorageMixin } from 'src/modules/storage/mixin/storage.mixin';
 
 /**
  * Service responsible for handling user-related operations.
@@ -20,16 +20,15 @@ export class UsersService extends SupportService {
      * Constructor of the UsersService class.
      * @param usersRepository Injected repository for UserEntity.
      * @param userMapper Injected UserMapper for mapping user data.
-     * @param storageService Injected storage service for file handling.
      * @param i18n Injected internationalization service.
      */
     constructor(
         @InjectRepository(UserEntity) private usersRepository: Repository<UserEntity>,
         private readonly userMapper: UserMapper,
-        @Inject(STORAGE_SERVICE) storageService: IStorageService,
+        private readonly fileSavingMixin: StorageMixin,
         i18n: I18nService
     ) {
-        super(i18n, storageService);
+        super(i18n);
     }
     
     /**
@@ -38,7 +37,7 @@ export class UsersService extends SupportService {
      * @returns The created user.
      */
     async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
-        createUserDto.image = await this.saveFileAndGetImageDto(createUserDto.imageFile);
+        createUserDto.image = await this.fileSavingMixin.saveImageFile(createUserDto.imageFile);
         const newUser = this.userMapper.mapCreateUserDtoToEntity(createUserDto);
         const userCreated = await this.usersRepository.save(newUser);
         return this.userMapper.mapUserToResponseDto(userCreated);
@@ -61,7 +60,7 @@ export class UsersService extends SupportService {
      */
     async update(id: string, updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
         const userFound = await this.findUser(id);
-        updateUserDto.image = await this.saveFileAndGetImageDto(updateUserDto.imageFile);
+        updateUserDto.image = await this.fileSavingMixin.saveImageFile(updateUserDto.imageFile, userFound.image);
         const updatedUser = this.userMapper.mapUpdateUserDtoToEntity(updateUserDto, userFound);
         const userUpdated = await this.usersRepository.save(updatedUser);
         return this.userMapper.mapUserToResponseDto(userUpdated);
@@ -86,10 +85,11 @@ export class UsersService extends SupportService {
      * @returns The deleted user.
      * @throws NotFoundException if user is not found.
      */
-    async delete(id: string): Promise<UserResponseDto> {
+    async delete(id: string): Promise<string> {
         const userToDelete = await this.findUser(id);
+        await this.fileSavingMixin.removeImageFile(userToDelete.image);
         await this.usersRepository.remove(userToDelete);
-        return this.userMapper.mapUserToResponseDto(userToDelete);
+        return this.resolveString("USER_DELETED_SUCCESSFULLY");
     }
 
     /**

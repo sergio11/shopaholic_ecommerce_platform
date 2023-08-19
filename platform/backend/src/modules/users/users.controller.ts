@@ -45,7 +45,6 @@ export class UsersController {
     @Version('1.0')
     @DefaultUploadFileValidationDecorator()
     @ApiOperation({ summary: 'Create new user' })
-    @ApiResponse({ status: 403, description: 'Forbidden.' })
     async create(
         @UploadedFile() file: Express.Multer.File,
         @Body() userData: CreateUserDto
@@ -66,7 +65,6 @@ export class UsersController {
     @Post(':id')
     @DefaultUploadFileValidationDecorator({ isOptional: true })
     @ApiOperation({ summary: 'Update user and profile picture' })
-    @ApiResponse({ status: 403, description: 'Forbidden.' })
     async update(
         @UploadedFile() file: Express.Multer.File,
         @Param('id') id: string, 
@@ -83,8 +81,7 @@ export class UsersController {
     @Auth(JwtRole.ADMIN)
     @Delete(':id')
     @ApiOperation({ summary: 'Delete user by ID' })
-    @ApiResponse({ status: 403, description: 'Forbidden.' })
-    async delete(@Param('id') id: string): Promise<UserResponseDto> {
+    async delete(@Param('id') id: string): Promise<string> {
         return await this.usersService.delete(id);
     }
 

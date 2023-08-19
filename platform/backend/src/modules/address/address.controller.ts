@@ -96,10 +96,9 @@ export class AddressController {
     @ApiOperation({ summary: 'Allow us to delete an address' })
     @ApiResponse({
         status: 200,
-        description: 'The address deleted by the user',
-        type: AddressResponseDto,
+        description: 'The address deleted by the user'
     })
-    async delete(@Param('id') id: string): Promise<void> {
+    async delete(@Param('id') id: string): Promise<string> {
         return this.addressService.delete(id);
     }
 }

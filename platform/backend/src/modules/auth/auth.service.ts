@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../users/user.entity';
 import { Repository, In } from 'typeorm';
@@ -12,7 +12,6 @@ import { I18nService } from 'nestjs-i18n';
 import { AuthResponseDto } from './dto/auth-response.dto';
 import { jwtConstants } from './jwt/jwt.constants';
 import { UserMapper } from '../users/user.mapper';
-import { IStorageService, STORAGE_SERVICE } from '../storage/storage.service';
 
 
 @Injectable()
@@ -22,7 +21,6 @@ export class AuthService extends SupportService {
      * Constructor for the AuthService class.
      * @param {Repository<UserEntity>} usersRepository - The repository for user entities.
      * @param {Repository<RoleEntity>} rolesRepository - The repository for role entities.
-     * @param {IStorageService} storageService - The storage service.
      * @param {JwtService} jwtService - The JWT service for token handling.
      * @param {UserMapper} userMapper - The user mapper service.
      * @param {I18nService} i18n - The internationalization service.
@@ -30,13 +28,11 @@ export class AuthService extends SupportService {
     constructor(
         @InjectRepository(UserEntity) private usersRepository: Repository<UserEntity>,
         @InjectRepository(RoleEntity) private rolesRepository: Repository<RoleEntity>,
-        @Inject(STORAGE_SERVICE)
-        storageService: IStorageService,
         private jwtService: JwtService,
         private readonly userMapper: UserMapper,
         i18n: I18nService
     ) {
-        super(i18n, storageService);
+        super(i18n);
     }
 
     /**
@@ -101,11 +97,8 @@ export class AuthService extends SupportService {
         return this.generateAndSignJwt(userFound);
     }
 
-    async validateUserById(email: string): Promise<UserEntity> {
-        const userFound = await this.usersRepository.findOne({ 
-            where: { email: email },
-            relations: ['roles']
-        })
+    async validateUserById(id: string): Promise<UserEntity> {
+        const userFound = await this.usersRepository.findOne({where: { id }})
         if (!userFound) {
             this.throwUnAuthorizedException("INVALID_CREDENTIALS");
         }
