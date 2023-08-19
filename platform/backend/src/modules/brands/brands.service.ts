@@ -8,7 +8,7 @@ import { CreateBrandDTO } from './dto/create-brand.dto';
 import { UpdateBrandDTO } from './dto/update-brand.dto';
 import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
-import { StorageMixin } from '../storage/mixin/storage.mixin';
+import { StorageMixin } from '../storage/mixin/file-saving.mixin';
 
 /**
  * Service responsible for handling brand-related operations.

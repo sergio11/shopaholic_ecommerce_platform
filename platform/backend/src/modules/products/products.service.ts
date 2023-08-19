@@ -12,7 +12,7 @@ import { CacheService } from '../cache/cache.service';
 import { ProductMapper } from './product.mapper';
 import { CategoryEntity } from '../categories/category.entity';
 import { BrandsEntity } from '../brands/brand.entity';
-import { StorageMixin } from 'src/modules/storage/mixin/storage.mixin';
+import { StorageMixin } from 'src/modules/storage/mixin/file-saving.mixin';
 
 @Injectable()
 export class ProductsService extends SupportService {

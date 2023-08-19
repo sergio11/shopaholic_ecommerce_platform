@@ -8,7 +8,7 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleResponseDto } from './dto/role-response.dto';
 import { RoleMapper } from './role.mapper';
-import { StorageMixin } from 'src/modules/storage/mixin/storage.mixin';
+import { StorageMixin } from 'src/modules/storage/mixin/file-saving.mixin';
 
 @Injectable()
 export class RolesService extends SupportService {

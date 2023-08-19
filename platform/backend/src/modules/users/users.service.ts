@@ -8,7 +8,7 @@ import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
 import { UserResponseDto } from './dto/user-response.dto';
 import { UserMapper } from './user.mapper';
-import { StorageMixin } from 'src/modules/storage/mixin/storage.mixin';
+import { StorageMixin } from 'src/modules/storage/mixin/file-saving.mixin';
 
 /**
  * Service responsible for handling user-related operations.

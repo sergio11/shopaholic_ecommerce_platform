@@ -9,7 +9,7 @@ import { I18nService } from 'nestjs-i18n';
 import { CategoryResponseDto } from './dto/category-response.dto';
 import { CacheService } from '../cache/cache.service';
 import { CategoryMapper } from './category.mapper';
-import { StorageMixin } from 'src/modules/storage/mixin/storage.mixin';
+import { StorageMixin } from 'src/modules/storage/mixin/file-saving.mixin';
 
 @Injectable()
 export class CategoriesService extends SupportService {

@@ -1,4 +1,4 @@
-import { Get, Param, Post, Body, Delete, Query, DefaultValuePipe, ParseIntPipe, UploadedFiles, Version } from '@nestjs/common';
+import { Get, Param, Post, Body, Delete, Query, DefaultValuePipe, ParseIntPipe, UploadedFiles, Version, Put } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -6,11 +6,16 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { ProductEntity } from './product.entity';
 import { API } from 'src/config/config';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiNotFoundResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ProductResponseDto } from './dto/product-response.dto';
 import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
 import { Auth } from '../auth/decorator/auth.decorator';
 import { ApiController } from 'src/core/decorator/default-api.decorator';
+import { CreateProductReviewDto } from './dto/create-product-review.dto';
+import { UpdateProductReviewDto } from './dto/update-product-review.dto';
+import { ProductReviewResponseDto } from './dto/product-review-response.dto';
+import { ProductReviewService } from './products-review.service';
+import { AuthUserId } from '../auth/decorator/auth-user-id.decorator';
 
 /**
  * Controller handling CRUD operations for products.
@@ -21,8 +26,12 @@ export class ProductsController {
     /**
      * Constructs the ProductsController.
      * @param productsService - The injected ProductsService instance.
+     * @param productReviewService - The injected ProductReviewService instance.
      */
-    constructor(private productsService: ProductsService) {}
+    constructor(
+        private readonly productsService: ProductsService,
+        private readonly productReviewService: ProductReviewService
+    ) {}
 
     /**
      * Retrieves a list of all products.
@@ -151,5 +160,67 @@ export class ProductsController {
         @Param('id') id: string,
     ) {
         return this.productsService.delete(id);
+    }
+
+    /**
+     * Creates a new review for a product.
+     * @param idProduct - The ID of the product to review.
+     * @param idAuthUser - The id of the authenticated user.
+     * @param createReviewDto - Review data.
+     * @returns The created ProductReviewResponseDto.
+     */
+    @ApiOperation({ summary: 'Creates a new review for a product' })
+    @ApiBody({ type: CreateProductReviewDto })
+    @ApiResponse({ status: 201, description: 'Review created successfully.', type: ProductReviewResponseDto })
+    @ApiNotFoundResponse({ description: 'Product not found.' })
+    @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
+    @Version('1.0')
+    @Post(':id/reviews')
+    async createReview(
+        @Param('id') idProduct: string,
+        @AuthUserId() idAuthUser: string,
+        @Body() createReviewDto: CreateProductReviewDto,
+    ): Promise<ProductReviewResponseDto> {
+        const review = {...createReviewDto, idUser: idAuthUser, idProduct: idProduct};
+        return this.productReviewService.create(review);
+    }
+
+    /**
+     * Updates an existing review for a product.
+     * @param idProduct - The ID of the product.
+     * @param reviewId - The ID of the review to update.
+     * @param idAuthUser - The id of the authenticated user.
+     * @param updateReviewDto - Updated review data.
+     * @returns The updated ProductReviewEntity.
+     */
+    @ApiOperation({ summary: 'Updates an existing review for a product' })
+    @ApiBody({ type: UpdateProductReviewDto })
+    @ApiResponse({ status: 200, description: 'Review updated successfully.', type: ProductReviewResponseDto })
+    @ApiNotFoundResponse({ description: 'Review or product not found.' })
+    @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
+    @Version('1.0')
+    @Put(':id/reviews/:reviewId')
+    async updateReview(
+        @Param('id') idProduct: string,
+        @Param('reviewId') reviewId: string,
+        @AuthUserId() idAuthUser: string,
+        @Body() updateReviewDto: UpdateProductReviewDto,
+    ): Promise<ProductReviewResponseDto> {
+        const review = {...updateReviewDto, idUser: idAuthUser, idProduct: idProduct};
+        return this.productReviewService.update(reviewId, review);
+    }
+
+    /**
+     * Deletes a review for a product.
+     * @param reviewId - The ID of the review to delete.
+     */
+    @ApiOperation({ summary: 'Deletes a review for a product' })
+    @ApiResponse({ status: 200, description: 'Review deleted successfully.' })
+    @ApiNotFoundResponse({ description: 'Review not found.' })
+    @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
+    @Version('1.0')
+    @Delete('reviews/:reviewId')
+    async deleteReview(@Param('reviewId') reviewId: string): Promise<string> {
+        return await this.productReviewService.delete(reviewId);
     }
 }

@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { STORAGE_SERVICE } from "./storage.service";
 import { MinioStorageService } from "./impl/minio-storage.service";
 import { ImagesModule } from "../images/images.module";
-import { StorageMixin } from "./mixin/storage.mixin";
+import { StorageMixin } from "./mixin/file-saving.mixin";
 
 @Module({
   imports: [ ImagesModule ],

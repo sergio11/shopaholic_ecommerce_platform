@@ -11,6 +11,8 @@ import { BrandsEntity } from '../brands/brand.entity';
 import { BrandModule } from '../brands/brand.module';
 import { FilesStorageModule } from '../storage/storage.module';
 import { ProductReviewEntity } from './product-review.entity';
+import { ProductReviewService } from './products-review.service';
+import { ProductReviewMapper } from './product-review.mapper';
 
 @Module({
   imports: [ 
@@ -20,7 +22,7 @@ import { ProductReviewEntity } from './product-review.entity';
     FilesStorageModule
    ],
   controllers: [ProductsController],
-  providers: [ProductsService, ProductMapper],
-  exports: [ProductsService, ProductMapper]
+  providers: [ProductsService, ProductMapper, ProductReviewService, ProductReviewMapper],
+  exports: [ProductsService, ProductMapper, ProductReviewService, ProductReviewMapper]
 })
 export class ProductsModule {}
