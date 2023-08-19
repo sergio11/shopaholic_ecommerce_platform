@@ -80,4 +80,28 @@ export class ProductResponseDto extends AbstractDto {
     @Expose()
     @Type(() => BrandResponseDTO)
     brand: BrandResponseDTO;
+
+    /**
+     * Number of reviews for the product.
+     * @example 10
+     */
+    @ApiProperty({ description: 'Number of reviews for the product', example: 10 })
+    @Expose()
+    numberOfReviews: number;
+
+    /**
+     * Number of times the product has been purchased.
+     * @example 50
+     */
+    @ApiProperty({ description: 'Number of times the product has been purchased', example: 50 })
+    @Expose()
+    numberOfPurchases: number;
+
+    /**
+     * Average rating of the product.
+     * @example 4.5
+     */
+    @ApiProperty({ description: 'Average rating of the product', example: 4.5 })
+    @Expose()
+    averageRating: number;
 }

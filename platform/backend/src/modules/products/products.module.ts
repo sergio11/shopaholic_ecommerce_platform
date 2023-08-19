@@ -10,10 +10,11 @@ import { CategoriesModule } from '../categories/categories.module';
 import { BrandsEntity } from '../brands/brand.entity';
 import { BrandModule } from '../brands/brand.module';
 import { FilesStorageModule } from '../storage/storage.module';
+import { ProductReviewEntity } from './product-review.entity';
 
 @Module({
   imports: [ 
-    TypeOrmModule.forFeature([ ProductEntity, CategoryEntity, OrderHasProductsEntity, BrandsEntity ]),
+    TypeOrmModule.forFeature([ ProductEntity, CategoryEntity, OrderHasProductsEntity, BrandsEntity, ProductReviewEntity ]),
     CategoriesModule,
     BrandModule,
     FilesStorageModule
