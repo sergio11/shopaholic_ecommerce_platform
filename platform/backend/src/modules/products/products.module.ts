@@ -13,6 +13,7 @@ import { FilesStorageModule } from '../storage/storage.module';
 import { ProductReviewEntity } from './product-review.entity';
 import { ProductReviewService } from './products-review.service';
 import { ProductReviewMapper } from './product-review.mapper';
+import { UserEntity } from '../users/user.entity';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ProductReviewMapper } from './product-review.mapper';
       OrderHasProductsEntity,
       BrandsEntity,
       ProductReviewEntity,
+      UserEntity
     ]),
     CategoriesModule,
     BrandModule,

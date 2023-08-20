@@ -7,6 +7,7 @@ import { CategoryEntity } from 'src/modules/categories/category.entity';
 import { ImageEntity } from 'src/modules/images/image.entity';
 import { OrderEntity } from 'src/modules/orders/order.entity';
 import { OrderHasProductsEntity } from 'src/modules/orders/order_has_products.entity';
+import { TransactionRecordEntity } from 'src/modules/payments/transaction-record.entity';
 import { ProductReviewEntity } from 'src/modules/products/product-review.entity';
 import { ProductEntity } from 'src/modules/products/product.entity';
 import { RoleEntity } from 'src/modules/roles/role.entity';
@@ -47,7 +48,8 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
         UserEntity,
         ImageEntity,
         BrandsEntity,
-        ProductReviewEntity
+        ProductReviewEntity,
+        TransactionRecordEntity
       ],
       synchronize: true
     };

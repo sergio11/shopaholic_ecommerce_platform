@@ -15,6 +15,7 @@ import { ImageEntity } from '../images/image.entity';
 import { AddressEntity } from '../address/address.entity';
 import { GenderEnum } from './gender.enum';
 import { ProductReviewEntity } from '../products/product-review.entity';
+import { TransactionRecordEntity } from '../payments/transaction-record.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends AbstractEntity {
@@ -132,6 +133,9 @@ export class UserEntity extends AbstractEntity {
 
   @OneToMany(() => ProductReviewEntity, (review) => review.user)
   productReviews: ProductReviewEntity[];
+
+  @OneToMany(() => TransactionRecordEntity, transaction => transaction.user)
+  transactions: TransactionRecordEntity[];
 
   /**
    * Hashes the user's password before insertion.
