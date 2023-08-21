@@ -75,8 +75,9 @@ export class CategoryUpdateComponent implements OnInit {
     } else {
       this.categoryService
         .update(this.data.id, {
+          name: this.categoryForm.value.name || '',
+          department: this.categoryForm.value.department || '',
           image: this.imageUrl,
-          ...this.categoryForm.value,
         })
         .subscribe((res: any) => {
           this.notificationService.success('Updated', '');

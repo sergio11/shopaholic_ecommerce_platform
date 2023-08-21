@@ -61,8 +61,8 @@ export class BrandCreateComponent {
     } else {
       this.brandService
         .create({
-          ...this.brandForm.value,
           image: this.imageUrl,
+          name: this.brandForm.value.name || ''
         })
         .subscribe((res: any) => {
           this.notificationService.success('Created', '');

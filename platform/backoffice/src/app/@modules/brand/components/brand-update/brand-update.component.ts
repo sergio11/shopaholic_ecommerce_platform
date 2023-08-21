@@ -70,10 +70,11 @@ export class BrandUpdateComponent implements OnInit {
     } else {
       this.brandService
         .update(this.data?.id, {
-          ...this.brandForm.value,
           image: this.imageUrl,
+          name: this.brandForm.value.name || ''
         })
         .subscribe((res: any) => {
+          console.log(res);
           this.notificationService.success('Updated', '');
           this.onClose.emit();
         });

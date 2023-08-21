@@ -5,6 +5,7 @@ import { FormBuilder } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { UtilsService } from 'src/app/@shared/services/utils.service';
+import { BannerType } from 'src/app/@shared/enums';
 
 @Component({
   selector: 'app-banner-update',
@@ -74,10 +75,15 @@ export class BannerUpdateComponent implements OnInit {
     } else if (!this.bannerForm.value.url) {
       this.notificationService.error('URL are empty', '');
     } else {
+      const bannerTypeValue = this.bannerForm.value.type || 'FULL_BANNER';
+      const bannerType: BannerType =
+        BannerType[bannerTypeValue as keyof typeof BannerType];
       this.bannerService
         .update(this.data.id, {
           image: this.imageUrl,
-          ...this.bannerForm.value,
+          title: this.bannerForm.value.title || '',
+          url: this.bannerForm.value.url || '',
+          type: bannerType,
         })
         .subscribe((res: any) => {
           this.notificationService.success('updated', '');

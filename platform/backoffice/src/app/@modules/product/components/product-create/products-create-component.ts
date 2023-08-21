@@ -8,6 +8,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { ProductService } from '../../../../@shared/services/product.service';
 import { UtilsService } from 'src/app/@shared/services/utils.service';
+import { IFProductCreate } from 'src/app/@shared/interfaces/product.interface';
 @Component({
   selector: 'app-products-create',
   templateUrl: './products-create-component.html',
@@ -74,11 +75,31 @@ export class ProductsCreateComponent {
     } else if (!this.productForm.value.name) {
       this.notificationService.error('Name Empty', '');
     } else {
+
+      const productData: IFProductCreate = {
+        name: this.productForm.value.name || '',
+        description: this.productForm.value.description || '',
+        isAvailable: this.productForm.value.isAvailable || false,
+        isNewArrival: this.productForm.value.isNewArrival || false,
+        isTopSelling: this.productForm.value.isTopSelling || false,
+        mrp: this.productForm.value.mrp || '',
+        mrpVat: this.productForm.value.mrpVat || '',
+        productCode: this.productForm.value.productCode || '',
+        specification: this.productForm.value.specification || '',
+        stock: this.productForm.value.stock || '',
+        brand: this.productForm.value.brand || '',
+        category: this.productForm.value.category || '',
+        department: this.productForm.value.department || '',
+        isFeatured: this.productForm.value.isFeatured || false,
+        isActive: this.productForm.value.isActive || false,
+        isPopular: this.productForm.value.isPopular || false,
+        isHot: this.productForm.value.isHot || false,
+        isNew: this.productForm.value.isNew || false,
+        productImages: this.imageUrl || '',
+      };
+
       this.productService
-        .create({
-          ...this.productForm.value,
-          productImages: this.imageUrl,
-        })
+        .create(productData)
         .subscribe((res: any) => {
           this.notificationService.success('Created', '');
           this.onClose.emit();

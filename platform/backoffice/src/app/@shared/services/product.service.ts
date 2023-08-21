@@ -39,7 +39,7 @@ export class ProductService {
       })
     );
   }
-  update(id: string, payload: IFBrand) {
+  update(id: string, payload: IFProductCreate) {
     return this.http.put(`${this.END_POINT}${id}`, payload).pipe(
       tap((banner: IFBaseResponse) => {
         this.productsStore.updateBanner(banner?.data);
