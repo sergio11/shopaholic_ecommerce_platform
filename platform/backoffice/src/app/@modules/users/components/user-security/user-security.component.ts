@@ -39,8 +39,8 @@ export class UserProfileChangePassword {
       this.chnPhnLoading = true;
       this.userService
         .changePhoneNumber({
-          oldPhoneNumber: currentNumber,
-          newPhoneNumber: newNumber,
+          oldPhoneNumber: String(currentNumber),
+          newPhoneNumber: String(newNumber),
         })
         .subscribe((res: IFBaseResponse) => {
           this.chnPhnLoading = false;
@@ -67,8 +67,8 @@ export class UserProfileChangePassword {
       this.authChangePasswordService
         .admin({
           id: this.user.id,
-          oldPassword: oldPassword,
-          newPassword: newPassword,
+          oldPassword: String(oldPassword),
+          newPassword: String(newPassword),
         })
         .subscribe((res: IFBaseResponse) => {
           this.chnPssLoading = false;

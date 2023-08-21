@@ -5,6 +5,7 @@ import { FormBuilder } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { UtilsService } from 'src/app/@shared/services/utils.service';
+import { BannerType } from 'src/app/@shared/enums';
 
 @Component({
   selector: 'app-banner-create',
@@ -62,12 +63,18 @@ export class BannerCreateComponent {
     } else if (!this.bannerForm.value.url) {
       this.notificationService.error('URL are empty', '');
     } else {
+      const bannerTypeValue = this.bannerForm.value.type || 'FULL_BANNER';
+      const bannerType: BannerType =
+        BannerType[bannerTypeValue as keyof typeof BannerType];
       this.bannerService
         .create({
-          ...this.bannerForm.value,
           image: this.imageUrl,
+          title: this.bannerForm.value.title || '',
+          url: this.bannerForm.value.url || '',
+          type: bannerType,
         })
         .subscribe((res: any) => {
+          console.log(res);
           this.notificationService.success('Created', '');
           this.onClose.emit();
           this.bannerForm.reset();

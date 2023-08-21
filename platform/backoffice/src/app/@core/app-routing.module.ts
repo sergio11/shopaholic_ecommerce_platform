@@ -33,8 +33,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes, {
       preloadingStrategy: PreloadAllModules,
       anchorScrolling: 'enabled',
-      scrollPositionRestoration: 'enabled',
-      relativeLinkResolution: 'legacy',
+      scrollPositionRestoration: 'enabled'
     }),
   ],
   exports: [RouterModule],

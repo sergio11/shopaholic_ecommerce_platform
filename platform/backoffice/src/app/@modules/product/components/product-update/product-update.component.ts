@@ -8,6 +8,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { ProductService } from './../../../../@shared/services/product.service';
 import { UtilsService } from 'src/app/@shared/services/utils.service';
+import { IFProductCreate } from 'src/app/@shared/interfaces/product.interface';
 
 @Component({
   selector: 'app-product-update',
@@ -101,11 +102,31 @@ export class ProductUpdateComponent implements OnInit {
     } else if (!this.productForm.value.name) {
       this.notificationService.error('Name Empty', '');
     } else {
+      
+      const productData: IFProductCreate = {
+        name: this.productForm.value.name || '',
+        description: this.productForm.value.description || '',
+        isAvailable: this.productForm.value.isAvailable || false,
+        isNewArrival: this.productForm.value.isNewArrival || false,
+        isTopSelling: this.productForm.value.isTopSelling || false,
+        mrp: this.productForm.value.mrp || '',
+        mrpVat: this.productForm.value.mrpVat || '',
+        productCode: this.productForm.value.productCode || '',
+        specification: this.productForm.value.specification || '',
+        stock: this.productForm.value.stock || '',
+        brand: this.productForm.value.brand || '',
+        category: this.productForm.value.category || '',
+        department: this.productForm.value.department || '',
+        isFeatured: this.productForm.value.isFeatured || false,
+        isActive: this.productForm.value.isActive || false,
+        isPopular: this.productForm.value.isPopular || false,
+        isHot: this.productForm.value.isHot || false,
+        isNew: this.productForm.value.isNew || false,
+        productImages: this.imageUrl || '',
+      };
+
       this.productService
-        .update(this.data?.id, {
-          ...this.productForm.value,
-          productImages: this.imageUrl,
-        })
+        .update(this.data?.id, productData)
         .subscribe((res: any) => {
           this.notificationService.success('Updated', '');
           this.onClose.emit();
@@ -115,7 +136,7 @@ export class ProductUpdateComponent implements OnInit {
 
   //*Department
   departmentOptionList: any[] = [];
-  isLoading = false;
+  isLoading = false; 
   dPage = 1;
   loadMoreDepartment(): void {
     this.isLoading = true;

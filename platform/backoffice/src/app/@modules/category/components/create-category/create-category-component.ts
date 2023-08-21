@@ -67,7 +67,8 @@ export class CreateCategoryComponent implements OnInit {
     } else {
       this.categoryService
         .create({
-          ...this.categoryForm.value,
+          name: this.categoryForm.value.name || '',
+          department: this.categoryForm.value.department || '',
           image: this.imageUrl,
         })
         .subscribe((res: any) => {

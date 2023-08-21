@@ -70,7 +70,7 @@ export class UpdateDepartment implements OnInit {
       this.departmentService
         .update(this.data.id, {
           image: this.imageUrl,
-          ...this.departmentForm.value,
+          name: this.departmentForm.value.name || '',
         })
         .subscribe(
           (res: IFBaseResponse) => {

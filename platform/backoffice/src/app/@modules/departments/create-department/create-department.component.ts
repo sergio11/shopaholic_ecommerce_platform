@@ -58,7 +58,7 @@ export class CreateDepartment implements OnInit {
       this.notificationService.error('Image is Required', '');
     } else {
       const normalizePayload = {
-        ...this.departmentForm.value,
+        name: this.departmentForm.value.name || '',
         image: this.imageUrl,
       };
       this.departmentService
