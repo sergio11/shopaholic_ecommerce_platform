@@ -1,10 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { BrandService } from 'src/app/@shared/services/brand.service';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { NzUploadFile } from 'ng-zorro-antd/upload';
-import { UtilsService } from 'src/app/@shared/services/utils.service';
 
 @Component({
   selector: 'app-brand-update',
@@ -15,14 +13,22 @@ export class BrandUpdateComponent implements OnInit {
   @Input() isOpen: boolean = false;
   @Output() onClose = new EventEmitter<any>();
 
+  brandImageFileSelected: File | undefined;
+  brandForm: FormGroup;
+
   constructor(
     private fb: FormBuilder,
-    private utilsService: UtilsService,
     private notificationService: NzNotificationService,
     private brandService: BrandService
-  ) {}
+  ) {
+    this.brandForm = this.fb.group({
+      name: [''],
+      slug: [''],
+      image: ['']
+    });
+  }
+
   ngOnInit(): void {
-    this.imageUrl = this.data.image;
     this.brandForm.patchValue({
       name: this.data.name,
       isFeatured: this.data.isFeatured,
@@ -32,46 +38,22 @@ export class BrandUpdateComponent implements OnInit {
       isNew: this.data.isNew,
     });
   }
-  //*Image update
-  imageUploadLoading: boolean = false;
-  imageUploadEndPoint = this.utilsService.uploadImageEndPoint;
-  imageUrl: string = '';
-  onChangeImageUpload(info: { file: NzUploadFile }): void {
-    switch (info.file.status) {
-      case 'uploading':
-        this.imageUploadLoading = true;
-        break;
-      case 'done':
-        this.imageUploadLoading = false;
-        this.imageUrl = info?.file?.response?.data?.link;
-        break;
-      case 'error':
-        this.imageUploadLoading = false;
 
-        break;
-    }
+  handleFileSelectedChange(file: any) {
+    this.brandImageFileSelected = file;
   }
 
-  //*Create
-  brandForm = this.fb.group({
-    name: [''],
-    image: [''],
-    isFeatured: [false],
-    isActive: [false],
-    isPopular: [false],
-    isHot: [false],
-    isNew: [false],
-  });
   onSubmit() {
-    if (!this.imageUrl) {
+    if (!this.brandImageFileSelected) {
       this.notificationService.error('Image Empty', '');
     } else if (!this.brandForm.value.name) {
       this.notificationService.error('Name Empty', '');
     } else {
       this.brandService
         .update(this.data?.id, {
-          image: this.imageUrl,
-          name: this.brandForm.value.name || ''
+          image: this.brandImageFileSelected,
+          name: this.brandForm.value.name || '',
+          slug: this.brandForm.value.slug || ''
         })
         .subscribe((res: any) => {
           console.log(res);

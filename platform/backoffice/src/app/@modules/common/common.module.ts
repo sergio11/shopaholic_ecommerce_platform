@@ -4,4 +4,4 @@ import { NotFoundComponent } from './components/not-found.component';
 @NgModule({
   declarations: [NotFoundComponent],
 })
-export class CommonModule {}
+export class AppCommonModule {}
