@@ -22,23 +22,24 @@ export class AuthAdminLoginComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.validateForm = this.fb.group({
-      phoneNumber: ['01200000000', [Validators.required]],
+      email: ['admin@shopaholic.com', [Validators.required]],
       password: ['123456', [Validators.required]],
       remember: [true],
     });
   }
   submitForm(): void {
-    const { phoneNumber, password } = this.validateForm.value;
+    const { email, password } = this.validateForm.value;
     this.isLoading = true;
     for (const i in this.validateForm.controls) {
       this.validateForm.controls[i].markAsDirty();
       this.validateForm.controls[i].updateValueAndValidity();
     }
     this.authService
-      .adminLogin({ phoneNumber, password })
+      .adminSignIn({ email: email, password: password })
       .subscribe((res: any) => {
-        if (res?.token?.token.length) {
-          localStorage.setItem('token', String(res.token.token));
+        console.log(res)
+        if (res?.token?.length) {
+          localStorage.setItem('token', String(res.token.replace("Bearer ", "")));
           this.notification.success('Authentication Success', '');
           this.router.navigate([routesConstant.adminDashboard]);
         }

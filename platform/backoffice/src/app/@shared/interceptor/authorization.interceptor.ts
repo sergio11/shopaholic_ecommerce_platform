@@ -15,12 +15,11 @@ import { environment } from 'src/environments/environment';
 })
 export class AuthorizationInterceptor implements HttpInterceptor {
   private readonly matchedUrl: string[] = [
-    `${environment.API_ENDPOINT}/login/admin`,
-    `${environment.API_ENDPOINT}/register/admin`,
+    `${environment.API_ENDPOINT}/signin`,
+    `${environment.API_ENDPOINT}/signup`,
   ];
   constructor(private readonly authService: AuthService) {}
 
-  //!Interceptor
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler

@@ -34,7 +34,7 @@ export class AuthAdminRegisterComponent {
       this.validateForm.controls[i].markAsDirty();
       this.validateForm.controls[i].updateValueAndValidity();
     }
-    this.authService.adminRegister(this.validateForm.value).subscribe(
+    this.authService.adminSignUp(this.validateForm.value).subscribe(
       (res: any) => {
         if (res?.token?.token.length) {
           this.isLoading = false;

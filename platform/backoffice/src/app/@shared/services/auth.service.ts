@@ -16,24 +16,28 @@ export class AuthService {
 
   constructor(private readonly http: HttpClient, private router: Router) {}
 
-  adminLogin(authCredential: AuthCredential) {
-    return this.http.post(`${this.END_POINT}login/admin`, authCredential);
+  adminSignIn(authCredential: AuthCredential) {
+    return this.http.post(`${this.END_POINT}signin`, authCredential);
   }
-  adminRegister(authCredential: AuthCredential) {
-    return this.http.post(`${this.END_POINT}register/admin`, authCredential);
+
+  adminSignUp(authCredential: AuthCredential) {
+    return this.http.post(`${this.END_POINT}signup`, authCredential);
   }
 
   getAuthorizationToken() {
     const token = localStorage.getItem('token');
     return token?.length ? String(token) : false;
   }
+
   isLoggedIn() {
     return Boolean(this.getAuthorizationToken());
   }
+
   logout() {
     window.localStorage.clear();
     this.router.navigate([routesConstant.adminLogin]);
   }
+
   decodedToken() {
     const token: any = localStorage.getItem('token');
     return this.getAuthorizationToken() ? jwt_decode(token) : false;
