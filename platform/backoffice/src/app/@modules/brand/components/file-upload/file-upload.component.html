@@ -1,0 +1,36 @@
+<nz-upload
+  [(nzFileList)]="fileList"
+  [nzShowUploadList]="false"
+  [nzAccept]="['image/png', 'image/jpeg']"
+  [nzLimit]="1"
+  nzName="image"
+  nzListType="picture-card"
+  (nzChange)="handleUploadChange($event)"
+>
+  <ng-container *ngIf="!hasAnyFileSelected()">
+    <i class="upload-icon" nz-icon [nzType]="'plus'"></i>
+    <div class="ant-upload-text">Upload</div>
+  </ng-container>
+  <img
+    *ngIf="hasAnyFileSelected()"
+    [src]="fileList[0].thumbUrl"
+    [ngStyle]="{ width: '100px', height: '100px', objectFit: 'cover' }"
+  />
+</nz-upload>
+
+<nz-modal
+  [(nzVisible)]="previewVisible"
+  [nzTitle]="'Image Selected'"
+  [nzContent]="modalContent"
+  [nzFooter]="modalFooter"
+>
+</nz-modal>
+
+<ng-template #modalContent>
+  <img [src]="previewImage" style="width: 100%" />
+</ng-template>
+
+<ng-template #modalFooter>
+  <button nz-button nzType="default" (click)="onCancelImage()">Cancel</button>
+  <button nz-button nzType="primary" (click)="onConfirmImage()">Confirm</button>
+</ng-template>

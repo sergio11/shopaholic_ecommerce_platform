@@ -15,12 +15,14 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { SharedModule } from './../@shared/shared.module';
 import en from '@angular/common/locales/en';
 import { registerLocaleData } from '@angular/common';
+import { AppCommonModule } from '../@modules/common/common.module';
 
 registerLocaleData(en);
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    AppCommonModule,
     CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
