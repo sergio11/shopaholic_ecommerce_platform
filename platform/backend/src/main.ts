@@ -6,20 +6,22 @@ import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
 
   app.setGlobalPrefix('api/v1');
-  
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
     }),
-    new I18nValidationPipe()
+    new I18nValidationPipe(),
   );
-  
-  app.useGlobalFilters(new I18nValidationExceptionFilter({
-    detailedErrors: false,
-  }));
+
+  app.useGlobalFilters(
+    new I18nValidationExceptionFilter({
+      detailedErrors: false,
+    }),
+  );
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Shopaholic API')
@@ -28,14 +30,13 @@ async function bootstrap() {
     .addTag('Shopaholic')
     .addBearerAuth()
     .build();
-  
+
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api', app, document);
-  
+
   const config: ConfigService = app.get(ConfigService);
   const port: number = config.get<number>('PORT');
-  
-  await app.listen(port, "0.0.0.0", () => {
+  await app.listen(port, '0.0.0.0', () => {
     console.log(`Server Started at 0.0.0.0:${port}`);
   });
 }

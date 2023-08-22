@@ -1,5 +1,5 @@
 export interface AuthCredential {
-  phoneNumber: string;
+  email: string;
   password: string;
 }
 export interface IFChangePassword {
