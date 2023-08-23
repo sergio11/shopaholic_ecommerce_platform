@@ -7,6 +7,7 @@ import {
   Version,
   Delete,
   Query,
+  Patch,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -18,6 +19,8 @@ import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default
 import { Auth } from '../auth/decorator/auth.decorator';
 import { ApiController } from 'src/core/decorator/default-api.decorator';
 import { Pagination } from 'nestjs-typeorm-paginate';
+import { AuthUserId } from '../auth/decorator/auth-user-id.decorator';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 /**
  * Controller for managing user operations.
@@ -25,6 +28,70 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 @ApiController('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
+
+  /**
+   * Update the information of the authenticated client.
+   * @param file The updated image file for the user.
+   * @param userData The updated user data.
+   * @returns The updated user response DTO.
+   */
+  @Auth(JwtRole.CLIENT)
+  @Version('1.0')
+  @Post('self')
+  @DefaultUploadFileValidationDecorator({ isOptional: true })
+  @ApiOperation({ summary: 'Update authenticated client' })
+  async updateSelf(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() userData: UpdateUserDto,
+    @AuthUserId() userId: string,
+  ): Promise<UserResponseDto> {
+    const updatedUser = { ...userData, imageFile: file };
+    return this.usersService.update(userId, updatedUser);
+  }
+
+  /**
+   * Delete the account of the authenticated client.
+   * @param id The ID of the authenticated client.
+   */
+  @Auth(JwtRole.CLIENT)
+  @Version('1.0')
+  @Delete('self')
+  @ApiOperation({ summary: 'Delete authenticated client account' })
+  async deleteSelf(@AuthUserId() userId: string): Promise<string> {
+    return await this.usersService.delete(userId);
+  }
+
+  /**
+   * Update the password of the authenticated user.
+   * @param {UpdatePasswordDto} updatePasswordData - The data for updating the password.
+   * @returns {Promise<UserResponseDto>} - The updated user response DTO.
+   */
+  @Auth(JwtRole.CLIENT)
+  @Version('1.0')
+  @Patch('self/update-password')
+  @ApiOperation({ summary: 'Update authenticated client password' })
+  async updatePassword(
+    @Body() updatePasswordData: UpdatePasswordDto,
+    @AuthUserId() userId: string,
+  ): Promise<string> {
+    return this.usersService.updatePassword(userId, updatePasswordData);
+  }
+
+  /**
+   * Update the password of a specific user by their ID (Admin only).
+   * @param {string} id - The ID of the user to update.
+   * @param {UpdatePasswordDto} updatePasswordData - The data for updating the password.
+   * @returns {Promise<string>} - The updated user response DTO.
+   */
+  @Auth(JwtRole.ADMIN)
+  @Version('1.0')
+  @Patch(':id/update-password')
+  async updatePasswordForUser(
+    @Param('id') id: string,
+    @Body() updatePasswordData: UpdatePasswordDto,
+  ): Promise<string> {
+    return this.usersService.updatePassword(id, updatePasswordData);
+  }
 
   /**
    * Get a list of all users.
