@@ -68,14 +68,33 @@ export class ProductsService extends SupportService {
   }
 
   /**
-   * Paginate products.
-   * @param {IPaginationOptions} options - Pagination options.
-   * @returns {Promise<Pagination<ProductEntity>>} - Paginated products.
+   * Search for products based on a search term and paginate the results.
+   *
+   * @param {string} term - The search term to filter products by.
+   * @param {number} page - The page number for pagination (default is 1).
+   * @param {number} limit - The number of items per page (default is 10).
+   * @returns {Promise<Pagination<ProductResponseDto>>} - A paginated result of category response DTOs.
    */
-  async paginate(
-    options: IPaginationOptions,
-  ): Promise<Pagination<ProductEntity>> {
-    return paginate<ProductEntity>(this.productsRepository, options);
+  async searchAndPaginate(
+    term: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<Pagination<ProductResponseDto>> {
+    const options = { page, limit };
+    const queryBuilder = this.productsRepository
+      .createQueryBuilder('product')
+      .where('product.name ILIKE :term', { term: `%${term}%` })
+      .orderBy('product.name');
+
+    const paginatedProducts = await paginate(queryBuilder, options);
+    const items = paginatedProducts.items.map((product) =>
+      this.mapper.mapProductToResponseDto(product),
+    );
+
+    return {
+      ...paginatedProducts,
+      items,
+    };
   }
 
   /**
@@ -237,9 +256,9 @@ export class ProductsService extends SupportService {
 
     if (targetProduct) {
       targetProduct.isBestRated =
-      targetProduct.likes.length >= targetProduct.dislikes.length;
+        targetProduct.likes.length >= targetProduct.dislikes.length;
       targetProduct.isWorstRated =
-      targetProduct.dislikes.length > targetProduct.likes.length;
+        targetProduct.dislikes.length > targetProduct.likes.length;
       updatedProducts.push(targetProduct);
     }
 
@@ -247,15 +266,31 @@ export class ProductsService extends SupportService {
     return review;
   }
 
-  private async findProduct(id: string, relations?: string[]): Promise<ProductEntity> {
-    return await this.findEntityById(id, this.productsRepository, 'PRODUCT_NOT_FOUND', relations);
+  private async findProduct(
+    id: string,
+    relations?: string[],
+  ): Promise<ProductEntity> {
+    return await this.findEntityById(
+      id,
+      this.productsRepository,
+      'PRODUCT_NOT_FOUND',
+      relations,
+    );
   }
 
   private async findCategory(id: string): Promise<CategoryEntity> {
-    return await this.findEntityById(id, this.categoriesRepository, 'CATEGORY_NOT_FOUND');
+    return await this.findEntityById(
+      id,
+      this.categoriesRepository,
+      'CATEGORY_NOT_FOUND',
+    );
   }
 
   private async findBrand(id: string): Promise<BrandsEntity> {
-    return await this.findEntityById(id, this.brandsRepository, 'BRAND_NOT_FOUND');
+    return await this.findEntityById(
+      id,
+      this.brandsRepository,
+      'BRAND_NOT_FOUND',
+    );
   }
 }

@@ -9,19 +9,20 @@ import { UpdateBrandDTO } from './dto/update-brand.dto';
 import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
 import { StorageMixin } from '../storage/mixin/file-saving.mixin';
+import { Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { CategoryResponseDto } from '../categories/dto/category-response.dto';
 
 /**
  * Service responsible for handling brand-related operations.
  */
 @Injectable()
 export class BrandService extends SupportService {
-
-  
   constructor(
-      @InjectRepository(BrandsEntity) private brandRepository: Repository<BrandsEntity>,
-      private readonly brandMapper: BrandsMapper,
-      private readonly fileSavingMixin: StorageMixin,
-      i18n: I18nService
+    @InjectRepository(BrandsEntity)
+    private brandRepository: Repository<BrandsEntity>,
+    private readonly brandMapper: BrandsMapper,
+    private readonly fileSavingMixin: StorageMixin,
+    i18n: I18nService,
   ) {
     super(i18n);
   }
@@ -38,22 +39,31 @@ export class BrandService extends SupportService {
   /**
    * Search for brands based on a search term and paginate the results.
    *
-   * @param {string} searchTerm - The search term to filter brands by.
+   * @param {string} term - The search term to filter brands by.
    * @param {number} page - The page number for pagination (default is 1).
    * @param {number} limit - The number of items per page (default is 10).
-   * @returns {Promise<BrandResponseDTO[]>} - An array of BrandResponseDTO representing the filtered and paginated brands.
+   * @returns {Promise<Pagination<BrandResponseDTO>} - An array of BrandResponseDTO representing the filtered and paginated brands.
    */
-  async searchAndPaginateBrands(searchTerm: string, page: number, limit: number): Promise<BrandResponseDTO[]> {
-    const offset = (page - 1) * limit;
-    
-    const queryBuilder = this.brandRepository.createQueryBuilder('brand')
-      .where('brand.name ILIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
-      .orderBy('brand.name')
-      .offset(offset)
-      .limit(limit);
+  async searchAndPaginateBrands(
+    term: string,
+    page: number,
+    limit: number,
+  ): Promise<Pagination<BrandResponseDTO>> {
+    const options = { page, limit };
+    const queryBuilder = this.brandRepository
+      .createQueryBuilder('brand')
+      .where('brand.name ILIKE :term', { term: `%${term}%` })
+      .orderBy('brand.name');
 
-    const brands = await queryBuilder.getMany();
-    return this.brandMapper.mapBrandsToResponseDtos(brands);
+    const paginatedBrands = await paginate(queryBuilder, options);
+    const items = paginatedBrands.items.map((brand) =>
+      this.brandMapper.mapBrandToResponseDto(brand),
+    );
+
+    return {
+      ...paginatedBrands,
+      items,
+    };
   }
 
   /**
@@ -73,8 +83,11 @@ export class BrandService extends SupportService {
    * @returns A BrandResponseDto representing the newly created brand.
    */
   async create(createBrandDto: CreateBrandDTO): Promise<BrandResponseDTO> {
-    createBrandDto.image = await this.fileSavingMixin.saveImageFile(createBrandDto.imageFile);
-    const brandEntity = this.brandMapper.mapCreateBrandDtoToEntity(createBrandDto);
+    createBrandDto.image = await this.fileSavingMixin.saveImageFile(
+      createBrandDto.imageFile,
+    );
+    const brandEntity =
+      this.brandMapper.mapCreateBrandDtoToEntity(createBrandDto);
     const createdBrand = await this.brandRepository.save(brandEntity);
     return this.brandMapper.mapBrandToResponseDto(createdBrand);
   }
@@ -86,10 +99,19 @@ export class BrandService extends SupportService {
    * @returns A BrandResponseDto representing the updated brand.
    * @throws NotFoundException if the brand with the provided ID is not found.
    */
-  async update(id: string, updateBrandDto: UpdateBrandDTO): Promise<BrandResponseDTO> {
+  async update(
+    id: string,
+    updateBrandDto: UpdateBrandDTO,
+  ): Promise<BrandResponseDTO> {
     const brandToUpdate = await this.findBrand(id);
-    updateBrandDto.image = await this.fileSavingMixin.saveImageFile(updateBrandDto.imageFile, brandToUpdate.image);
-    const updatedBrandEntity = this.brandMapper.mapUpdateBrandDtoToEntity(updateBrandDto, brandToUpdate);
+    updateBrandDto.image = await this.fileSavingMixin.saveImageFile(
+      updateBrandDto.imageFile,
+      brandToUpdate.image,
+    );
+    const updatedBrandEntity = this.brandMapper.mapUpdateBrandDtoToEntity(
+      updateBrandDto,
+      brandToUpdate,
+    );
     const updatedBrand = await this.brandRepository.save(updatedBrandEntity);
     return this.brandMapper.mapBrandToResponseDto(updatedBrand);
   }
@@ -103,13 +125,13 @@ export class BrandService extends SupportService {
     const brandToRemove = await this.findBrand(id);
     await this.fileSavingMixin.removeImageFile(brandToRemove.image);
     await this.brandRepository.remove(brandToRemove);
-    return this.resolveString("BRAND_REMOVED_SUCCESFULLY");
+    return this.resolveString('BRAND_REMOVED_SUCCESFULLY');
   }
 
   private async findBrand(id: string): Promise<BrandsEntity> {
     const brand = await this.brandRepository.findOne({ where: { id: id } });
     if (!brand) {
-      this.throwNotFoundException("BRAND_NOT_FOUND");
+      this.throwNotFoundException('BRAND_NOT_FOUND');
     }
     return brand;
   }
