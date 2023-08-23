@@ -12,6 +12,7 @@ import { StorageMixin } from 'src/modules/storage/mixin/file-saving.mixin';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { RoleEntity } from '../roles/role.entity';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 /**
  * Service responsible for handling user-related operations.
@@ -129,6 +130,29 @@ export class UsersService extends SupportService {
       ...paginatedUser,
       items,
     };
+  }
+
+  /**
+   * Update the password of a user.
+   * @param id The ID of the user to update the password for.
+   * @param updatePasswordDto The DTO containing the current and new passwords.
+   * @returns The updated user entity.
+   */
+  async updatePassword(
+    id: string,
+    updatePasswordDto: UpdatePasswordDto,
+  ): Promise<string> {
+    const user = await this.findUser(id);
+    const isCurrentPasswordValid = await user.comparePassword(
+      updatePasswordDto.currentPassword,
+    );
+    if (!isCurrentPasswordValid) {
+      throw this.throwBadRequestException('INVALID_PASSWORD');
+    }
+    // Update the user's password
+    user.updatePassword(updatePasswordDto.newPassword);
+    await this.usersRepository.save(user);
+    return this.resolveString('USER_PASSWORD_UPDATED_SUCCESSFULLY');
   }
 
   /**

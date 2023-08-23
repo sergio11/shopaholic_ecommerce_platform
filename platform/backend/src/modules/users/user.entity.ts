@@ -120,7 +120,10 @@ export class UserEntity extends AbstractEntity {
   /**
    * Reset password tokens associated with the user.
    */
-  @OneToMany(() => ResetPasswordTokenEntity, (resetPasswordToken) => resetPasswordToken.user)
+  @OneToMany(
+    () => ResetPasswordTokenEntity,
+    (resetPasswordToken) => resetPasswordToken.user,
+  )
   resetPasswordTokens: ResetPasswordTokenEntity[];
 
   /**
@@ -147,6 +150,14 @@ export class UserEntity extends AbstractEntity {
   async updatePassword(newPassword: string) {
     this.password = newPassword;
     await this.hashPassword();
+  }
+
+  async comparePassword(plainPassword: string): Promise<boolean> {
+    const hashedPlainPassword = await hash(
+      plainPassword,
+      Number(process.env.HASH_SALT),
+    );
+    return this.password === hashedPlainPassword;
   }
 
   /**
