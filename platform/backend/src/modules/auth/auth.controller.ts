@@ -1,4 +1,4 @@
-import { Body, Post, Version } from '@nestjs/common';
+import { Body, Param, Post, Version } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpAuthDto } from './dto/signup-auth.dto';
 import { SignInAuthDto } from './dto/signin-auth.dto';
@@ -8,6 +8,8 @@ import { ApiController } from 'src/core/decorator/default-api.decorator';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { RequestResetPasswordDto } from './dto/request-reset-password.dto';
 import { AdminSignUpAuthDto } from './dto/admin-signup-auth.dto';
+import { JwtRole } from './jwt/jwt-role';
+import { Auth } from './decorator/auth.decorator';
 
 /**
  * Controller for authentication-related endpoints.
@@ -130,4 +132,18 @@ export class AuthController {
   ): Promise<string> {
     return this.authService.resetPassword(resetPasswordData);
   }
+
+   /**
+   * Revoke tokens of a user.
+   * @param {string} userId - The ID of the user to revoke tokens for.
+   * @returns {Promise<string>} - A promise that resolves when the tokens are revoked.
+   */
+   @Auth(JwtRole.ADMIN)
+   @Version('1.0')
+   @Post('revoke-tokens/:userId')
+   @ApiOperation({ summary: 'Revoke tokens of a user' })
+   @ApiResponse({ status: 200, description: 'Tokens revoked successfully' })
+   async revokeToken(@Param('userId') userId: string): Promise<string> {
+     return await this.authService.revokeUserTokens(userId);
+   }
 }

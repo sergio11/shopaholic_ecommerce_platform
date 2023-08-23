@@ -16,6 +16,7 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { ResetPasswordTokenEntity } from './reset-password-token.entity';
 import { AdminSignUpAuthDto } from './dto/admin-signup-auth.dto';
+import { CacheService } from '../cache/cache.service';
 
 /**
  * Service for handling authentication related operations.
@@ -27,6 +28,7 @@ export class AuthService extends SupportService {
    * @param {Repository<UserEntity>} usersRepository - The repository for user entities.
    * @param {Repository<RoleEntity>} rolesRepository - The repository for role entities.
    * @param {Repository<ResetPasswordTokenEntity>} resetPasswordTokenRepository - The repository for reset password tokens.
+   * @param {CacheService<string>} cacheService - The cache service.
    * @param {JwtService} jwtService - The JWT service for token handling.
    * @param {UserMapper} userMapper - The user mapper service.
    * @param {I18nService} i18n - The internationalization service.
@@ -38,6 +40,7 @@ export class AuthService extends SupportService {
     private rolesRepository: Repository<RoleEntity>,
     @InjectRepository(ResetPasswordTokenEntity)
     private readonly resetPasswordTokenRepository: Repository<ResetPasswordTokenEntity>,
+    private readonly cacheService: CacheService<string>,
     private jwtService: JwtService,
     private readonly userMapper: UserMapper,
     i18n: I18nService,
@@ -89,6 +92,10 @@ export class AuthService extends SupportService {
    * @returns {Promise<UserEntity>} - The validated user entity.
    */
   async validateUserById(id: string): Promise<UserEntity> {
+    const token = await this.cacheService.get(id);
+    if(!token) {
+        this.throwUnAuthorizedException('INVALID_CREDENTIALS');
+    }
     const userFound = await this.usersRepository.findOne({ where: { id } });
     if (!userFound) {
       this.throwUnAuthorizedException('INVALID_CREDENTIALS');
@@ -148,13 +155,18 @@ export class AuthService extends SupportService {
     return this.resolveString('PASSWORD_RESET_SUCCESSFULLY');
   }
 
+  async revokeUserTokens(userId: string): Promise<string> {
+    await this.cacheService.delete(userId);
+    return this.resolveString('USER_TOKEN_REVOKED');
+  }
+
   /**
    * Generates a JWT token and constructs the AuthResponseDto.
    * @param {UserEntity} user - The user entity.
-   * @returns {AuthResponseDto} - The response with user information and JWT token.
+   * @returns {Promise<AuthResponseDto} - The response with user information and JWT token.
    * @private
    */
-  private generateAndSignJwt(user: UserEntity): AuthResponseDto {
+  private async generateAndSignJwt(user: UserEntity): Promise<AuthResponseDto> {
     const roles = user.roles.map((rol) => rol.name);
     const payload = {
       id: user.id,
@@ -169,6 +181,8 @@ export class AuthService extends SupportService {
       user: userDTO,
       token: 'Bearer ' + token,
     };
+    // Store the token revocation status in the cache
+    await this.cacheService.set(user.id, token);
     return data;
   }
 
