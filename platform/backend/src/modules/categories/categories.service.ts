@@ -42,6 +42,28 @@ export class CategoriesService extends SupportService {
         return categoryDtos;
     }
 
+
+    /**
+     * Search for categories based on a search term and paginate the results.
+     *
+     * @param {string} term - The search term to filter categories by.
+     * @param {number} page - The page number for pagination (default is 1).
+     * @param {number} limit - The number of items per page (default is 10).
+     * @returns {Promise<CategoryResponseDto[]>} - An array of category response DTOs.
+     */
+    async searchAndPaginate(term: string, page: number = 1, limit: number = 10): Promise<CategoryResponseDto[]> {
+        const offset = (page - 1) * limit;
+
+        const queryBuilder = this.categoriesRepository.createQueryBuilder('category')
+            .where('category.name ILIKE :term', { term: `%${term}%` })
+            .orderBy('category.name')
+            .offset(offset)
+            .limit(limit);
+
+        const categories = await queryBuilder.getMany();
+        return categories.map(category => this.categoryMapper.mapCategoryToResponseDto(category));
+    }
+
     /**
      * Create a new category.
      * @param createCategoryDto The data for creating the category.

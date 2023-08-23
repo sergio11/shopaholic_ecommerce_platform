@@ -1,9 +1,9 @@
-import { UploadedFile, Param, Body, Post, Get, Delete, Version} from '@nestjs/common';
+import { UploadedFile, Param, Body, Post, Get, Delete, Version, ParseIntPipe, Query} from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import CreateCategoryDTO from './dto/create-category.dto';
 import UpdateCategoryDTO from './dto/update-category.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { CategoryResponseDto } from './dto/category-response.dto';
 import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
 import { Auth } from '../auth/decorator/auth.decorator';
@@ -55,6 +55,35 @@ export class CategoriesController {
     ): Promise<CategoryResponseDto> {
         const category = { ...createCategoryData, imageFile: file}
         return this.categoriesService.create(category);
+    }
+
+    /**
+     * Search for categories based on a search term and paginate the results.
+     *
+     * @param {string} term - The search term to filter categories by.
+     * @param {number} page - The page number for pagination (default is 1).
+     * @param {number} limit - The number of items per page (default is 10).
+     * @returns {Promise<CategoryResponseDto[]>} - An array of category response DTOs.
+     */
+    @Auth(JwtRole.CLIENT, JwtRole.ADMIN)
+    @Version('1.0')
+    @Get('search')
+    @ApiQuery({ name: 'term', required: false, description: 'Search term for filtering categories' })
+    @ApiQuery({ name: 'page', required: false, description: 'Page number', type: Number })
+    @ApiQuery({ name: 'limit', required: false, description: 'Items per page', type: Number })
+    @ApiOperation({ summary: 'Search for categories based on a search term and paginate the results' })
+    @ApiResponse({
+        status: 200,
+        description: 'Filtered and paginated categories',
+        type: CategoryResponseDto,
+        isArray: true,
+    })
+    async searchAndPaginateCategories(
+        @Query('term') term: string,
+        @Query('page', ParseIntPipe) page: number = 1,
+        @Query('limit', ParseIntPipe) limit: number = 10
+    ): Promise<CategoryResponseDto[]> {
+        return this.categoriesService.searchAndPaginate(term, page, limit);
     }
     
     /**
