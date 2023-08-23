@@ -36,6 +36,27 @@ export class BrandService extends SupportService {
   }
 
   /**
+   * Search for brands based on a search term and paginate the results.
+   *
+   * @param {string} searchTerm - The search term to filter brands by.
+   * @param {number} page - The page number for pagination (default is 1).
+   * @param {number} limit - The number of items per page (default is 10).
+   * @returns {Promise<BrandResponseDTO[]>} - An array of BrandResponseDTO representing the filtered and paginated brands.
+   */
+  async searchAndPaginateBrands(searchTerm: string, page: number, limit: number): Promise<BrandResponseDTO[]> {
+    const offset = (page - 1) * limit;
+    
+    const queryBuilder = this.brandRepository.createQueryBuilder('brand')
+      .where('brand.name ILIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
+      .orderBy('brand.name')
+      .offset(offset)
+      .limit(limit);
+
+    const brands = await queryBuilder.getMany();
+    return this.brandMapper.mapBrandsToResponseDtos(brands);
+  }
+
+  /**
    * Retrieves a single brand by its ID.
    * @param id - The ID of the brand.
    * @returns A BrandResponseDto representing the brand.

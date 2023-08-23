@@ -1,5 +1,5 @@
-import { Get, Post, Body, Param, Delete, ParseUUIDPipe, HttpStatus, Version, UploadedFile } from '@nestjs/common';
-import { ApiResponse, ApiOkResponse } from '@nestjs/swagger';
+import { Get, Post, Body, Param, Delete, ParseUUIDPipe, HttpStatus, Version, UploadedFile, ParseIntPipe, Query } from '@nestjs/common';
+import { ApiResponse, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { BrandService } from './brands.service';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { BrandResponseDTO } from './dto/brand-response.dto';
@@ -26,6 +26,28 @@ export class BrandController {
   @ApiOkResponse({ description: 'Retrieved all brands.', type: BrandResponseDTO, isArray: true })
   async findAll(): Promise<BrandResponseDTO[]> {
     return this.brandService.findAll();
+  }
+
+
+  /**
+   * Retrieves brands based on a search term and pagination.
+   * @param searchTerm - The search term to filter brands.
+   * @param page - The page number.
+   * @param limit - The number of items per page.
+   * @returns An array of BrandResponseDto representing the brands.
+   */
+  @Auth(JwtRole.ADMIN)
+  @Get('search')
+  @ApiQuery({ name: 'term', required: false, description: 'Search term for filtering brands' })
+  @ApiQuery({ name: 'page', required: false, description: 'Page number', type: Number })
+  @ApiQuery({ name: 'limit', required: false, description: 'Items per page', type: Number })
+  @ApiOkResponse({ description: 'Retrieved filtered and paginated brands.', type: BrandResponseDTO, isArray: true })
+  async searchBrands(
+    @Query('term') searchTerm: string,
+    @Query('page', ParseIntPipe) page: number = 1,
+    @Query('limit', ParseIntPipe) limit: number = 10,
+  ): Promise<BrandResponseDTO[]> {
+    return this.brandService.searchAndPaginateBrands(searchTerm, page, limit);
   }
 
   /**
