@@ -7,6 +7,7 @@ import { AuthResponseDto } from './dto/auth-response.dto';
 import { ApiController } from 'src/core/decorator/default-api.decorator';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { RequestResetPasswordDto } from './dto/request-reset-password.dto';
+import { AdminSignUpAuthDto } from './dto/admin-signup-auth.dto';
 
 /**
  * Controller for authentication-related endpoints.
@@ -51,6 +52,44 @@ export class AuthController {
   })
   async signin(@Body() signInData: SignInAuthDto): Promise<AuthResponseDto> {
     return this.authService.signin(signInData);
+  }
+
+  /**
+   * Allow us to register new admin.
+   * @param {AdminSignUpAuthDto} adminSignUpData - The data for admin signup.
+   * @returns {Promise<AuthResponseDto>} - The response from the admin signup operation.
+   */
+  @ApiOperation({ summary: 'Allow us to register new admin' })
+  @Version('1.0')
+  @Post('admin/signup')
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully registered and authenticated as admin',
+    type: AuthResponseDto,
+  })
+  async adminSignup(
+    @Body() adminSignUpData: AdminSignUpAuthDto,
+  ): Promise<AuthResponseDto> {
+    return this.authService.signupAdmin(adminSignUpData);
+  }
+
+  /**
+   * Allow us to sign in as admin.
+   * @param {SignInAuthDto} adminSignInData - The data for admin signin.
+   * @returns {Promise<AuthResponseDto>} - The response from the admin signin operation.
+   */
+  @ApiOperation({ summary: 'Allow us to sign in as admin' })
+  @Version('1.0')
+  @Post('admin/signin')
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully authenticated as admin',
+    type: AuthResponseDto,
+  })
+  async adminSignin(
+    @Body() adminSignInData: SignInAuthDto,
+  ): Promise<AuthResponseDto> {
+    return this.authService.signinAdmin(adminSignInData);
   }
 
   /**
