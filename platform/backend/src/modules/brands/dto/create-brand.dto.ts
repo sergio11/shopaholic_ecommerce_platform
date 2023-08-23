@@ -26,10 +26,14 @@ export class CreateBrandDTO {
   slug: string;
 
   /**
-    * Image file for the brand
-    * @format binary
-  */
-  @ApiProperty({ description: 'Image file for the Brand', type: 'string', format: 'binary' })
+   * Image file for the brand
+   * @format binary
+   */
+  @ApiProperty({
+    description: 'Image file for the Brand',
+    type: 'string',
+    format: 'binary',
+  })
   readonly imageFile: Express.Multer.File;
 
   @ApiHideProperty()

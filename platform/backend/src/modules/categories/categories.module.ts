@@ -7,12 +7,9 @@ import { CategoryMapper } from './category.mapper';
 import { FilesStorageModule } from '../storage/storage.module';
 
 @Module({
-  imports: [ 
-    TypeOrmModule.forFeature([CategoryEntity]),
-    FilesStorageModule
-  ],
+  imports: [TypeOrmModule.forFeature([CategoryEntity]), FilesStorageModule],
   providers: [CategoriesService, CategoryMapper],
   controllers: [CategoriesController],
-  exports: [CategoriesService, CategoryMapper]
+  exports: [CategoriesService, CategoryMapper],
 })
 export class CategoriesModule {}

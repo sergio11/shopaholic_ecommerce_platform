@@ -16,6 +16,7 @@ import { AddressEntity } from '../address/address.entity';
 import { GenderEnum } from './gender.enum';
 import { ProductReviewEntity } from '../products/product-review.entity';
 import { TransactionRecordEntity } from '../payments/transaction-record.entity';
+import { ResetPasswordTokenEntity } from '../auth/reset-password-token.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends AbstractEntity {
@@ -117,6 +118,12 @@ export class UserEntity extends AbstractEntity {
   addresses: AddressEntity[];
 
   /**
+   * Reset password tokens associated with the user.
+   */
+  @OneToMany(() => ResetPasswordTokenEntity, (resetPasswordToken) => resetPasswordToken.user)
+  resetPasswordTokens: ResetPasswordTokenEntity[];
+
+  /**
    * Roles associated with the user.
    */
   @JoinTable({
@@ -136,6 +143,11 @@ export class UserEntity extends AbstractEntity {
 
   @OneToMany(() => TransactionRecordEntity, (transaction) => transaction.user)
   transactions: TransactionRecordEntity[];
+
+  async updatePassword(newPassword: string) {
+    this.password = newPassword;
+    await this.hashPassword();
+  }
 
   /**
    * Hashes the user's password before insertion.

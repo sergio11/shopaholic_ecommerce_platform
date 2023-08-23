@@ -8,7 +8,6 @@ import { ImageResponseDto } from 'src/modules/images/dto/image-response.dto';
  * Data transfer object for category response.
  */
 export class CategoryResponseDto extends AbstractDto {
-
   /**
    * Name of the clothing category
    * @example Apparel
