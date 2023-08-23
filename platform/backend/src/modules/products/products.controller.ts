@@ -23,6 +23,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
 import { ProductResponseDto } from './dto/product-response.dto';
@@ -68,29 +69,30 @@ export class ProductsController {
   }
 
   /**
-   * Retrieves paginated products.
-   * @param page - Page number.
-   * @param limit - Number of items per page.
-   * @returns A Pagination object containing paginated products.
+   * Search for products based on a search term and paginate the results.
+   * @param {string} term - The search term to filter products by.
+   * @param {number} page - The page number for pagination (default is 1).
+   * @param {number} limit - The number of items per page (default is 10).
+   * @returns {Promise<Pagination<ProductResponseDto>>} - A paginated result of ProductResponseDto.
    */
   @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
-  @Version('1.0')
-  @Get('pagination')
+  @Get('search')
+  @ApiOperation({ summary: 'Search for products based on a search term and paginate the results' })
+  @ApiQuery({ name: 'term', required: true, description: 'Search term for filtering products' })
+  @ApiQuery({ name: 'page', required: false, description: 'Page number', type: Number })
+  @ApiQuery({ name: 'limit', required: false, description: 'Items per page', type: Number })
   @ApiResponse({
     status: 200,
-    description: 'Retrieved paginated products.',
-    type: Pagination,
-    isArray: false,
+    description: 'Filtered and paginated products',
+    type: ProductResponseDto,
+    isArray: true,
   })
-  async pagination(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-    @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number = 5,
-  ): Promise<Pagination<ProductEntity>> {
-    return this.productsService.paginate({
-      page,
-      limit,
-      route: `http://${API}:3000/products/pagination`,
-    });
+  async searchAndPaginate(
+    @Query('term') term: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ): Promise<Pagination<ProductResponseDto>> {
+    return this.productsService.searchAndPaginate(term, page, limit);
   }
 
   /**

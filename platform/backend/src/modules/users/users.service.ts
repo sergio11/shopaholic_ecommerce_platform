@@ -9,6 +9,9 @@ import { I18nService } from 'nestjs-i18n';
 import { UserResponseDto } from './dto/user-response.dto';
 import { UserMapper } from './user.mapper';
 import { StorageMixin } from 'src/modules/storage/mixin/file-saving.mixin';
+import { JwtRole } from '../auth/jwt/jwt-role';
+import { Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { RoleEntity } from '../roles/role.entity';
 
 /**
  * Service responsible for handling user-related operations.
@@ -18,12 +21,15 @@ export class UsersService extends SupportService {
   /**
    * Constructor of the UsersService class.
    * @param usersRepository Injected repository for UserEntity.
+   * @param rolesRepository Injected repository for RoleEntity.
    * @param userMapper Injected UserMapper for mapping user data.
    * @param i18n Injected internationalization service.
    */
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
+    @InjectRepository(RoleEntity)
+    private rolesRepository: Repository<RoleEntity>,
     private readonly userMapper: UserMapper,
     private readonly fileSavingMixin: StorageMixin,
     i18n: I18nService,
@@ -91,6 +97,41 @@ export class UsersService extends SupportService {
   }
 
   /**
+   * Search for users by name and filter by role, then paginate the results.
+   * @param {string} name - The name to search for.
+   * @param {JwtRole} role - The role to filter users by.
+   * @param {number} page - The page number for pagination.
+   * @param {number} limit - The maximum number of items per page.
+   * @returns {Promise<Pagination<UserResponseDto>>} A Pagination object containing the matching users and pagination metadata.
+   */
+  async searchAndPaginateUsers(
+    name: string,
+    role: JwtRole,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<Pagination<UserResponseDto>> {
+    const roleId = await this.findRoleIdByJwtRole(role);
+
+    const queryBuilder = this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.roles', 'role')
+      .where('LOWER(user.name) LIKE :name OR LOWER(user.lastname) LIKE :name', {
+        name: `%${name.toLowerCase()}%`,
+      })
+      .andWhere(':roleId = ANY(role.id)', { roleId });
+
+    const paginatedUser = await paginate(queryBuilder, { page, limit });
+    const items = paginatedUser.items.map((user) =>
+      this.userMapper.mapUserToResponseDto(user),
+    );
+
+    return {
+      ...paginatedUser,
+      items,
+    };
+  }
+
+  /**
    * Deletes a user by ID.
    * @param id ID of the user to be deleted.
    * @returns The deleted user.
@@ -126,6 +167,17 @@ export class UsersService extends SupportService {
    * @throws NotFoundException if user is not found.
    */
   private async findUser(id: string): Promise<UserEntity> {
-    return this.findEntityById(id, this.usersRepository, "USER_NOT_FOUND");
+    return this.findEntityById(id, this.usersRepository, 'USER_NOT_FOUND');
+  }
+
+  private async findRoleIdByJwtRole(role: JwtRole): Promise<string> {
+    const roleName = role === JwtRole.ADMIN ? 'ADMIN' : 'CLIENT';
+    const foundRole = await this.rolesRepository.findOne({
+      where: { name: roleName },
+    });
+    if (!foundRole) {
+      throw this.throwNotFoundException('ROLE_NOT_FOUND');
+    }
+    return foundRole.id;
   }
 }

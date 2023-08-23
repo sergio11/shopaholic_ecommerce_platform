@@ -6,16 +6,18 @@ import {
   UploadedFile,
   Version,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtRole } from 'src/modules/auth/jwt/jwt-role';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { UserResponseDto } from './dto/user-response.dto';
 import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
 import { Auth } from '../auth/decorator/auth.decorator';
 import { ApiController } from 'src/core/decorator/default-api.decorator';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 /**
  * Controller for managing user operations.
@@ -108,4 +110,35 @@ export class UsersController {
   async searchByName(@Param('name') name: string): Promise<UserResponseDto[]> {
     return this.usersService.searchByName(name);
   }
+
+  /**
+   * Search for users by name and filter by role (ADMIN or CLIENT), and paginate the results.
+   * @param {string} name - The search term to filter users by name.
+   * @param {JwtRole} role - The role to filter users by role (ADMIN or CLIENT).
+   * @param {number} page - The page number for pagination (default is 1).
+   * @param {number} limit - The number of items per page (default is 10).
+   * @returns {Promise<Pagination<UserResponseDto>>} - A paginated result of UserResponseDto.
+   */
+  @Auth(JwtRole.ADMIN)
+  @Get('search')
+  @ApiOperation({ summary: 'Search for users by name and filter by role (ADMIN or CLIENT)' })
+  @ApiQuery({ name: 'name', required: true, description: 'Search term for filtering users by name' })
+  @ApiQuery({ name: 'role', enum: JwtRole, required: true, description: 'Filter users by role (ADMIN or CLIENT)' })
+  @ApiQuery({ name: 'page', required: false, description: 'Page number', type: Number })
+  @ApiQuery({ name: 'limit', required: false, description: 'Items per page', type: Number })
+  @ApiResponse({
+    status: 200,
+    description: 'Filtered and paginated users',
+    type: UserResponseDto,
+    isArray: true,
+  })
+  async searchAndPaginateUsers(
+    @Query('name') name: string,
+    @Query('role') role: JwtRole,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ): Promise<Pagination<UserResponseDto>> {
+    return this.usersService.searchAndPaginateUsers(name, role, page, limit);
+  }
+
 }

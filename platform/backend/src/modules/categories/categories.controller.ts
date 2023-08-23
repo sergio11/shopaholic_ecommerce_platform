@@ -8,6 +8,7 @@ import { CategoryResponseDto } from './dto/category-response.dto';
 import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
 import { Auth } from '../auth/decorator/auth.decorator';
 import { ApiController } from 'src/core/decorator/default-api.decorator';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 
 @ApiController('categories')
@@ -63,12 +64,12 @@ export class CategoriesController {
      * @param {string} term - The search term to filter categories by.
      * @param {number} page - The page number for pagination (default is 1).
      * @param {number} limit - The number of items per page (default is 10).
-     * @returns {Promise<CategoryResponseDto[]>} - An array of category response DTOs.
+     * @returns {Promise<Pagination<CategoryResponseDto>>} - A paginated result of category response DTOs.
      */
     @Auth(JwtRole.CLIENT, JwtRole.ADMIN)
     @Version('1.0')
     @Get('search')
-    @ApiQuery({ name: 'term', required: false, description: 'Search term for filtering categories' })
+    @ApiQuery({ name: 'term', required: true, description: 'Search term for filtering categories' })
     @ApiQuery({ name: 'page', required: false, description: 'Page number', type: Number })
     @ApiQuery({ name: 'limit', required: false, description: 'Items per page', type: Number })
     @ApiOperation({ summary: 'Search for categories based on a search term and paginate the results' })
@@ -78,11 +79,11 @@ export class CategoriesController {
         type: CategoryResponseDto,
         isArray: true,
     })
-    async searchAndPaginateCategories(
+    async searchAndPaginate(
         @Query('term') term: string,
         @Query('page', ParseIntPipe) page: number = 1,
         @Query('limit', ParseIntPipe) limit: number = 10
-    ): Promise<CategoryResponseDto[]> {
+    ): Promise<Pagination<CategoryResponseDto>> {
         return this.categoriesService.searchAndPaginate(term, page, limit);
     }
     
