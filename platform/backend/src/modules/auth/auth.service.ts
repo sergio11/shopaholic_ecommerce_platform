@@ -15,6 +15,7 @@ import { UserMapper } from '../users/user.mapper';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { ResetPasswordTokenEntity } from './reset-password-token.entity';
+import { AdminSignUpAuthDto } from './dto/admin-signup-auth.dto';
 
 /**
  * Service for handling authentication related operations.
@@ -50,35 +51,16 @@ export class AuthService extends SupportService {
    * @returns {Promise<AuthResponseDto>} - The response after user registration.
    */
   async signup(signUpData: SignUpAuthDto): Promise<AuthResponseDto> {
-    const { email, phone } = signUpData;
-    const emailExist = await this.usersRepository.findOneBy({ email: email });
-    if (emailExist) {
-      this.throwConflictException('EMAIL_ALREADY_REGISTERED');
-    }
-    const phoneExist = await this.usersRepository.findOneBy({ phone: phone });
-    if (phoneExist) {
-      this.throwConflictException('PHONE_ALREADY_REGISTERED');
-    }
+    return this.createUserAndSignJwt(signUpData, ['CLIENT']);
+  }
 
-    const newUser = this.usersRepository.create(signUpData);
-    let rolesNames = [];
-
-    if (signUpData.rolesName !== undefined && signUpData.rolesName !== null) {
-      // DATA
-      rolesNames = signUpData.rolesName;
-    } else {
-      rolesNames.push('CLIENT');
-    }
-
-    const roles = await this.rolesRepository.findBy({ name: In(rolesNames) });
-    if (roles.length == 0) {
-      this.throwConflictException('NO_ROLES_FOUND');
-    }
-    newUser.roles = roles;
-
-    const userSaved = await this.usersRepository.save(newUser);
-
-    return this.generateAndSignJwt(userSaved);
+  /**
+   * Registers a new admin user.
+   * @param {AdminSignUpAuthDto} signUpData - The data for admin signup.
+   * @returns {Promise<AuthResponseDto>} - The response after admin registration.
+   */
+  async signupAdmin(signUpData: AdminSignUpAuthDto): Promise<AuthResponseDto> {
+    return this.createUserAndSignJwt(signUpData, ['ADMIN']);
   }
 
   /**
@@ -87,21 +69,18 @@ export class AuthService extends SupportService {
    * @returns {Promise<AuthResponseDto>} - The response after user signin.
    */
   async signin(signInData: SignInAuthDto): Promise<AuthResponseDto> {
-    const { email, password } = signInData;
-    const userFound = await this.usersRepository.findOne({
-      where: { email: email },
-      relations: ['roles'],
-    });
-    if (!userFound) {
-      this.throwNotFoundException('EMAIL_NOT_FOUND');
-    }
+    return this.signinUser(signInData, ['CLIENT']);
+  }
 
-    const isPasswordValid = await compare(password, userFound.password);
-    if (!isPasswordValid) {
-      this.throwForbiddenException('INVALID_CREDENTIALS');
-    }
-
-    return this.generateAndSignJwt(userFound);
+  /**
+   * Signs in an admin user.
+   * @param {SignInAuthDto} signInData - The data for admin signin.
+   * @returns {Promise<AuthResponseDto>} - The response after admin signin.
+   * @throws {NotFoundException} - If the provided email is not found.
+   * @throws {ForbiddenException} - If the user does not have the 'ADMIN' role.
+   */
+  async signinAdmin(signInData: SignInAuthDto): Promise<AuthResponseDto> {
+    return this.signinUser(signInData, ['ADMIN']);
   }
 
   /**
@@ -191,6 +170,60 @@ export class AuthService extends SupportService {
       token: 'Bearer ' + token,
     };
     return data;
+  }
+
+  private async createUserAndSignJwt(
+    signUpData: SignUpAuthDto | AdminSignUpAuthDto,
+    rolesToAssign: string[],
+  ): Promise<AuthResponseDto> {
+    const { email } = signUpData;
+    const emailExist = await this.usersRepository.findOneBy({ email });
+    if (emailExist) {
+      this.throwConflictException('EMAIL_ALREADY_REGISTERED');
+    }
+
+    const newUser = this.usersRepository.create(signUpData);
+    const roles = await this.rolesRepository.findBy({
+      name: In(rolesToAssign),
+    });
+    if (roles.length === 0) {
+      this.throwConflictException('NO_ROLES_FOUND');
+    }
+    newUser.roles = roles;
+
+    const userSaved = await this.usersRepository.save(newUser);
+
+    return this.generateAndSignJwt(userSaved);
+  }
+
+  private async signinUser(
+    signInData: SignInAuthDto,
+    requiredRoles: string[],
+  ): Promise<AuthResponseDto> {
+    const { email, password } = signInData;
+    const userFound = await this.usersRepository.findOne({
+      where: { email },
+      relations: ['roles'],
+    });
+    if (!userFound) {
+      this.throwNotFoundException('EMAIL_NOT_FOUND');
+    }
+
+    if (requiredRoles.length > 0) {
+      const hasRequiredRole = userFound.roles.some((role) =>
+        requiredRoles.includes(role.name),
+      );
+      if (!hasRequiredRole) {
+        this.throwForbiddenException('FORBIDDEN_ACCESS');
+      }
+    }
+
+    const isPasswordValid = await compare(password, userFound.password);
+    if (!isPasswordValid) {
+      this.throwForbiddenException('INVALID_CREDENTIALS');
+    }
+
+    return this.generateAndSignJwt(userFound);
   }
 
   /**

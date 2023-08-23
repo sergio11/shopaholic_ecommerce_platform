@@ -68,17 +68,6 @@ export class SignUpAuthDto {
     @IsString()
     @MinLength(6, { message: 'La contraseña debe tener minimo 6 caracteres' })
     password: string;
-
-    /**
-     * The roles of the user
-     * @example ['CLIENT', 'ADMIN']
-     */
-    @ApiProperty({
-        description: `The roles of the user`,
-        example: ['CLIENT', 'ADMIN']
-    })
-    @ApiProperty({ required: false, default: [] })
-    rolesName: string[];
     
     /**
      * The country of the user
