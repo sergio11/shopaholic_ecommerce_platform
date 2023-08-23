@@ -7,7 +7,6 @@ import { ImageResponseDto } from 'src/modules/images/dto/image-response.dto';
  * Data transfer object for brand response.
  */
 export class BrandResponseDTO {
-
   /**
    * Unique identifier of the brand.
    * @example c5e1e99a-7efc-4a63-83da-5ef5e6cb6d16

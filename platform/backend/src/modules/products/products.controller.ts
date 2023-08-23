@@ -77,10 +77,27 @@ export class ProductsController {
    */
   @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
   @Get('search')
-  @ApiOperation({ summary: 'Search for products based on a search term and paginate the results' })
-  @ApiQuery({ name: 'term', required: true, description: 'Search term for filtering products' })
-  @ApiQuery({ name: 'page', required: false, description: 'Page number', type: Number })
-  @ApiQuery({ name: 'limit', required: false, description: 'Items per page', type: Number })
+  @ApiOperation({
+    summary:
+      'Search for products based on a search term and paginate the results',
+  })
+  @ApiQuery({
+    name: 'term',
+    required: true,
+    description: 'Search term for filtering products',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Items per page',
+    type: Number,
+  })
   @ApiResponse({
     status: 200,
     description: 'Filtered and paginated products',

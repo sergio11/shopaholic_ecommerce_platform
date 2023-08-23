@@ -1,4 +1,16 @@
-import { Get, Post, Body, Param, Delete, ParseUUIDPipe, HttpStatus, Version, UploadedFile, ParseIntPipe, Query } from '@nestjs/common';
+import {
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+  HttpStatus,
+  Version,
+  UploadedFile,
+  ParseIntPipe,
+  Query,
+} from '@nestjs/common';
 import { ApiResponse, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { BrandService } from './brands.service';
 import { JwtRole } from '../auth/jwt/jwt-role';
@@ -8,6 +20,7 @@ import { UpdateBrandDTO } from './dto/update-brand.dto';
 import { DefaultUploadFileValidationDecorator } from 'src/core/decorator/default-file.decorator';
 import { Auth } from '../auth/decorator/auth.decorator';
 import { ApiController } from 'src/core/decorator/default-api.decorator';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 /**
  * Controller responsible for managing brands.
@@ -23,30 +36,51 @@ export class BrandController {
   @Auth(JwtRole.ADMIN)
   @Version('1.0')
   @Get()
-  @ApiOkResponse({ description: 'Retrieved all brands.', type: BrandResponseDTO, isArray: true })
+  @ApiOkResponse({
+    description: 'Retrieved all brands.',
+    type: BrandResponseDTO,
+    isArray: true,
+  })
   async findAll(): Promise<BrandResponseDTO[]> {
     return this.brandService.findAll();
   }
 
-
   /**
    * Retrieves brands based on a search term and pagination.
-   * @param searchTerm - The search term to filter brands.
-   * @param page - The page number.
-   * @param limit - The number of items per page.
-   * @returns An array of BrandResponseDto representing the brands.
+   *  @param {string} term - The search term to filter categories by.
+   * @param {number} page - The page number for pagination (default is 1).
+   * @param {number} limit - The number of items per page (default is 10).
+   * @returns {Promise<Pagination<BrandResponseDTO>>} - A paginated result of brands response DTOs.
    */
   @Auth(JwtRole.ADMIN)
   @Get('search')
-  @ApiQuery({ name: 'term', required: false, description: 'Search term for filtering brands' })
-  @ApiQuery({ name: 'page', required: false, description: 'Page number', type: Number })
-  @ApiQuery({ name: 'limit', required: false, description: 'Items per page', type: Number })
-  @ApiOkResponse({ description: 'Retrieved filtered and paginated brands.', type: BrandResponseDTO, isArray: true })
+  @ApiQuery({
+    name: 'term',
+    required: false,
+    description: 'Search term for filtering brands',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Items per page',
+    type: Number,
+  })
+  @ApiOkResponse({
+    description: 'Retrieved filtered and paginated brands.',
+    type: BrandResponseDTO,
+    isArray: true,
+  })
   async searchBrands(
     @Query('term') searchTerm: string,
     @Query('page', ParseIntPipe) page: number = 1,
     @Query('limit', ParseIntPipe) limit: number = 10,
-  ): Promise<BrandResponseDTO[]> {
+  ): Promise<Pagination<BrandResponseDTO>> {
     return this.brandService.searchAndPaginateBrands(searchTerm, page, limit);
   }
 
@@ -58,8 +92,14 @@ export class BrandController {
   @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
   @Version('1.0')
   @Get(':id')
-  @ApiResponse({ status: HttpStatus.OK, description: 'Retrieved a brand by ID.', type: BrandResponseDTO })
-  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<BrandResponseDTO> {
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Retrieved a brand by ID.',
+    type: BrandResponseDTO,
+  })
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<BrandResponseDTO> {
     return this.brandService.findOne(id);
   }
 
@@ -72,12 +112,16 @@ export class BrandController {
   @Version('1.0')
   @Post()
   @DefaultUploadFileValidationDecorator()
-  @ApiResponse({ status: HttpStatus.CREATED, description: 'Brand created successfully.', type: BrandResponseDTO })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Brand created successfully.',
+    type: BrandResponseDTO,
+  })
   async create(
     @UploadedFile() file: Express.Multer.File,
-    @Body() createBrandDto: CreateBrandDTO
+    @Body() createBrandDto: CreateBrandDTO,
   ): Promise<BrandResponseDTO> {
-    const brand = { ...createBrandDto, imageFile: file};
+    const brand = { ...createBrandDto, imageFile: file };
     return this.brandService.create(brand);
   }
 
@@ -91,13 +135,17 @@ export class BrandController {
   @Version('1.0')
   @Post(':id')
   @DefaultUploadFileValidationDecorator({ isOptional: true })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Brand updated successfully.', type: BrandResponseDTO })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Brand updated successfully.',
+    type: BrandResponseDTO,
+  })
   async update(
     @UploadedFile() file: Express.Multer.File,
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateBrandDto: UpdateBrandDTO
+    @Body() updateBrandDto: UpdateBrandDTO,
   ): Promise<BrandResponseDTO> {
-    const brand = { ...updateBrandDto, imageFile: file};
+    const brand = { ...updateBrandDto, imageFile: file };
     return this.brandService.update(id, brand);
   }
 
@@ -108,7 +156,10 @@ export class BrandController {
   @Auth(JwtRole.ADMIN)
   @Version('1.0')
   @Delete(':id')
-  @ApiResponse({ status: HttpStatus.OK, description: 'Brand deleted successfully.' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Brand deleted successfully.',
+  })
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<string> {
     return this.brandService.remove(id);
   }

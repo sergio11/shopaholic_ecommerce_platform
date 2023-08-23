@@ -8,29 +8,28 @@ import { ImageEntity } from 'src/modules/images/image.entity';
  */
 @Entity({ name: 'roles' })
 export class RoleEntity extends AbstractEntity {
+  /**
+   * Name of the role.
+   */
+  @Column({ unique: true })
+  name: string;
 
-    /**
-     * Name of the role.
-     */
-    @Column({ unique: true })
-    name: string;
+  /**
+   * Image associated with the role.
+   */
+  @OneToOne(() => ImageEntity)
+  @JoinColumn({ name: 'image_id' })
+  image: ImageEntity;
 
-    /**
-     * Image associated with the role.
-     */
-    @OneToOne(() => ImageEntity)
-    @JoinColumn({ name: 'image_id' })
-    image: ImageEntity;
+  /**
+   * Route associated with the role.
+   */
+  @Column()
+  route: string;
 
-    /**
-     * Route associated with the role.
-     */
-    @Column()
-    route: string;
-
-    /**
-     * Users assigned to this role.
-     */
-    @ManyToMany(() => UserEntity, (user) => user.roles)
-    users: UserEntity[];
+  /**
+   * Users assigned to this role.
+   */
+  @ManyToMany(() => UserEntity, (user) => user.roles)
+  users: UserEntity[];
 }
