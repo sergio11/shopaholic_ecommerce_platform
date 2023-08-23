@@ -8,30 +8,30 @@ import { ImageEntity } from '../images/image.entity';
  */
 @Entity('brands')
 export class BrandsEntity extends AbstractEntity {
-    /**
-     * The name of the brand.
-     * @example Nike
-     */
-    @Column({ nullable: false, unique: true })
-    name: string;
+  /**
+   * The name of the brand.
+   * @example Nike
+   */
+  @Column({ nullable: false, unique: true })
+  name: string;
 
-    /**
-     * The slug for the brand.
-     * @example nike
-     */
-    @Column({ nullable: false, unique: true })
-    slug: string;
+  /**
+   * The slug for the brand.
+   * @example nike
+   */
+  @Column({ nullable: false, unique: true })
+  slug: string;
 
-     /**
-     * The associated image for the category.
-     */
-     @OneToOne(() => ImageEntity)
-     @JoinColumn({ name: 'image_id' })
-     image: ImageEntity;
+  /**
+   * The associated image for the category.
+   */
+  @OneToOne(() => ImageEntity)
+  @JoinColumn({ name: 'image_id' })
+  image: ImageEntity;
 
-    /**
-     * Products associated with this brand.
-     */
-    @OneToMany(() => ProductEntity, (product) => product.brand)
-    products: ProductEntity[];
+  /**
+   * Products associated with this brand.
+   */
+  @OneToMany(() => ProductEntity, (product) => product.brand)
+  products: ProductEntity[];
 }

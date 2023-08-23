@@ -8,18 +8,29 @@ import UpdateCategoryDTO from './dto/update-category.dto';
 @Injectable()
 export class CategoryMapper {
   mapCategoryToResponseDto(category: CategoryEntity): CategoryResponseDto {
-    return plainToClass(CategoryResponseDto, category, { excludeExtraneousValues: true });
+    return plainToClass(CategoryResponseDto, category, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  mapCategoriesToResponseDtos(categories: CategoryEntity[]): CategoryResponseDto[] {
-    return categories.map(category => this.mapCategoryToResponseDto(category));
+  mapCategoriesToResponseDtos(
+    categories: CategoryEntity[],
+  ): CategoryResponseDto[] {
+    return categories.map((category) =>
+      this.mapCategoryToResponseDto(category),
+    );
   }
 
-  mapCreateCategoryDtoToEntity(createCategoryDto: CreateCategoryDTO): CategoryEntity {
+  mapCreateCategoryDtoToEntity(
+    createCategoryDto: CreateCategoryDTO,
+  ): CategoryEntity {
     return plainToClass(CategoryEntity, createCategoryDto);
   }
 
-  mapUpdateCategoryDtoToEntity(updateCategoryDto: UpdateCategoryDTO, existingCategory: CategoryEntity): CategoryEntity {
+  mapUpdateCategoryDtoToEntity(
+    updateCategoryDto: UpdateCategoryDTO,
+    existingCategory: CategoryEntity,
+  ): CategoryEntity {
     const updatedCategory = plainToClass(CategoryEntity, updateCategoryDto);
     return { ...existingCategory, ...updatedCategory };
   }

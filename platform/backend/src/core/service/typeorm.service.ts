@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AddressEntity } from 'src/modules/address/address.entity';
+import { ResetPasswordTokenEntity } from 'src/modules/auth/reset-password-token.entity';
 import { BrandsEntity } from 'src/modules/brands/brand.entity';
 import { CategoryEntity } from 'src/modules/categories/category.entity';
 import { ImageEntity } from 'src/modules/images/image.entity';
@@ -49,7 +50,8 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
         ImageEntity,
         BrandsEntity,
         ProductReviewEntity,
-        TransactionRecordEntity
+        TransactionRecordEntity,
+        ResetPasswordTokenEntity
       ],
       synchronize: true
     };
