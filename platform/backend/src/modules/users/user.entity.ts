@@ -134,7 +134,7 @@ export class UserEntity extends AbstractEntity {
   @OneToMany(() => ProductReviewEntity, (review) => review.user)
   productReviews: ProductReviewEntity[];
 
-  @OneToMany(() => TransactionRecordEntity, transaction => transaction.user)
+  @OneToMany(() => TransactionRecordEntity, (transaction) => transaction.user)
   transactions: TransactionRecordEntity[];
 
   /**

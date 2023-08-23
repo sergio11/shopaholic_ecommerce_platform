@@ -50,8 +50,8 @@ export class UsersController {
    * @returns The created user response DTO.
    */
   @Auth(JwtRole.ADMIN)
-  @Post()
   @Version('1.0')
+  @Post()
   @DefaultUploadFileValidationDecorator()
   @ApiOperation({ summary: 'Create new user' })
   async create(
@@ -88,6 +88,7 @@ export class UsersController {
    * @param id The ID of the user to delete.
    */
   @Auth(JwtRole.ADMIN)
+  @Version('1.0')
   @Delete(':id')
   @ApiOperation({ summary: 'Delete user by ID' })
   async delete(@Param('id') id: string): Promise<string> {
@@ -100,6 +101,7 @@ export class UsersController {
    * @returns A list of users matching the name.
    */
   @Auth(JwtRole.ADMIN)
+  @Version('1.0')
   @Get('search/:name')
   @ApiOperation({ summary: 'Search users by name' })
   @ApiResponse({
@@ -120,12 +122,34 @@ export class UsersController {
    * @returns {Promise<Pagination<UserResponseDto>>} - A paginated result of UserResponseDto.
    */
   @Auth(JwtRole.ADMIN)
+  @Version('1.0')
   @Get('search')
-  @ApiOperation({ summary: 'Search for users by name and filter by role (ADMIN or CLIENT)' })
-  @ApiQuery({ name: 'name', required: true, description: 'Search term for filtering users by name' })
-  @ApiQuery({ name: 'role', enum: JwtRole, required: true, description: 'Filter users by role (ADMIN or CLIENT)' })
-  @ApiQuery({ name: 'page', required: false, description: 'Page number', type: Number })
-  @ApiQuery({ name: 'limit', required: false, description: 'Items per page', type: Number })
+  @ApiOperation({
+    summary: 'Search for users by name and filter by role (ADMIN or CLIENT)',
+  })
+  @ApiQuery({
+    name: 'name',
+    required: true,
+    description: 'Search term for filtering users by name',
+  })
+  @ApiQuery({
+    name: 'role',
+    enum: JwtRole,
+    required: true,
+    description: 'Filter users by role (ADMIN or CLIENT)',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Items per page',
+    type: Number,
+  })
   @ApiResponse({
     status: 200,
     description: 'Filtered and paginated users',
@@ -140,5 +164,4 @@ export class UsersController {
   ): Promise<Pagination<UserResponseDto>> {
     return this.usersService.searchAndPaginateUsers(name, role, page, limit);
   }
-
 }
