@@ -67,6 +67,7 @@ export class UsersService extends SupportService {
    * @returns The user response DTO.
    */
   async getUserById(id: string): Promise<UserResponseDto> {
+    console.log(`getUserById -> ${id}`);
     const user = await this.findUser(id);
     return this.userMapper.mapUserToResponseDto(user);
   }
@@ -121,15 +122,33 @@ export class UsersService extends SupportService {
     page: number = 1,
     limit: number = 10,
   ): Promise<Pagination<UserResponseDto>> {
-    const roleId = await this.findRoleIdByJwtRole(role);
+    if (page < 1) {
+      this.throwBadRequestException('PAGE_NUMBER_NOT_VALID');
+    }
 
-    const queryBuilder = this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.roles', 'role')
-      .where('LOWER(user.name) LIKE :name OR LOWER(user.lastname) LIKE :name', {
-        name: `%${name.toLowerCase()}%`,
-      })
-      .andWhere(':roleId = ANY(role.id)', { roleId });
+    if (limit < 1 || limit > 100) {
+      this.throwBadRequestException('LIMIT_NUMBER_NOT_VALID');
+    }
+
+    let queryBuilder = this.usersRepository.createQueryBuilder('user');
+
+    if (name) {
+      queryBuilder = queryBuilder
+        .leftJoinAndSelect('user.roles', 'role')
+        .where(
+          'LOWER(user.name) LIKE :name OR LOWER(user.lastname) LIKE :name',
+          {
+            name: `%${name.toLowerCase()}%`,
+          },
+        );
+    }
+
+    if (role) {
+      const roleId = await this.findRoleIdByJwtRole(role);
+      queryBuilder = queryBuilder.andWhere(':roleId = ANY(user.roles)', {
+        roleId,
+      });
+    }
 
     const paginatedUser = await paginate(queryBuilder, { page, limit });
     const items = paginatedUser.items.map((user) =>

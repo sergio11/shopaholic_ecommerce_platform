@@ -8,6 +8,8 @@ import {
   Delete,
   Query,
   Patch,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -75,6 +77,7 @@ export class UsersController {
     type: UserResponseDto,
   })
   async getProfile(@AuthUserId() userId: string): Promise<UserResponseDto> {
+    console.log(`getProfile -> AuthUserId: ${userId}`)
     return this.usersService.getUserById(userId);
   }
 
@@ -231,25 +234,25 @@ export class UsersController {
   })
   @ApiQuery({
     name: 'name',
-    required: true,
+    required: false,
     description: 'Search term for filtering users by name',
   })
   @ApiQuery({
     name: 'role',
     enum: JwtRole,
-    required: true,
+    required: false,
     description: 'Filter users by role (ADMIN or CLIENT)',
   })
   @ApiQuery({
     name: 'page',
     required: false,
-    description: 'Page number',
+    description: 'Page number ( 1 ... )',
     type: Number,
   })
   @ApiQuery({
     name: 'limit',
     required: false,
-    description: 'Items per page',
+    description: 'Items per page ( 1 ... 100 )',
     type: Number,
   })
   @ApiResponse({
@@ -261,8 +264,8 @@ export class UsersController {
   async searchAndPaginateUsers(
     @Query('name') name: string,
     @Query('role') role: JwtRole,
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ): Promise<Pagination<UserResponseDto>> {
     return this.usersService.searchAndPaginateUsers(name, role, page, limit);
   }

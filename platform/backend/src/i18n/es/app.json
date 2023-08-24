@@ -1,5 +1,30 @@
 {
+    "ADDRESS_DELETED_SUCCESSFULLY": "Dirección eliminada correctamente",
+    "ADDRESS_NOT_FOUND": "Dirección no encontrada",
     "USER_NOT_FOUND": "Usuario no encontrado",
-    "IMAGE_ERROR": "Ocurrió un error al procesar la imagen",
-    "CATEGORY_NOT_FOUND": "Category no encontrada"
-}
+    "INVALID_CREDENTIALS": "Credenciales inválidas",
+    "EMAIL_NOT_FOUND": "Correo electrónico no encontrado",
+    "REQUEST_RESET_PASSWORD_SUCCESSFULLY": "Solicitud de restablecimiento de contraseña realizada exitosamente",
+    "INVALID_RESET_PASSWORD_TOKEN": "Token de restablecimiento de contraseña inválido",
+    "PASSWORD_RESET_SUCCESSFULLY": "Contraseña restablecida exitosamente",
+    "USER_TOKEN_REVOKED": "Token de usuario revocado",
+    "EMAIL_ALREADY_REGISTERED": "Correo electrónico ya registrado",
+    "NO_ROLES_FOUND": "No se encontraron roles",
+    "FORBIDDEN_ACCESS": "Acceso prohibido",
+    "BRAND_REMOVED_SUCCESFULLY": "Marca eliminada exitosamente",
+    "BRAND_NOT_FOUND": "Marca no encontrada",
+    "CATEGORY_DELETED_SUCCESSFULLY": "Categoría eliminada correctamente",
+    "CATEGORY_NOT_FOUND": "Categoría no encontrada",
+    "IMAGE_NOT_FOUND": "Imagen no encontrada",
+    "ORDER_CANCELLED_SUCCESSFULLY": "Pedido cancelado exitosamente",
+    "ORDER_NOT_FOUND": "Pedido no encontrado",
+    "PRODUCT_DELETED_SUCCESSFULLY": "Producto eliminado correctamente",
+    "LIKE_PRODUCT_SUCCESSFULLY": "Producto marcado como gustado exitosamente",
+    "DISLIKE_PRODUCT_SUCCESSFULLY": "Producto marcado como no gustado exitosamente",
+    "ROLE_DELETED_SUCCESSFULLY": "Rol eliminado correctamente",
+    "ROLE_NOT_FOUND": "Rol no encontrado",
+    "INVALID_PASSWORD": "Contraseña inválida",
+    "USER_PASSWORD_UPDATED_SUCCESSFULLY": "Contraseña de usuario actualizada exitosamente",
+    "USER_DELETED_SUCCESSFULLY": "Usuario eliminado correctamente"
+  }
+  
