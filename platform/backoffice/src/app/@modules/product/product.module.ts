@@ -7,6 +7,7 @@ import { ProductRoutingModule } from './product-routing.module';
 import { ProductUpdateComponent } from './components/product-update/product-update.component';
 import { ProductsCreateComponent } from './components/product-create/products-create-component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from 'src/app/@shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     ProductUpdateComponent,
   ],
   imports: [
+    SharedModule,
     ProductRoutingModule,
     CommonModule,
     ReactiveFormsModule,

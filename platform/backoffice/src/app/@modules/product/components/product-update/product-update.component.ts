@@ -5,9 +5,7 @@ import { CategoryService } from 'src/app/@shared/services/category.service';
 import { DepartmentService } from 'src/app/@shared/services/department.service';
 import { FormBuilder } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { ProductService } from './../../../../@shared/services/product.service';
-import { UtilsService } from 'src/app/@shared/services/utils.service';
 import { IFProductCreate } from 'src/app/@shared/interfaces/product.interface';
 
 @Component({
@@ -18,18 +16,40 @@ export class ProductUpdateComponent implements OnInit {
   @Input() data: any = {};
   @Input() isOpen: boolean = false;
   @Output() onClose = new EventEmitter<any>();
+
   constructor(
     private productService: ProductService,
     private fb: FormBuilder,
-    private utilsService: UtilsService,
     private notificationService: NzNotificationService,
     private departmentService: DepartmentService,
     private categoryService: CategoryService,
     private brandService: BrandService
   ) {}
 
+  mainImageFileSelected: File | undefined;
+  productForm = this.fb.group({
+    name: [''],
+    description: [''],
+    specification: [''],
+    stock: [''],
+    mrp: [''],
+    mrpVat: [''],
+    brand: [''],
+    category: [''],
+    department: [''],
+    productCode: [''],
+    isAvailable: [false],
+    isNewArrival: [false],
+    isTopSelling: [false],
+    isFeatured: [false],
+    isActive: [false],
+    isPopular: [false],
+    isHot: [false],
+    isNew: [false],
+  });
+
+
   ngOnInit(): void {
-    this.imageUrl = this.data.productImages;
     this.loadMoreDepartment();
     this.loadMoreCategory();
     this.loadMoreBrands();
@@ -55,54 +75,12 @@ export class ProductUpdateComponent implements OnInit {
     });
   }
 
-  //*Image update
-  imageUploadLoading: boolean = false;
-  imageUploadEndPoint = this.utilsService.uploadImageEndPoint;
-  imageUrl: string = '';
-  onChangeImageUpload(info: { file: NzUploadFile }): void {
-    switch (info.file.status) {
-      case 'uploading':
-        this.imageUploadLoading = true;
-        break;
-      case 'done':
-        this.imageUploadLoading = false;
-        this.imageUrl = info?.file?.response?.data?.link;
-        break;
-      case 'error':
-        this.imageUploadLoading = false;
-
-        break;
-    }
-  }
-
-  //*Create
-  productForm = this.fb.group({
-    name: [''],
-    description: [''],
-    specification: [''],
-    stock: [''],
-    mrp: [''],
-    mrpVat: [''],
-    brand: [''],
-    category: [''],
-    department: [''],
-    productCode: [''],
-    isAvailable: [false],
-    isNewArrival: [false],
-    isTopSelling: [false],
-    isFeatured: [false],
-    isActive: [false],
-    isPopular: [false],
-    isHot: [false],
-    isNew: [false],
-  });
   onSubmitCreate() {
-    if (!this.imageUrl) {
+    if (!this.mainImageFileSelected) {
       this.notificationService.error('Image Empty', '');
     } else if (!this.productForm.value.name) {
       this.notificationService.error('Name Empty', '');
     } else {
-      
       const productData: IFProductCreate = {
         name: this.productForm.value.name || '',
         description: this.productForm.value.description || '',
@@ -122,12 +100,13 @@ export class ProductUpdateComponent implements OnInit {
         isPopular: this.productForm.value.isPopular || false,
         isHot: this.productForm.value.isHot || false,
         isNew: this.productForm.value.isNew || false,
-        productImages: this.imageUrl || '',
+        productImages: '',
       };
 
       this.productService
         .update(this.data?.id, productData)
         .subscribe((res: any) => {
+          console.log(res);
           this.notificationService.success('Updated', '');
           this.onClose.emit();
         });
@@ -136,7 +115,7 @@ export class ProductUpdateComponent implements OnInit {
 
   //*Department
   departmentOptionList: any[] = [];
-  isLoading = false; 
+  isLoading = false;
   dPage = 1;
   loadMoreDepartment(): void {
     this.isLoading = true;

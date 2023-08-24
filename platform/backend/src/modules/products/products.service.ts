@@ -21,7 +21,8 @@ import { UserEntity } from '../users/user.entity';
 
 @Injectable()
 export class ProductsService extends SupportService {
-  private readonly CACHE_KEY = 'products:all';
+  private readonly CACHE_KEY = 'cache:products:all';
+  private readonly DEFAULT_TTL_IN_SECONDS = 60;
 
   constructor(
     @InjectRepository(ProductEntity)
@@ -51,7 +52,7 @@ export class ProductsService extends SupportService {
     }
     const products = await this.productsRepository.find();
     const mappedProducts = this.mapper.mapProductsToResponseDtos(products);
-    await this.cacheService.set(this.CACHE_KEY, mappedProducts, { ttl: 60 });
+    await this.cacheService.set(this.CACHE_KEY, mappedProducts, this.DEFAULT_TTL_IN_SECONDS);
     return mappedProducts;
   }
 
@@ -83,7 +84,7 @@ export class ProductsService extends SupportService {
     const options = { page, limit };
     const queryBuilder = this.productsRepository
       .createQueryBuilder('product')
-      .where('product.name ILIKE :term', { term: `%${term}%` })
+      .where('LOWER(product.name) LIKE LOWER(:term)', { term: `%${term}%` })
       .orderBy('product.name');
 
     const paginatedProducts = await paginate(queryBuilder, options);

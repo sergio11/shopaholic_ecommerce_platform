@@ -10,23 +10,8 @@
 >
   <ng-container *nzDrawerContent>
     <form [formGroup]="productForm">
-      <nz-upload
-        [nzAction]="imageUploadEndPoint"
-        nzName="image"
-        nzListType="picture-card"
-        [nzShowUploadList]="false"
-        (nzChange)="onChangeImageUpload($event)"
-      >
-        <ng-container *ngIf="!imageUrl">
-          <i
-            class="upload-icon"
-            nz-icon
-            [nzType]="imageUploadLoading ? 'loading' : 'plus'"
-          ></i>
-          <div class="ant-upload-text">Upload</div>
-        </ng-container>
-        <img *ngIf="imageUrl" [src]="imageUrl" style="width: 100%" />
-      </nz-upload>
+
+      <app-file-upload [(fileSelected)]="mainImageFileSelected"></app-file-upload>
 
       <div nz-row [nzGutter]="16">
         <div nz-col nzSpan="12">

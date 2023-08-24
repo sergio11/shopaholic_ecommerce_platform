@@ -7,7 +7,7 @@ import { BrandUpdateComponent } from './components/brand-update/brand-update.com
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FileUploadComponent } from './components/file-upload/file-upload.component';
+import { SharedModule } from 'src/app/@shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -15,9 +15,9 @@ import { FileUploadComponent } from './components/file-upload/file-upload.compon
     BrandItemComponent,
     BrandCreateComponent,
     BrandUpdateComponent,
-    FileUploadComponent
   ],
   imports: [
+    SharedModule,
     BrandRoutingModule,
     CommonModule,
     AntDesignModule,

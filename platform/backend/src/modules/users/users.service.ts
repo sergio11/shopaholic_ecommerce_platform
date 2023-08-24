@@ -62,6 +62,16 @@ export class UsersService extends SupportService {
   }
 
   /**
+   * Retrieve user details by ID.
+   * @param id The ID of the user to retrieve.
+   * @returns The user response DTO.
+   */
+  async getUserById(id: string): Promise<UserResponseDto> {
+    const user = await this.findUser(id);
+    return this.userMapper.mapUserToResponseDto(user);
+  }
+
+  /**
    * Updates an existing user's data and image.
    * @param id ID of the user to be updated.
    * @param updateUserDto Updated user data.
