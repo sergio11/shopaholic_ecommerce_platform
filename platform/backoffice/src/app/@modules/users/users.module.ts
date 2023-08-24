@@ -9,7 +9,7 @@ import { UserProfileChangePassword } from './components/user-security/user-secur
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { UserProfileUpdateComponent } from './components/user-profile-update/user-profile-update.component';
 import { UsersComponent } from './components/users/users.component';
-import { UsersRoutingModule } from './users-routeing.module';
+import { UsersRoutingModule } from './users-routing.module';
 import { VendorsComponent } from './components/vendors/vendors.component';
 
 @NgModule({

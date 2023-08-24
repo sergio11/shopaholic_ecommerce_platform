@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { IFBaseFilterQuery } from './../interfaces/base.interface';
+import { IFBaseAttributeFilterQuery } from './../interfaces/base.interface';
 import { IFBaseResponse } from 'src/app/@shared/interfaces/base.interface';
-import { IFBrand } from './../interfaces/brand.interface';
 import { IFProductCreate } from './../interfaces/product.interface';
 import { Injectable } from '@angular/core';
 import { ProductsStore } from './../stores/products/products.store';
 import { environment } from 'src/environments/environment';
 import { tap } from 'rxjs/operators';
+import { baseAttributeFilterQueryUtils } from '../utils/filterquery.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -18,13 +18,9 @@ export class ProductService {
     private productsStore: ProductsStore
   ) {}
 
-  filter(option: IFBaseFilterQuery) {
+  search(option: IFBaseAttributeFilterQuery) {
     return this.http
-      .get(
-        `${this.END_POINT}filter?searchTerm=${option.searchTerm || ''}&page=${
-          option.page || ''
-        }&take=${option.take || ''}`
-      )
+      .get(`${this.END_POINT}search?${baseAttributeFilterQueryUtils(option)}`)
       .pipe(
         tap((bannerResponse: IFBaseResponse) => {
           this.productsStore.update(bannerResponse);

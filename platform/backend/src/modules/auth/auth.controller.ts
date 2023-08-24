@@ -133,17 +133,17 @@ export class AuthController {
     return this.authService.resetPassword(resetPasswordData);
   }
 
-   /**
+  /**
    * Revoke tokens of a user.
    * @param {string} userId - The ID of the user to revoke tokens for.
    * @returns {Promise<string>} - A promise that resolves when the tokens are revoked.
    */
-   @Auth(JwtRole.ADMIN)
-   @Version('1.0')
-   @Post('revoke-tokens/:userId')
-   @ApiOperation({ summary: 'Revoke tokens of a user' })
-   @ApiResponse({ status: 200, description: 'Tokens revoked successfully' })
-   async revokeToken(@Param('userId') userId: string): Promise<string> {
-     return await this.authService.revokeUserTokens(userId);
-   }
+  @Auth(JwtRole.ADMIN)
+  @Version('1.0')
+  @Post('revoke-tokens/:userId')
+  @ApiOperation({ summary: 'Revoke tokens of a user' })
+  @ApiResponse({ status: 200, description: 'Tokens revoked successfully' })
+  async revokeToken(@Param('userId') userId: string): Promise<string> {
+    return await this.authService.revokeUserTokens(userId);
+  }
 }

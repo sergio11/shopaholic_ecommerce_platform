@@ -20,9 +20,9 @@ export class BrandService {
   filter(option: IFBaseFilterQuery) {
     return this.http
       .get(
-        `${this.END_POINT}filter?searchTerm=${option.searchTerm || ''}&page=${
+        `${this.END_POINT}search?term=${option.searchTerm || ''}&page=${
           option.page || ''
-        }&take=${option.take || ''}`
+        }&limit=${option.take || ''}`
       )
       .pipe(
         tap((bannerResponse: IFBaseResponse) => {

@@ -93,8 +93,8 @@ export class AuthService extends SupportService {
    */
   async validateUserById(id: string): Promise<UserEntity> {
     const token = await this.cacheService.get(id);
-    if(!token) {
-        this.throwUnAuthorizedException('INVALID_CREDENTIALS');
+    if (!token) {
+      this.throwUnAuthorizedException('INVALID_CREDENTIALS');
     }
     const userFound = await this.usersRepository.findOne({ where: { id } });
     if (!userFound) {
@@ -163,7 +163,7 @@ export class AuthService extends SupportService {
   /**
    * Generates a JWT token and constructs the AuthResponseDto.
    * @param {UserEntity} user - The user entity.
-   * @returns {Promise<AuthResponseDto} - The response with user information and JWT token.
+   * @returns {Promise<AuthResponseDto>} - The response with user information and JWT token.
    * @private
    */
   private async generateAndSignJwt(user: UserEntity): Promise<AuthResponseDto> {
@@ -173,16 +173,21 @@ export class AuthService extends SupportService {
       name: user.name,
       roles: roles,
     };
+
     const token = this.jwtService.sign(payload, {
       secret: jwtConstants.secret,
+      expiresIn: jwtConstants.expiresIn
     });
+
     const userDTO = this.userMapper.mapUserToResponseDto(user);
     const data: AuthResponseDto = {
       user: userDTO,
       token: 'Bearer ' + token,
     };
-    // Store the token revocation status in the cache
-    await this.cacheService.set(user.id, token);
+
+    // Store the token revocation status in the cache with TTL
+    await this.cacheService.set(user.id, token, jwtConstants.expiresIn);
+
     return data;
   }
 

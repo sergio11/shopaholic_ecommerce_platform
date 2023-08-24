@@ -39,7 +39,7 @@ export class ProductPageComponent {
   //*Filter
   async filterData(option: IFBannerFilter) {
     console.log('I am called');
-    await this.productService.filter(option).toPromise();
+    await this.productService.search(option).toPromise();
   }
 
   onChangeSearch(e: any) {

@@ -26,7 +26,7 @@ export class OrderListComponent implements OnInit {
   //* Fetching Users
   fetchUsers(option: IFBaseFilterQuery) {
     this.loading = true;
-    this.orderService.filter(option).subscribe((res: IFBaseFilterResponse) => {
+    this.orderService.search(option).subscribe((res: IFBaseFilterResponse) => {
       this.orders = res;
     });
     this.loading = false;
