@@ -13,8 +13,7 @@ import { CacheService } from './cache.service';
         store: configService.get<string>('CACHE_STORE'),
         host: configService.get<string>('CACHE_NODE_1_HOST'),
         port: Number(configService.get<number>('CACHE_NODE_1_PORT')),
-        ttl: Number(configService.get<number>('CACHE_TTL')),
-        max: Number(configService.get<number>('CACHE_MAX')),
+        ttl: Number(configService.get<number>('CACHE_TTL_IN_MILLIS')),
         clusterConfig: {
           nodes: [
             { host: configService.get<string>('CACHE_NODE_2_HOST'), port: Number(configService.get<number>('CACHE_NODE_2_PORT')) },
@@ -24,10 +23,7 @@ import { CacheService } from './cache.service';
             { host: configService.get<string>('CACHE_NODE_6_HOST'), port: Number(configService.get<number>('CACHE_NODE_6_PORT')) },
             { host: configService.get<string>('CACHE_NODE_7_HOST'), port: Number(configService.get<number>('CACHE_NODE_7_PORT')) },
             { host: configService.get<string>('CACHE_NODE_8_HOST'), port: Number(configService.get<number>('CACHE_NODE_8_PORT')) },
-          ],
-          redisOptions: {
-            keyPrefix: 'cache:',
-          },
+          ]
         },
       }),
       inject: [ConfigService],

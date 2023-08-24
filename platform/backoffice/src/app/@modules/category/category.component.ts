@@ -33,7 +33,7 @@ export class CategoryComponent implements OnInit {
   };
   async filterData(option: IFBaseFilterQuery) {
     this.filterLoading = true;
-    await this.categoryService.filter(option).toPromise();
+    await this.categoryService.search(option).toPromise();
     this.filterLoading = false;
   }
   onChangePage(page: number) {

@@ -154,7 +154,7 @@ export class ProductUpdateComponent implements OnInit {
   loadMoreCategory(): void {
     this.isLoading = true;
     this.categoryService
-      .filter({ page: this.cPage, take: 10 })
+      .search({ page: this.cPage, take: 10 })
       .subscribe((res: any) => {
         this.isLoading = false;
         this.categoryOptionList = res.data;

@@ -12,7 +12,7 @@ import { routesConstant } from 'src/app/@constant/routes.constant';
 export class AuthService {
   routesConstant = routesConstant;
 
-  private readonly END_POINT = `${environment.API_ENDPOINT}auth/`;
+  private readonly END_POINT = `${environment.API_ENDPOINT}auth/admin/`;
 
   constructor(private readonly http: HttpClient, private router: Router) {}
 

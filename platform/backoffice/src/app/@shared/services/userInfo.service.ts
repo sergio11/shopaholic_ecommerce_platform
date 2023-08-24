@@ -5,14 +5,14 @@ import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class UserInfoService {
-  private readonly END_POINT = `${environment.API_ENDPOINT}userInfo/`;
+  private readonly END_POINT = `${environment.API_ENDPOINT}users/`;
 
   constructor(private readonly http: HttpClient) {}
 
   updateCurrentUserInfo(payload: IFUserInfo) {
-    return this.http.put(`${this.END_POINT}current`, payload);
+    return this.http.put(`${this.END_POINT}self`, payload);
   }
   getCurrentUserInfo() {
-    return this.http.get(`${this.END_POINT}current`);
+    return this.http.get(`${this.END_POINT}self`);
   }
 }

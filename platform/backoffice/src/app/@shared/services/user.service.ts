@@ -19,9 +19,9 @@ export class UserService {
 
   filter(option: IFFilterUser) {
     return this.http.get(
-      `${this.END_POINT}filter?searchTerm=${option.searchTerm || ''}&page=${
+      `${this.END_POINT}search?term=${option.searchTerm || ''}&page=${
         option.page || ''
-      }&take=${option.take || ''}&type=${option.type || ''}`
+      }&limit=${option.take || ''}&type=${option.type || ''}`
     );
   }
 }

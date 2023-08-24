@@ -5,18 +5,18 @@ import {
 
 export const baseFilterQueryUtils = (option: IFBaseFilterQuery) => {
   return `
-    ${option.searchTerm ? `searchTerm=${option.searchTerm}` : ''}
+    ${option.searchTerm ? `term=${option.searchTerm}` : ''}
     &${option.page ? `page=${option.page}` : ''}
-    &${option.take ? `take=${option.take}` : ''}
+    &${option.take ? `limit=${option.take}` : ''}
   `;
 };
 
 export const baseAttributeFilterQueryUtils = (
   option: IFBaseAttributeFilterQuery
 ) => {
-  return `searchTerm=${option.searchTerm || ''}&page=${
+  return `term=${option.searchTerm || ''}&page=${
     option.page || ''
-  }&take=${option.take || ''}&isFeatured=${option.isFeatured || ''}&isActive=${
+  }&limit=${option.take || ''}&isFeatured=${option.isFeatured || ''}&isActive=${
     option.isActive || ''
   }&isPopular=${option.isPopular || ''}&isHot=${option.isHot || ''}&isNew=${
     option.isNew || ''

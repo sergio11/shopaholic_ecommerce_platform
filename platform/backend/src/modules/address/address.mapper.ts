@@ -7,19 +7,25 @@ import { CreateAddressDto } from './dto/create-address.dto';
 
 @Injectable()
 export class AddressMapper {
-    mapAddressToResponseDto(address: AddressEntity): AddressResponseDto {
-        return plainToClass(AddressResponseDto, address, { excludeExtraneousValues: true });
-    }
+  mapAddressToResponseDto(address: AddressEntity): AddressResponseDto {
+    return plainToClass(AddressResponseDto, address, {
+      excludeExtraneousValues: true,
+    });
+  }
 
-    mapAddressesToResponseDtos(addresses: AddressEntity[]): AddressResponseDto[] {
-        return addresses.map(address => this.mapAddressToResponseDto(address));
-    }
+  mapAddressesToResponseDtos(addresses: AddressEntity[]): AddressResponseDto[] {
+    return addresses.map((address) => this.mapAddressToResponseDto(address));
+  }
 
-    mapCreateAddressDtoToEntity(createAddressDto: CreateAddressDto): AddressEntity {
-        return plainToClass(AddressEntity, createAddressDto);
-    }
+  mapCreateAddressDtoToEntity(
+    createAddressDto: CreateAddressDto,
+  ): AddressEntity {
+    return plainToClass(AddressEntity, createAddressDto);
+  }
 
-    mapUpdateAddressDtoToEntity(updateAddressDto: UpdateAddressDto): AddressEntity {
-        return plainToClass(AddressEntity, updateAddressDto);
-    }
+  mapUpdateAddressDtoToEntity(
+    updateAddressDto: UpdateAddressDto,
+  ): AddressEntity {
+    return plainToClass(AddressEntity, updateAddressDto);
+  }
 }

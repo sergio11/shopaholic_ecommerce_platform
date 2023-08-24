@@ -17,9 +17,9 @@ export class CategoryService {
     private categoryStore: CategoryStore
   ) {}
 
-  filter(option: IFBaseAttributeFilterQuery) {
+  search(option: IFBaseAttributeFilterQuery) {
     return this.http
-      .get(`${this.END_POINT}filter?${baseAttributeFilterQueryUtils(option)}`)
+      .get(`${this.END_POINT}search?${baseAttributeFilterQueryUtils(option)}`)
       .pipe(
         tap((data) => {
           this.categoryStore.update(data);
