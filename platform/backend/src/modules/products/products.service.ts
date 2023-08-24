@@ -4,11 +4,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductEntity } from './product.entity';
 import { Like, Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
 import { ProductResponseDto } from './dto/product-response.dto';
@@ -52,7 +48,11 @@ export class ProductsService extends SupportService {
     }
     const products = await this.productsRepository.find();
     const mappedProducts = this.mapper.mapProductsToResponseDtos(products);
-    await this.cacheService.set(this.CACHE_KEY, mappedProducts, this.DEFAULT_TTL_IN_SECONDS);
+    await this.cacheService.set(
+      this.CACHE_KEY,
+      mappedProducts,
+      this.DEFAULT_TTL_IN_SECONDS,
+    );
     return mappedProducts;
   }
 
@@ -78,15 +78,26 @@ export class ProductsService extends SupportService {
    */
   async searchAndPaginate(
     term: string,
-    page: number = 1,
-    limit: number = 10,
+    page: number,
+    limit: number,
   ): Promise<Pagination<ProductResponseDto>> {
-    const options = { page, limit };
-    const queryBuilder = this.productsRepository
-      .createQueryBuilder('product')
-      .where('LOWER(product.name) LIKE LOWER(:term)', { term: `%${term}%` })
-      .orderBy('product.name');
+    if (page < 1) {
+      this.throwBadRequestException('PAGE_NUMBER_NOT_VALID');
+    }
 
+    if (limit < 1 || limit > 100) {
+      this.throwBadRequestException('LIMIT_NUMBER_NOT_VALID');
+    }
+
+    const options = { page, limit };
+    let queryBuilder = this.productsRepository.createQueryBuilder('product');
+    if (term) {
+      queryBuilder = queryBuilder.where(
+        'LOWER(product.name) LIKE LOWER(:term)',
+        { term: `%${term}%` },
+      );
+    }
+    queryBuilder = queryBuilder.orderBy('product.name');
     const paginatedProducts = await paginate(queryBuilder, options);
     const items = paginatedProducts.items.map((product) =>
       this.mapper.mapProductToResponseDto(product),

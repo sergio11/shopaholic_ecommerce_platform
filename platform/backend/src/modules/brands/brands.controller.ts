@@ -10,6 +10,7 @@ import {
   UploadedFile,
   ParseIntPipe,
   Query,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { ApiResponse, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { BrandService } from './brands.service';
@@ -62,13 +63,15 @@ export class BrandController {
   @ApiQuery({
     name: 'page',
     required: false,
-    description: 'Page number',
+    description: 'Page number (1 .. )',
+    example: 1,
     type: Number,
   })
   @ApiQuery({
     name: 'limit',
     required: false,
-    description: 'Items per page',
+    description: 'Items per page (1 - 100)',
+    example: 10,
     type: Number,
   })
   @ApiOkResponse({
@@ -78,8 +81,8 @@ export class BrandController {
   })
   async searchBrands(
     @Query('term') searchTerm: string,
-    @Query('page', ParseIntPipe) page: number = 1,
-    @Query('limit', ParseIntPipe) limit: number = 10,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ): Promise<Pagination<BrandResponseDTO>> {
     return this.brandService.searchAndPaginateBrands(searchTerm, page, limit);
   }

@@ -10,7 +10,6 @@ import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
 import { StorageMixin } from '../storage/mixin/file-saving.mixin';
 import { Pagination, paginate } from 'nestjs-typeorm-paginate';
-import { CategoryResponseDto } from '../categories/dto/category-response.dto';
 
 /**
  * Service responsible for handling brand-related operations.
@@ -49,12 +48,20 @@ export class BrandService extends SupportService {
     page: number,
     limit: number,
   ): Promise<Pagination<BrandResponseDTO>> {
+    if (page < 1) {
+      this.throwBadRequestException('PAGE_NUMBER_NOT_VALID');
+    }
+    if (limit < 1 || limit > 100) {
+      this.throwBadRequestException('LIMIT_NUMBER_NOT_VALID');
+    }
     const options = { page, limit };
-    const queryBuilder = this.brandRepository
-      .createQueryBuilder('brand')
-      .where('LOWER(brand.name) LIKE LOWER(:term)', { term: `%${term}%` })
-      .orderBy('brand.name');
-
+    let queryBuilder = this.brandRepository.createQueryBuilder('brand');
+    if (term) {
+      queryBuilder = queryBuilder.where('LOWER(brand.name) LIKE LOWER(:term)', {
+        term: `%${term}%`,
+      });
+    }
+    queryBuilder = queryBuilder.orderBy('brand.name');
     const paginatedBrands = await paginate(queryBuilder, options);
     const items = paginatedBrands.items.map((brand) =>
       this.brandMapper.mapBrandToResponseDto(brand),
@@ -129,10 +136,6 @@ export class BrandService extends SupportService {
   }
 
   private async findBrand(id: string): Promise<BrandsEntity> {
-    const brand = await this.brandRepository.findOne({ where: { id: id } });
-    if (!brand) {
-      this.throwNotFoundException('BRAND_NOT_FOUND');
-    }
-    return brand;
+    return this.findEntityById(id, this.brandRepository, 'BRAND_NOT_FOUND');
   }
 }

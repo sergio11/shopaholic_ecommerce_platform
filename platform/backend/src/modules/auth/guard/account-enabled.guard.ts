@@ -26,6 +26,7 @@ export class AccountEnabledGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const token = request.headers.authorization.replace('Bearer ', '');
     const decodedToken = this.jwtService.decode(token);
+    console.log(decodedToken);
     if (!decodedToken) {
       return false;
     }

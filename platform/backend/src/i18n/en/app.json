@@ -1,5 +1,30 @@
 {
+    "ADDRESS_DELETED_SUCCESSFULLY": "Address deleted successfully",
+    "ADDRESS_NOT_FOUND": "Address not found",
     "USER_NOT_FOUND": "User not found",
-    "IMAGE_ERROR": "An error occurred when trying to update image",
-    "CATEGORY_NOT_FOUND": "Category not found"
-}
+    "INVALID_CREDENTIALS": "Invalid credentials",
+    "EMAIL_NOT_FOUND": "Email not found",
+    "REQUEST_RESET_PASSWORD_SUCCESSFULLY": "Password reset request sent successfully",
+    "INVALID_RESET_PASSWORD_TOKEN": "Invalid reset password token",
+    "PASSWORD_RESET_SUCCESSFULLY": "Password reset successfully",
+    "USER_TOKEN_REVOKED": "User token revoked",
+    "EMAIL_ALREADY_REGISTERED": "Email already registered",
+    "NO_ROLES_FOUND": "No roles found",
+    "FORBIDDEN_ACCESS": "Forbidden access",
+    "BRAND_REMOVED_SUCCESFULLY": "Brand removed successfully",
+    "BRAND_NOT_FOUND": "Brand not found",
+    "CATEGORY_DELETED_SUCCESSFULLY": "Category deleted successfully",
+    "CATEGORY_NOT_FOUND": "Category not found",
+    "IMAGE_NOT_FOUND": "Image not found",
+    "ORDER_CANCELLED_SUCCESSFULLY": "Order cancelled successfully",
+    "ORDER_NOT_FOUND": "Order not found",
+    "PRODUCT_DELETED_SUCCESSFULLY": "Product deleted successfully",
+    "LIKE_PRODUCT_SUCCESSFULLY": "Product liked successfully",
+    "DISLIKE_PRODUCT_SUCCESSFULLY": "Product disliked successfully",
+    "ROLE_DELETED_SUCCESSFULLY": "Role deleted successfully",
+    "ROLE_NOT_FOUND": "Role not found",
+    "INVALID_PASSWORD": "Invalid password",
+    "USER_PASSWORD_UPDATED_SUCCESSFULLY": "User password updated successfully",
+    "USER_DELETED_SUCCESSFULLY": "User deleted successfully"
+  }
+  

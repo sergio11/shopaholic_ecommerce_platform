@@ -8,6 +8,7 @@ import {
   Version,
   ParseIntPipe,
   Query,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { JwtRole } from '../auth/jwt/jwt-role';
@@ -79,19 +80,21 @@ export class CategoriesController {
   @Get('search')
   @ApiQuery({
     name: 'term',
-    required: true,
+    required: false,
     description: 'Search term for filtering categories',
   })
   @ApiQuery({
     name: 'page',
     required: false,
-    description: 'Page number',
+    description: 'Page number (1 .. )',
+    example: 1,
     type: Number,
   })
   @ApiQuery({
     name: 'limit',
     required: false,
-    description: 'Items per page',
+    description: 'Items per page (1 - 100)',
+    example: 10,
     type: Number,
   })
   @ApiOperation({
@@ -106,8 +109,8 @@ export class CategoriesController {
   })
   async searchAndPaginate(
     @Query('term') term: string,
-    @Query('page', ParseIntPipe) page: number = 1,
-    @Query('limit', ParseIntPipe) limit: number = 10,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ): Promise<Pagination<CategoryResponseDto>> {
     return this.categoriesService.searchAndPaginate(term, page, limit);
   }

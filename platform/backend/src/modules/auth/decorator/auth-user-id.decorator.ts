@@ -7,6 +7,6 @@ export const AuthUserId = createParamDecorator(
         if (!decodedToken) {
             return null;
         }
-        return decodedToken['id'];
+        return decodedToken['userId'];
     },
 );

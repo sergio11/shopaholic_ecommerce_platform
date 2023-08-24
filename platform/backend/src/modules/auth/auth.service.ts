@@ -93,6 +93,7 @@ export class AuthService extends SupportService {
    */
   async validateUserById(id: string): Promise<UserEntity> {
     const token = await this.cacheService.get(id);
+    console.log(`validateUserById ${id} - token: ${token}`)
     if (!token) {
       this.throwUnAuthorizedException('INVALID_CREDENTIALS');
     }
@@ -156,7 +157,7 @@ export class AuthService extends SupportService {
   }
 
   async revokeUserTokens(userId: string): Promise<string> {
-    await this.cacheService.delete(userId);
+    await this.cacheService.delete(`session:${userId}`);
     return this.resolveString('USER_TOKEN_REVOKED');
   }
 
@@ -186,7 +187,7 @@ export class AuthService extends SupportService {
     };
 
     // Store the token revocation status in the cache with TTL
-    await this.cacheService.set(user.id, token, jwtConstants.expiresIn);
+    await this.cacheService.set(`session:${user.id}`, token, jwtConstants.expiresIn);
 
     return data;
   }

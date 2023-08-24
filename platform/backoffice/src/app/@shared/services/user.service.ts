@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private readonly END_POINT = `${environment.API_ENDPOINT}user/`;
+  private readonly END_POINT = `${environment.API_ENDPOINT}users/`;
 
   constructor(private readonly http: HttpClient) {}
 
