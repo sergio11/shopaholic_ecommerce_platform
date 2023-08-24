@@ -7,7 +7,7 @@
 >
   <ng-container *nzModalContent>
     <form [formGroup]="brandForm">
-      <app-file-upload [fileSelected]="brandImageFileSelected" (fileSelectedChange)="handleFileSelectedChange($event)"></app-file-upload>
+      <app-file-upload [(fileSelected)]="brandImageFileSelected"></app-file-upload>
       <label>Name</label>
       <input type="text" formControlName="name" nz-input placeholder="name" />
       <label>Slug</label>

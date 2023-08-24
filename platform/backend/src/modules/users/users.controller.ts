@@ -62,6 +62,23 @@ export class UsersController {
   }
 
   /**
+   * Get the profile of the authenticated user.
+   * @returns The user response DTO.
+   */
+  @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
+  @Version('1.0')
+  @Get('self')
+  @ApiOperation({ summary: 'Get authenticated user profile' })
+  @ApiResponse({
+    status: 200,
+    description: 'Authenticated user profile',
+    type: UserResponseDto,
+  })
+  async getProfile(@AuthUserId() userId: string): Promise<UserResponseDto> {
+    return this.usersService.getUserById(userId);
+  }
+
+  /**
    * Update the password of the authenticated user.
    * @param {UpdatePasswordDto} updatePasswordData - The data for updating the password.
    * @returns {Promise<UserResponseDto>} - The updated user response DTO.
@@ -160,6 +177,24 @@ export class UsersController {
   @ApiOperation({ summary: 'Delete user by ID' })
   async delete(@Param('id') id: string): Promise<string> {
     return await this.usersService.delete(id);
+  }
+
+  /**
+   * Get user details by ID (Admin only).
+   * @param id The ID of the user to retrieve.
+   * @returns The user response DTO.
+   */
+  @Auth(JwtRole.ADMIN)
+  @Version('1.0')
+  @Get(':id')
+  @ApiOperation({ summary: 'Get user details by ID (Admin only)' })
+  @ApiResponse({
+    status: 200,
+    description: 'User details',
+    type: UserResponseDto,
+  })
+  async getUserById(@Param('id') id: string): Promise<UserResponseDto> {
+    return this.usersService.getUserById(id);
   }
 
   /**

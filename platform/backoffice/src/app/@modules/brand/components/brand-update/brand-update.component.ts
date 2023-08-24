@@ -39,10 +39,6 @@ export class BrandUpdateComponent implements OnInit {
     });
   }
 
-  handleFileSelectedChange(file: any) {
-    this.brandImageFileSelected = file;
-  }
-
   onSubmit() {
     if (!this.brandImageFileSelected) {
       this.notificationService.error('Image Empty', '');

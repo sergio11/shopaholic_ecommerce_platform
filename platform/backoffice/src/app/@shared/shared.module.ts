@@ -9,11 +9,13 @@ import { NgModule } from '@angular/core';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { RouterModule } from '@angular/router';
+import { FileUploadComponent } from './components/file-upload/file-upload.component';
 import { CommonModule } from '@angular/common';
 
 @NgModule({
-  declarations: [LayoutContentComponent],
+  declarations: [LayoutContentComponent, FileUploadComponent],
   imports: [
+    CommonModule,
     FormsModule,
     RouterModule,
     ReactiveFormsModule,
@@ -24,5 +26,6 @@ import { CommonModule } from '@angular/common';
     AntDesignModule,
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
+  exports: [FileUploadComponent]
 })
 export class SharedModule {}

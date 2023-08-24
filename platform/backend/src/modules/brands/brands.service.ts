@@ -52,7 +52,7 @@ export class BrandService extends SupportService {
     const options = { page, limit };
     const queryBuilder = this.brandRepository
       .createQueryBuilder('brand')
-      .where('brand.name ILIKE :term', { term: `%${term}%` })
+      .where('LOWER(brand.name) LIKE LOWER(:term)', { term: `%${term}%` })
       .orderBy('brand.name');
 
     const paginatedBrands = await paginate(queryBuilder, options);

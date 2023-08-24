@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,6 +10,7 @@ import { UsersModule } from '../users/users.module';
 import { AccountEnabledGuard } from './guard/account-enabled.guard';
 import { ResetPasswordTokenEntity } from './reset-password-token.entity';
 
+@Global()
 @Module({
   imports: [ 
     TypeOrmModule.forFeature([UserEntity, RoleEntity, ResetPasswordTokenEntity]),

@@ -14,7 +14,8 @@ import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class CategoriesService extends SupportService {
-  private readonly CACHE_KEY = 'all-categories';
+  private readonly CACHE_KEY = 'cache:categories:all';
+  private readonly DEFAULT_TTL_IN_SECONDS: number = 120;
 
   constructor(
     @InjectRepository(CategoryEntity)
@@ -39,7 +40,11 @@ export class CategoriesService extends SupportService {
     const categories = await this.categoriesRepository.find();
     const categoryDtos =
       this.categoryMapper.mapCategoriesToResponseDtos(categories);
-    await this.cacheService.set(this.CACHE_KEY, categoryDtos, { ttl: 60 });
+    await this.cacheService.set(
+      this.CACHE_KEY,
+      categoryDtos,
+      this.DEFAULT_TTL_IN_SECONDS,
+    );
     return categoryDtos;
   }
 
@@ -59,7 +64,7 @@ export class CategoriesService extends SupportService {
     const options = { page, limit };
     const queryBuilder = this.categoriesRepository
       .createQueryBuilder('category')
-      .where('category.name ILIKE :term', { term: `%${term}%` })
+      .where('LOWER(category.name) LIKE LOWER(:term)', { term: `%${term}%` })
       .orderBy('category.name');
 
     const paginatedCategories = await paginate(queryBuilder, options);
