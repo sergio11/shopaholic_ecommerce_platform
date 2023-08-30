@@ -25,12 +25,12 @@
   </button>
   <nz-table
     #basicTable
-    [nzData]="categories.data"
+    [nzData]="state.items"
     [nzBordered]="true"
     [nzFrontPagination]="false"
     nzShowPagination
-    [nzTotal]="categories?.total"
-    [nzPageSize]="categories?.take"
+    [nzTotal]="state.meta.totalItems"
+    [nzPageSize]="state.meta.itemsPerPage"
     [nzLoading]="filterLoading"
     (nzPageIndexChange)="onChangePage($event)"
   >
