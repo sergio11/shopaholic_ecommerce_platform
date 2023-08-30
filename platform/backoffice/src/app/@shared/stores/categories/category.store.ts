@@ -1,7 +1,7 @@
 import { Store, StoreConfig } from '@datorama/akita';
 import { Injectable } from '@angular/core';
 
-export interface Category {
+export interface ICategory {
   id: string;
   createdAt: string;
   updatedAt: string;
@@ -10,7 +10,7 @@ export interface Category {
   description: string;
 }
 
-export interface Meta {
+export interface IMeta {
   totalItems: number;
   itemCount: number;
   itemsPerPage: number;
@@ -19,8 +19,8 @@ export interface Meta {
 }
 
 export interface ICategoryState {
-  items: Category[];
-  meta: Meta;
+  items: ICategory[];
+  meta: IMeta;
 }
 
 export function createInitialState(): ICategoryState {
@@ -46,8 +46,8 @@ export class CategoryStore extends Store<ICategoryState> {
   }
 
   //* Crete Category
-  createCategory(cat: Category) {
-    const newData: Category[] = [cat, ...this.getValue().items];
+  createCategory(cat: ICategory) {
+    const newData: ICategory[] = [cat, ...this.getValue().items];
     this.update({
       ...this.getValue(),
       items: newData,
@@ -56,8 +56,8 @@ export class CategoryStore extends Store<ICategoryState> {
 
   //* Delete Category
   deleteCategory(id: string) {
-    const updatedData: Category[] = this.getValue().items.filter(
-      (x: Category) => x.id !== id
+    const updatedData: ICategory[] = this.getValue().items.filter(
+      (x: ICategory) => x.id !== id
     );
     this.update({
       ...this.getValue(),
@@ -66,9 +66,9 @@ export class CategoryStore extends Store<ICategoryState> {
   }
 
   //* Update category
-  updateCategory(data: Category) {
-    const updatedData: Category[] = [...this.getValue().items];
-    const idx = updatedData.findIndex((x: Category) => x.id === data.id);
+  updateCategory(data: ICategory) {
+    const updatedData: ICategory[] = [...this.getValue().items];
+    const idx = updatedData.findIndex((x: ICategory) => x.id === data.id);
     if (idx !== -1) {
       updatedData[idx] = data;
       this.update({
@@ -79,7 +79,7 @@ export class CategoryStore extends Store<ICategoryState> {
   }
 
   //* Update meta
-  updateMeta(meta: Meta) {
+  updateMeta(meta: IMeta) {
     this.update({
       ...this.getValue(),
       meta: { ...this.getValue().meta, ...meta },

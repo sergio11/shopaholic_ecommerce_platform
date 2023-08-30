@@ -2,13 +2,14 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CategoryService } from './../../../../@shared/services/category.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ICategory } from 'src/app/@shared/stores/categories/category.store';
 
 @Component({
   selector: 'app-category-update',
   templateUrl: './category-update.component.html',
 })
 export class CategoryUpdateComponent implements OnInit {
-  @Input() data: any = {};
+  @Input() data: ICategory | undefined;
   @Output() onUpdated = new EventEmitter<any>();
 
   isModalOpen = false;
@@ -29,8 +30,8 @@ export class CategoryUpdateComponent implements OnInit {
   ngOnInit(): void {
     console.log("Init Update category component");
     this.categoryForm.patchValue({
-      name: this.data.name,
-      description: this.data?.department?.id
+      name: this.data?.name,
+      description: this.data?.description
     });
   }
 
@@ -39,7 +40,7 @@ export class CategoryUpdateComponent implements OnInit {
       this.notificationService.error('Name are Empty', '');
     } else {
       this.categoryService
-        .update(this.data.id, {
+        .update(this.data?.id || '', {
           name: this.categoryForm.value.name || '',
           description: this.categoryForm.value.description || '',
           image: this.categoryImageFileSelected,

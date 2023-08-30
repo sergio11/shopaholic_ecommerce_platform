@@ -28,15 +28,15 @@ export class CategoryService {
   }
   create(payload: ICreateCategory) {
     return this.http.post(`${this.END_POINT}`, payload).pipe(
-      tap((x: any) => {
-        this.categoryStore.createCategory(x?.data);
+      tap((data: any) => {
+        this.categoryStore.createCategory(data);
       })
     );
   }
   update(id: string, payload: ICreateCategory) {
-    return this.http.put(`${this.END_POINT}${id}`, payload).pipe(
-      tap((x: any) => {
-        this.categoryStore.updateCategory(x?.data);
+    return this.http.post(`${this.END_POINT}${id}`, payload).pipe(
+      tap((data: any) => {
+        this.categoryStore.updateCategory(data);
       })
     );
   }

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  IBaseFilterResponse,
   IBaseFilterQuery
 } from './../../@shared/interfaces/base.interface';
 
