@@ -1,22 +1,41 @@
 import { Store, StoreConfig } from '@datorama/akita';
-
 import { Injectable } from '@angular/core';
 
+export interface Category {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  image: string;
+  description: string;
+}
+
+export interface Meta {
+  totalItems: number;
+  itemCount: number;
+  itemsPerPage: number;
+  totalPages: number;
+  currentPage: number;
+}
+
 export interface ICategoryState {
-  data: [];
-  page: 0;
-  take: 0;
-  total: 0;
+  items: Category[];
+  meta: Meta;
 }
 
 export function createInitialState(): ICategoryState {
   return {
-    data: [],
-    page: 0,
-    take: 0,
-    total: 0,
+    items: [],
+    meta: {
+      totalItems: 0,
+      itemCount: 0,
+      itemsPerPage: 10,
+      totalPages: 0,
+      currentPage: 0,
+    },
   };
 }
+
 @Injectable({
   providedIn: 'root',
 })
@@ -27,33 +46,43 @@ export class CategoryStore extends Store<ICategoryState> {
   }
 
   //* Crete Category
-  createCategory(cat: any) {
-    const _newDates: any = [cat, ...this.getValue().data];
+  createCategory(cat: Category) {
+    const newData: Category[] = [cat, ...this.getValue().items];
     this.update({
       ...this.getValue(),
-      data: _newDates,
+      items: newData,
     });
   }
 
   //* Delete Category
   deleteCategory(id: string) {
-    const _updatedData: any = this.getValue().data.filter(
-      (x: any) => x.id !== id
+    const updatedData: Category[] = this.getValue().items.filter(
+      (x: Category) => x.id !== id
     );
     this.update({
       ...this.getValue(),
-      data: _updatedData,
+      items: updatedData,
     });
   }
 
   //* Update category
-  updateCategory(data: any) {
-    const _data: any = [...this.getValue().data];
-    const fIdx = _data.findIndex((x: any) => x.id === data.id);
-    _data[fIdx] = data;
+  updateCategory(data: Category) {
+    const updatedData: Category[] = [...this.getValue().items];
+    const idx = updatedData.findIndex((x: Category) => x.id === data.id);
+    if (idx !== -1) {
+      updatedData[idx] = data;
+      this.update({
+        ...this.getValue(),
+        items: updatedData,
+      });
+    }
+  }
+
+  //* Update meta
+  updateMeta(meta: Meta) {
     this.update({
       ...this.getValue(),
-      data: _data,
+      meta: { ...this.getValue().meta, ...meta },
     });
   }
 }

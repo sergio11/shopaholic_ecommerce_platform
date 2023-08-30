@@ -45,8 +45,9 @@ export class CreateCategoryComponent implements OnInit {
         })
         .subscribe((res: any) => {
           console.log(res);
-          this.onClose.emit();
           this.categoryForm.reset();
+          this.onClose.emit();
+          this.notificationService.success('Category created successfully!', '');
         });
     }
   }

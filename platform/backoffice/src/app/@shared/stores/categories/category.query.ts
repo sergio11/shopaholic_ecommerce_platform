@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Query } from '@datorama/akita';
 import { CategoryStore, ICategoryState } from './category.store';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CategoryQuery extends Query<ICategoryState> {
-  selectCategories$;
-  selectPage$;
-  selectTake$;
-  selectTotal$;
+  selectCategories$: any;
+  selectPage$: any;
+  selectTake$: any;
+  selectTotal$: any;
 
   constructor(protected store: CategoryStore) {
     super(store);
 
-    // Inicializar los observables con valores iniciales
-    this.selectCategories$ = this.select('data');
-    this.selectPage$ = this.select('page');
-    this.selectTake$ = this.select('take');
-    this.selectTotal$ = this.select('total');
+    this.selectCategories$ = this.select('items');
+    this.selectPage$ = this.select('meta').pipe(map(meta => meta.currentPage));
+    this.selectTake$ = this.select('meta').pipe(map(meta => meta.itemsPerPage));
+    this.selectTotal$ = this.select('meta').pipe(map(meta => meta.totalItems));
   }
 }
