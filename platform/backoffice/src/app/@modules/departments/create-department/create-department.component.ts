@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { DepartmentService } from 'src/app/@shared/services/department.service';
 import { FormBuilder } from '@angular/forms';
-import { IFBaseResponse } from 'src/app/@shared/interfaces/base.interface';
+import { IBaseResponse } from 'src/app/@shared/interfaces/base.interface';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { UtilsService } from 'src/app/@shared/services/utils.service';
@@ -63,7 +63,7 @@ export class CreateDepartment implements OnInit {
       };
       this.departmentService
         .create(normalizePayload)
-        .subscribe((res: IFBaseResponse) => {
+        .subscribe((res: IBaseResponse) => {
           this.notificationService.success('Created', '');
           this.onCreateSuccess.emit(res.data);
           this.onClose.emit();

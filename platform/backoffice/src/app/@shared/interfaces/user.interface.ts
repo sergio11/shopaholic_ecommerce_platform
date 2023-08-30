@@ -1,4 +1,4 @@
-import { IFBaseFilterQuery } from './base.interface';
+import { IBaseFilterQuery } from './base.interface';
 export interface IFChangePhoneNumber {
   oldPhoneNumber?: string;
   newPhoneNumber?: string;
@@ -6,7 +6,7 @@ export interface IFChangePhoneNumber {
 
 type TFUser = 'ADMIN' | 'CUSTOMER' | 'VENDOR';
 
-export interface IFFilterUser extends IFBaseFilterQuery {
+export interface IFFilterUser extends IBaseFilterQuery {
   type?: TFUser;
 }
 

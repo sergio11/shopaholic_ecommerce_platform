@@ -108,18 +108,6 @@ services:
         redis_cluster_network:
           ipv4_address: 192.168.0.65
 
-  # Redis Insight 
-  redisinsight:
-    image: redislabs/redisinsight:latest
-    container_name: redisinsight
-    ports:
-      - '8001:8001'
-    volumes:
-      - ./ui:/db 
-    networks:
-        redis_cluster_network:
-          ipv4_address: 192.168.0.70
-
   haproxy:
     image: haproxytech/haproxy-alpine:2.7
     container_name: redis_haproxy

@@ -77,7 +77,6 @@ export class UsersController {
     type: UserResponseDto,
   })
   async getProfile(@AuthUserId() userId: string): Promise<UserResponseDto> {
-    console.log(`getProfile -> AuthUserId: ${userId}`)
     return this.usersService.getUserById(userId);
   }
 

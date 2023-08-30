@@ -67,7 +67,6 @@ export class UsersService extends SupportService {
    * @returns The user response DTO.
    */
   async getUserById(id: string): Promise<UserResponseDto> {
-    console.log(`getUserById -> ${id}`);
     const user = await this.findUser(id);
     return this.userMapper.mapUserToResponseDto(user);
   }
@@ -220,7 +219,7 @@ export class UsersService extends SupportService {
    * @throws NotFoundException if user is not found.
    */
   private async findUser(id: string): Promise<UserEntity> {
-    return this.findEntityById(id, this.usersRepository, 'USER_NOT_FOUND');
+    return this.findEntityById(id, this.usersRepository, 'USER_NOT_FOUND', ['roles']);
   }
 
   private async findRoleIdByJwtRole(role: JwtRole): Promise<string> {

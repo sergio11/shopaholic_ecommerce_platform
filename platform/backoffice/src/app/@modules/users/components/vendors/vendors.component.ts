@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { IFBaseFilterResponse } from '../../../../@shared/interfaces/base.interface';
+import { IBaseFilterResponse } from '../../../../@shared/interfaces/base.interface';
 import { IFFilterUser } from '../../../../@shared/interfaces/user.interface';
 import { UserService } from 'src/app/@shared/services/user.service';
 
@@ -25,7 +25,7 @@ export class VendorsComponent implements OnInit {
   //* Fetching Users
   fetchUsers(option: IFFilterUser) {
     this.loading = true;
-    this.userService.filter(option).subscribe((res: IFBaseFilterResponse) => {
+    this.userService.filter(option).subscribe((res: IBaseFilterResponse) => {
       this.loading = false;
       this.users = res;
     });

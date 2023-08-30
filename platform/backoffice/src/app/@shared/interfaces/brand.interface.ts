@@ -1,6 +1,6 @@
-import { IFBaseMetaAttribute } from './base.interface';
+import { IBaseMetaAttribute } from './base.interface';
 
-export interface IFBrand extends IFBaseMetaAttribute {
+export interface IFBrand extends IBaseMetaAttribute {
   name: string;
   slug: string,
   image?: File;

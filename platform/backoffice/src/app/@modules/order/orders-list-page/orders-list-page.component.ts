@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  IFBaseFilterQuery,
-  IFBaseFilterResponse,
+  IBaseFilterQuery,
+  IBaseFilterResponse,
 } from './../../../@shared/interfaces/base.interface';
 
 import { OrderService } from './../../../@shared/services/order.service';
@@ -24,9 +24,9 @@ export class OrderListComponent implements OnInit {
   }
 
   //* Fetching Users
-  fetchUsers(option: IFBaseFilterQuery) {
+  fetchUsers(option: IBaseFilterQuery) {
     this.loading = true;
-    this.orderService.search(option).subscribe((res: IFBaseFilterResponse) => {
+    this.orderService.search(option).subscribe((res: IBaseFilterResponse) => {
       this.orders = res;
     });
     this.loading = false;

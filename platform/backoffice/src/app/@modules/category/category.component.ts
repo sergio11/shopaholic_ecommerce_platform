@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import {
-  IFBaseFilterQuery,
-  IFBaseFilterResponse,
+  IBaseFilterResponse,
+  IBaseFilterQuery
 } from './../../@shared/interfaces/base.interface';
 
 import { CategoryQuery } from '../../@shared/stores/categories/category.query';
@@ -13,14 +13,19 @@ import { CategoryService } from './../../@shared/services/category.service';
 export class CategoryComponent implements OnInit {
   constructor(
     private categoryService: CategoryService,
-    private categoryQuery: CategoryQuery
+    private categoryQuery: CategoryQuery,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit() {
     this.filterData({ page: 1, take: 10 });
-    this.categoryQuery.select().subscribe((response: IFBaseFilterResponse) => {
-      this.categories = response;
-    });
+    this.ngZone.runOutsideAngular(() => { 
+      setTimeout(() => { 
+        this.categoryQuery.select().subscribe((response: IBaseFilterResponse) => {
+          this.categories = response;
+        });
+      });
+    }); 
   }
 
   //* Filter
@@ -31,7 +36,7 @@ export class CategoryComponent implements OnInit {
     take: 0,
     total: 0,
   };
-  async filterData(option: IFBaseFilterQuery) {
+  async filterData(option: IBaseFilterQuery) {
     this.filterLoading = true;
     await this.categoryService.search(option).toPromise();
     this.filterLoading = false;
@@ -40,11 +45,13 @@ export class CategoryComponent implements OnInit {
     this.filterData({ page, take: 10 });
   }
   onChangeSearch(e: any) {
-    this.filterData({
-      page: this.categories?.page,
-      take: 10,
-      searchTerm: e?.target?.value,
-    });
+    if (this.categories && this.categories.page !== undefined) {
+      this.filterData({
+        page: this.categories.page,
+        take: 10,
+        searchTerm: e?.target?.value,
+      });
+    }
   }
 
   //* Create

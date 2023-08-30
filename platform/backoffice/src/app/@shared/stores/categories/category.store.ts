@@ -2,14 +2,14 @@ import { Store, StoreConfig } from '@datorama/akita';
 
 import { Injectable } from '@angular/core';
 
-export interface IFCategoryState {
+export interface ICategoryState {
   data: [];
   page: 0;
   take: 0;
   total: 0;
 }
 
-export function createInitialState(): IFCategoryState {
+export function createInitialState(): ICategoryState {
   return {
     data: [],
     page: 0,
@@ -21,7 +21,7 @@ export function createInitialState(): IFCategoryState {
   providedIn: 'root',
 })
 @StoreConfig({ name: 'category' })
-export class CategoryStore extends Store<IFCategoryState> {
+export class CategoryStore extends Store<ICategoryState> {
   constructor() {
     super(createInitialState());
   }

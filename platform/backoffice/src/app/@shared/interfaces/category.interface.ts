@@ -1,7 +1,7 @@
-import { IFBaseMetaAttribute } from './base.interface';
+import { IBaseMetaAttribute } from './base.interface';
 
-export interface IFCreatCategory extends IFBaseMetaAttribute {
+export interface ICreateCategory extends IBaseMetaAttribute {
   name?: string;
-  image?: string;
-  department?: string;
+  image?: File;
+  description?: string;
 }

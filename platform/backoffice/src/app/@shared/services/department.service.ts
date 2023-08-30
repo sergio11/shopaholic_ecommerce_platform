@@ -1,6 +1,6 @@
 import { CreatDepartment } from './../interfaces/department.interface';
 import { HttpClient } from '@angular/common/http';
-import { IFBaseAttributeFilterQuery } from '../interfaces/base.interface';
+import { IBaseAttributeFilterQuery } from '../interfaces/base.interface';
 import { Injectable } from '@angular/core';
 import { baseAttributeFilterQueryUtils } from './../utils/filterquery.utils';
 import { environment } from 'src/environments/environment';
@@ -13,7 +13,7 @@ export class DepartmentService {
 
   constructor(private readonly http: HttpClient) {}
 
-  filter(option: IFBaseAttributeFilterQuery) {
+  filter(option: IBaseAttributeFilterQuery) {
     return this.http.get(
       `${this.END_POINT}filter?${baseAttributeFilterQueryUtils(option)}`
     );

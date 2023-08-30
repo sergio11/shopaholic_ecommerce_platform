@@ -2,7 +2,7 @@
   [nzClosable]="true"
   [nzVisible]="isOpen"
   nzPlacement="right"
-  nzTitle="Create Product"
+  nzTitle="Update Product"
   (nzOnClose)="onClose.emit()"
   [nzWidth]="720"
   [nzBodyStyle]="{ overflow: 'auto' }"
@@ -32,38 +32,7 @@
             placeholder="description"
           />
         </div>
-        <div nz-col nzSpan="24">
-          <label>Specification</label>
-          <nz-form-item>
-            <nz-form-control>
-              <nz-textarea-count [nzMaxCharacterCount]="1000">
-                <textarea
-                  rows="4"
-                  formControlName="specification"
-                  nz-input
-                ></textarea>
-              </nz-textarea-count>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
 
-        <div nz-col nzSpan="8">
-          <label>Department</label>
-          <nz-select
-            style="width: 100%"
-            (nzScrollToBottom)="loadMoreDepartment()"
-            nzPlaceHolder="Select Department"
-            nzAllowClear
-            formControlName="department"
-            [nzDropdownRender]="renderTemplate"
-          >
-            <nz-option
-              *ngFor="let o of departmentOptionList"
-              [nzValue]="o?.id"
-              [nzLabel]="o?.name"
-            ></nz-option>
-          </nz-select>
-        </div>
         <div nz-col nzSpan="8">
           <label>Category</label>
           <nz-select
@@ -108,21 +77,12 @@
           />
         </div>
         <div nz-col nzSpan="5">
-          <label>MRP</label>
+          <label>Price</label>
           <input
             type="number"
-            formControlName="mrp"
+            formControlName="price"
             nz-input
-            placeholder="MRP"
-          />
-        </div>
-        <div nz-col nzSpan="5">
-          <label>Vat+</label>
-          <input
-            type="number"
-            formControlName="mrpVat"
-            nz-input
-            placeholder="Vat"
+            placeholder="Price"
           />
         </div>
         <div nz-col nzSpan="9">
@@ -136,26 +96,6 @@
         </div>
       </div>
 
-      <ul class="attribute-checkbox-lists" nz-row [nzGutter]="16">
-        <li>
-          <label formControlName="isTopSelling" nz-checkbox>Top Selling</label>
-        </li>
-        <li>
-          <label formControlName="isNewArrival" nz-checkbox>New Arrival</label>
-        </li>
-        <li>
-          <label formControlName="isAvailable" nz-checkbox>Available</label>
-        </li>
-        <li>
-          <label formControlName="isFeatured" nz-checkbox>Featured</label>
-        </li>
-        <li><label formControlName="isActive" nz-checkbox>Active</label></li>
-        <li>
-          <label formControlName="isPopular" nz-checkbox>Popular</label>
-        </li>
-        <li><label formControlName="isHot" nz-checkbox>Hot</label></li>
-        <li><label formControlName="isNew" nz-checkbox>New</label></li>
-      </ul>
     </form>
   </ng-container>
 
