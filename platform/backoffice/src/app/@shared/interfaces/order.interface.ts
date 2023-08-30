@@ -1,2 +1,2 @@
-import { IFBaseFilterQuery } from './base.interface';
-export interface IOrderFilter extends IFBaseFilterQuery {}
+import { IBaseFilterQuery } from './base.interface';
+export interface IOrderFilter extends IBaseFilterQuery {}

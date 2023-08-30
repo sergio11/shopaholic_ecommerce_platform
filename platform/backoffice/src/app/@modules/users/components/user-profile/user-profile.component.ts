@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  IFBaseMetaSchema,
-  IFBaseResponse,
+  IBaseMetaSchema,
+  IBaseResponse,
 } from './../../../../@shared/interfaces/base.interface';
 
 import { IFUserInfo } from 'src/app/@shared/interfaces/userInfo.interface';
 import { UserInfoService } from './../../../../@shared/services/userInfo.service';
 import { routesConstant } from 'src/app/@constant/routes.constant';
 
-export interface UserInfoResponse extends IFUserInfo, IFBaseMetaSchema {
+export interface UserInfoResponse extends IFUserInfo, IBaseMetaSchema {
   phoneNumber?: string;
 }
 
@@ -29,7 +29,7 @@ export class UserProfileComponent implements OnInit {
   private getUserInfo() {
     this.userInfoService
       .getCurrentUserInfo()
-      .subscribe((res: IFBaseResponse) => {
+      .subscribe((res: IBaseResponse) => {
         this.userInfo = {
           ...res.data,
           birthDate: new Date(res.data.birthDate),

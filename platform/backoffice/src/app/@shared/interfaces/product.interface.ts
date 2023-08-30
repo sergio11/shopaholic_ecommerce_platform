@@ -1,23 +1,11 @@
-export interface IFProductCreate {
+export interface IProductCreate {
   name?: string;
   description?: string;
-  isAvailable?: boolean;
-  isNewArrival?: boolean;
-  isTopSelling?: boolean;
-  mrp?: string;
-  mrpExclVat?: string;
-  mrpInclVat?: string;
-  mrpVat?: string;
+  categoryId?: string;
+  price?: number;
+  stock?: number;
   productCode?: string;
-  productImages?: string;
-  specification?: string;
-  stock?: string;
-  brand?: string;
-  category?: string;
-  department?: string;
-  isFeatured?: boolean;
-  isActive?: boolean;
-  isPopular?: boolean;
-  isHot?: boolean;
-  isNew?: boolean;
+  brandId?: string; 
+  mainImage?: File;
+  secondaryImage?: File
 }

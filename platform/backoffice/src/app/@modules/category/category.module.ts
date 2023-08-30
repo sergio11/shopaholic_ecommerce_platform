@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { CreateCategoryComponent } from './components/create-category/create-category-component';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from 'src/app/@shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     CategoryUpdateComponent,
   ],
   imports: [
+    SharedModule,
     CategoryRoutingModule,
     CommonModule,
     AntDesignModule,

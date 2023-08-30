@@ -3,7 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { AuthChangePasswordService } from 'src/app/@shared/services/authChangePassword.service';
 import { AuthService } from './../../../../@shared/services/auth.service';
 import { Component } from '@angular/core';
-import { IFBaseResponse } from './../../../../@shared/interfaces/base.interface';
+import { IBaseResponse } from './../../../../@shared/interfaces/base.interface';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { UserService } from 'src/app/@shared/services/user.service';
 
@@ -42,7 +42,7 @@ export class UserProfileChangePassword {
           oldPhoneNumber: String(currentNumber),
           newPhoneNumber: String(newNumber),
         })
-        .subscribe((res: IFBaseResponse) => {
+        .subscribe((res: IBaseResponse) => {
           this.chnPhnLoading = false;
           this.notification.success('PhoneNumber Updated', '');
           this.authService.logout();
@@ -70,7 +70,7 @@ export class UserProfileChangePassword {
           oldPassword: String(oldPassword),
           newPassword: String(newPassword),
         })
-        .subscribe((res: IFBaseResponse) => {
+        .subscribe((res: IBaseResponse) => {
           this.chnPssLoading = false;
           this.notification.success('Password Updated', '');
           this.authService.logout();

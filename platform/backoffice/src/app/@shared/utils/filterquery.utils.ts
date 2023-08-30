@@ -1,9 +1,9 @@
 import {
-  IFBaseAttributeFilterQuery,
-  IFBaseFilterQuery,
+  IBaseAttributeFilterQuery,
+  IBaseFilterQuery,
 } from './../interfaces/base.interface';
 
-export const baseFilterQueryUtils = (option: IFBaseFilterQuery) => {
+export const baseFilterQueryUtils = (option: IBaseFilterQuery) => {
   return `
     ${option.searchTerm ? `term=${option.searchTerm}` : ''}
     &${option.page ? `page=${option.page}` : ''}
@@ -11,14 +11,19 @@ export const baseFilterQueryUtils = (option: IFBaseFilterQuery) => {
   `;
 };
 
+
 export const baseAttributeFilterQueryUtils = (
-  option: IFBaseAttributeFilterQuery
+  option: IBaseAttributeFilterQuery
 ) => {
-  return `term=${option.searchTerm || ''}&page=${
-    option.page || ''
-  }&limit=${option.take || ''}&isFeatured=${option.isFeatured || ''}&isActive=${
-    option.isActive || ''
-  }&isPopular=${option.isPopular || ''}&isHot=${option.isHot || ''}&isNew=${
-    option.isNew || ''
-  }`;
+  const queryParams = [
+    option.searchTerm ? `term=${option.searchTerm}` : '',
+    option.page ? `page=${option.page}` : '',
+    option.take ? `limit=${option.take}` : '',
+    option.isFeatured ? `isFeatured=${option.isFeatured}` : '',
+    option.isActive ? `isActive=${option.isActive}` : '',
+    option.isPopular ? `isPopular=${option.isPopular}` : '',
+    option.isHot ? `isHot=${option.isHot}` : '',
+    option.isNew ? `isNew=${option.isNew}` : '',
+  ];
+  return queryParams.filter(param => param !== '').join('&');
 };

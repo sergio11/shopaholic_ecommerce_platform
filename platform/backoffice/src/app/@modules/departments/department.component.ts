@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  IFBaseAttributeFilterQuery,
-  IFBaseFilterResponse,
+  IBaseAttributeFilterQuery,
+  IBaseFilterResponse,
 } from './../../@shared/interfaces/base.interface';
 
 import { DepartmentService } from './../../@shared/services/department.service';
-import { IFBaseResponse } from 'src/app/@shared/interfaces/base.interface';
+import { IBaseResponse } from 'src/app/@shared/interfaces/base.interface';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
@@ -31,11 +31,11 @@ export class DepartmentComponent implements OnInit {
     take: 0,
     total: 0,
   };
-  private fetchDepartments(option: IFBaseAttributeFilterQuery) {
+  private fetchDepartments(option: IBaseAttributeFilterQuery) {
     this.loading = true;
     this.departmentService
       .filter(option)
-      .subscribe((res: IFBaseFilterResponse) => {
+      .subscribe((res: IBaseFilterResponse) => {
         this.departments = res;
         this.loading = false;
       });
@@ -65,7 +65,7 @@ export class DepartmentComponent implements OnInit {
 
   //* Delete Department
   onDeleteDepartment(id: string) {
-    this.departmentService.delete(id).subscribe((res: IFBaseResponse) => {
+    this.departmentService.delete(id).subscribe((res: IBaseResponse) => {
       this.departments.data = this.departments.data.filter(
         (x: any) => x.id !== id
       );

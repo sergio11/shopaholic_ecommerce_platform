@@ -1,7 +1,7 @@
 import { BrandStore } from './../stores/brands/brand.store';
 import { HttpClient } from '@angular/common/http';
-import { IFBaseFilterQuery } from './../interfaces/base.interface';
-import { IFBaseResponse } from 'src/app/@shared/interfaces/base.interface';
+import { IBaseFilterQuery } from './../interfaces/base.interface';
+import { IBaseResponse } from 'src/app/@shared/interfaces/base.interface';
 import { IFBrand } from './../interfaces/brand.interface';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
@@ -17,7 +17,7 @@ export class BrandService {
     private brandStore: BrandStore
   ) {}
 
-  filter(option: IFBaseFilterQuery) {
+  filter(option: IBaseFilterQuery) {
     return this.http
       .get(
         `${this.END_POINT}search?term=${option.searchTerm || ''}&page=${
@@ -25,7 +25,7 @@ export class BrandService {
         }&limit=${option.take || ''}`
       )
       .pipe(
-        tap((bannerResponse: IFBaseResponse) => {
+        tap((bannerResponse: IBaseResponse) => {
           this.brandStore.update(bannerResponse);
         })
       );
@@ -33,21 +33,21 @@ export class BrandService {
 
   create(payload: IFBrand) {
     return this.http.post(`${this.END_POINT}`, payload).pipe(
-      tap((banner: IFBaseResponse) => {
+      tap((banner: IBaseResponse) => {
         this.brandStore.createBanner(banner?.data);
       })
     );
   }
   update(id: string, payload: IFBrand) {
     return this.http.put(`${this.END_POINT}${id}`, payload).pipe(
-      tap((banner: IFBaseResponse) => {
+      tap((banner: IBaseResponse) => {
         this.brandStore.updateBanner(banner?.data);
       })
     );
   }
   delete(id: string) {
     return this.http.delete(`${this.END_POINT}${id}`).pipe(
-      tap((banner: IFBaseResponse) => {
+      tap((banner: IBaseResponse) => {
         this.brandStore.deleteBanner(banner?.data?.id);
       })
     );

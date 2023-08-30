@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 
 import { DepartmentService } from 'src/app/@shared/services/department.service';
-import { IFBaseResponse } from 'src/app/@shared/interfaces/base.interface';
+import { IBaseResponse } from 'src/app/@shared/interfaces/base.interface';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { UtilsService } from 'src/app/@shared/services/utils.service';
@@ -73,7 +73,7 @@ export class UpdateDepartment implements OnInit {
           name: this.departmentForm.value.name || '',
         })
         .subscribe(
-          (res: IFBaseResponse) => {
+          (res: IBaseResponse) => {
             this.notificationService.success('Updated', '');
             this.isModalOpen = false;
             this.onUpdated.emit(res.data);

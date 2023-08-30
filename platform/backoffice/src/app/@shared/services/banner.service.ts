@@ -5,7 +5,7 @@ import {
 
 import { BannerStore } from './../stores/banner/banner.store';
 import { HttpClient } from '@angular/common/http';
-import { IFBaseResponse } from 'src/app/@shared/interfaces/base.interface';
+import { IBaseResponse } from 'src/app/@shared/interfaces/base.interface';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { tap } from 'rxjs/operators';
@@ -28,7 +28,7 @@ export class BannerService {
         }&take=${option.take || ''}&type=${option.type || ''}`
       )
       .pipe(
-        tap((bannerResponse: IFBaseResponse) => {
+        tap((bannerResponse: IBaseResponse) => {
           this.bannerStore.update(bannerResponse);
         })
       );
@@ -36,21 +36,21 @@ export class BannerService {
 
   create(payload: IFBannerCreate) {
     return this.http.post(`${this.END_POINT}`, payload).pipe(
-      tap((banner: IFBaseResponse) => {
+      tap((banner: IBaseResponse) => {
         this.bannerStore.createBanner(banner?.data);
       })
     );
   }
   update(id: string, payload: IFBannerCreate) {
     return this.http.put(`${this.END_POINT}${id}`, payload).pipe(
-      tap((banner: IFBaseResponse) => {
+      tap((banner: IBaseResponse) => {
         this.bannerStore.updateBanner(banner?.data);
       })
     );
   }
   delete(id: string) {
     return this.http.delete(`${this.END_POINT}${id}`).pipe(
-      tap((banner: IFBaseResponse) => {
+      tap((banner: IBaseResponse) => {
         this.bannerStore.deleteBanner(banner?.data?.id);
       })
     );
