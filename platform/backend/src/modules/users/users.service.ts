@@ -116,8 +116,8 @@ export class UsersService extends SupportService {
    * @returns {Promise<Pagination<UserResponseDto>>} A Pagination object containing the matching users and pagination metadata.
    */
   async searchAndPaginateUsers(
-    name: string,
-    role: JwtRole,
+    name: string | undefined,
+    role: JwtRole | undefined,
     page: number = 1,
     limit: number = 10,
   ): Promise<Pagination<UserResponseDto>> {
@@ -132,21 +132,21 @@ export class UsersService extends SupportService {
     let queryBuilder = this.usersRepository.createQueryBuilder('user');
 
     if (name) {
-      queryBuilder = queryBuilder
-        .leftJoinAndSelect('user.roles', 'role')
-        .where(
-          'LOWER(user.name) LIKE :name OR LOWER(user.lastname) LIKE :name',
-          {
-            name: `%${name.toLowerCase()}%`,
-          },
-        );
+      queryBuilder = queryBuilder.where(
+        'LOWER(user.name) LIKE :name OR LOWER(user.lastname) LIKE :name',
+        {
+          name: `%${name.toLowerCase()}%`,
+        },
+      );
     }
 
     if (role) {
       const roleId = await this.findRoleIdByJwtRole(role);
-      queryBuilder = queryBuilder.andWhere(':roleId = ANY(user.roles)', {
-        roleId,
-      });
+      queryBuilder = queryBuilder
+        .leftJoin('user.user_has_roles', 'user_roles')
+        .andWhere('user_roles.id_rol = :roleId', {
+          roleId,
+        });
     }
 
     const paginatedUser = await paginate(queryBuilder, { page, limit });
@@ -219,7 +219,9 @@ export class UsersService extends SupportService {
    * @throws NotFoundException if user is not found.
    */
   private async findUser(id: string): Promise<UserEntity> {
-    return this.findEntityById(id, this.usersRepository, 'USER_NOT_FOUND', ['roles']);
+    return this.findEntityById(id, this.usersRepository, 'USER_NOT_FOUND', [
+      'roles',
+    ]);
   }
 
   private async findRoleIdByJwtRole(role: JwtRole): Promise<string> {

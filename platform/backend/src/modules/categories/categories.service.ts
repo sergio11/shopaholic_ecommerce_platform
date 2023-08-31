@@ -37,7 +37,7 @@ export class CategoriesService extends SupportService {
     if (cachedCategories) {
       return cachedCategories;
     }
-    const categories = await this.categoriesRepository.find();
+    const categories = await this.categoriesRepository.find({relations: ["image"]});
     const categoryDtos =
       this.categoryMapper.mapCategoriesToResponseDtos(categories);
     await this.cacheService.set(
@@ -61,11 +61,24 @@ export class CategoriesService extends SupportService {
     page: number = 1,
     limit: number = 10,
   ): Promise<Pagination<CategoryResponseDto>> {
+    if (page < 1) {
+      this.throwBadRequestException('PAGE_NUMBER_NOT_VALID');
+    }
+
+    if (limit < 1 || limit > 100) {
+      this.throwBadRequestException('LIMIT_NUMBER_NOT_VALID');
+    }
     const options = { page, limit };
     const queryBuilder = this.categoriesRepository
       .createQueryBuilder('category')
-      .where('LOWER(category.name) LIKE LOWER(:term)', { term: `%${term}%` })
+      .leftJoinAndSelect('category.image', 'image')
       .orderBy('category.name');
+
+    if (term) {
+      queryBuilder.where('LOWER(category.name) LIKE LOWER(:term)', {
+        term: `%${term}%`,
+      });
+    }
 
     const paginatedCategories = await paginate(queryBuilder, options);
     const items = paginatedCategories.items.map((category) =>
@@ -86,13 +99,26 @@ export class CategoriesService extends SupportService {
   async create(
     createCategoryDto: CreateCategoryDTO,
   ): Promise<CategoryResponseDto> {
+    const existingCategory = await this.categoriesRepository.findOne({
+      where: {
+        name: createCategoryDto.name,
+      },
+    });
+
+    if (existingCategory) {
+      throw this.throwConflictException('CATEGORY_NAME_ALREADY_EXIST');
+    }
+
     createCategoryDto.image = await this.fileSavingMixin.saveImageFile(
       createCategoryDto.imageFile,
     );
+
     const newCategory =
       this.categoryMapper.mapCreateCategoryDtoToEntity(createCategoryDto);
+
     const savedCategory = await this.categoriesRepository.save(newCategory);
     await this.invalidateCache();
+
     return this.categoryMapper.mapCategoryToResponseDto(savedCategory);
   }
 
@@ -139,11 +165,7 @@ export class CategoriesService extends SupportService {
    * @throws NotFoundException if the category is not found.
    */
   private async findCategory(id: string) {
-    const categoryFound = await this.categoriesRepository.findOneBy({ id: id });
-    if (!categoryFound) {
-      this.throwNotFoundException('CATEGORY_NOT_FOUND');
-    }
-    return categoryFound;
+    return this.findEntityById(id, this.categoriesRepository, 'CATEGORY_NOT_FOUND', ['image'])
   }
 
   /**

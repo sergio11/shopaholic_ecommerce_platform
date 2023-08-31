@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Query,
   DefaultValuePipe,
+  UploadedFiles,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { JwtRole } from '../auth/jwt/jwt-role';
@@ -60,10 +61,12 @@ export class CategoriesController {
     type: CategoryResponseDto,
   })
   async create(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles()
+    files: { imageFile: Express.Multer.File },
     @Body() createCategoryData: CreateCategoryDTO,
   ): Promise<CategoryResponseDto> {
-    const category = { ...createCategoryData, imageFile: file };
+    const category = { ...createCategoryData, imageFile: files.imageFile };
+    console.log(category);
     return this.categoriesService.create(category);
   }
 
@@ -133,11 +136,12 @@ export class CategoriesController {
     type: CategoryResponseDto,
   })
   async update(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles()
+    files: { imageFile?: Express.Multer.File },
     @Param('id') id: string,
     @Body() categoryData: UpdateCategoryDTO,
   ): Promise<CategoryResponseDto> {
-    const category = { ...categoryData, imageFile: file };
+    const category = { ...categoryData, imageFile: files.imageFile };
     return this.categoriesService.update(id, category);
   }
 

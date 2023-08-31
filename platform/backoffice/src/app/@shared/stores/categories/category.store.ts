@@ -1,12 +1,16 @@
 import { Store, StoreConfig } from '@datorama/akita';
 import { Injectable } from '@angular/core';
 
+export interface IImage {
+  url: string;
+}
+
 export interface ICategory {
   id: string;
   createdAt: string;
   updatedAt: string;
   name: string;
-  image: string;
+  image?: IImage;
   description: string;
 }
 
