@@ -10,6 +10,7 @@ import {
   Patch,
   DefaultValuePipe,
   ParseIntPipe,
+  UploadedFiles,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -32,6 +33,75 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   /**
+   * Get a list of all users.
+   * @returns A list of user response DTOs.
+   */
+  @Auth(JwtRole.ADMIN)
+  @Version('1.0')
+  @Get('all')
+  @ApiOperation({ summary: 'Get users' })
+  @ApiResponse({
+    status: 200,
+    description: 'User list',
+    type: UserResponseDto,
+  })
+  async findAll(): Promise<UserResponseDto[]> {
+    return this.usersService.findAll();
+  }
+
+  /**
+   * Search for users by name and filter by role (ADMIN or CLIENT), and paginate the results.
+   * @param {string} name - The search term to filter users by name.
+   * @param {JwtRole} role - The role to filter users by role (ADMIN or CLIENT).
+   * @param {number} page - The page number for pagination (default is 1).
+   * @param {number} limit - The number of items per page (default is 10).
+   * @returns {Promise<Pagination<UserResponseDto>>} - A paginated result of UserResponseDto.
+   */
+  @Auth(JwtRole.ADMIN)
+  @Version('1.0')
+  @Get('search')
+  @ApiOperation({
+    summary: 'Search for users by name and filter by role (ADMIN or CLIENT)',
+  })
+  @ApiQuery({
+    name: 'name',
+    required: false,
+    description: 'Search term for filtering users by name',
+  })
+  @ApiQuery({
+    name: 'role',
+    enum: JwtRole,
+    required: false,
+    description: 'Filter users by role (ADMIN or CLIENT)',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number ( 1 ... )',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Items per page ( 1 ... 100 )',
+    type: Number,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Filtered and paginated users',
+    type: UserResponseDto,
+    isArray: true,
+  })
+  async searchAndPaginateUsers(
+    @Query('name') name: string,
+    @Query('role') role: JwtRole,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ): Promise<Pagination<UserResponseDto>> {
+    return this.usersService.searchAndPaginateUsers(name, role, page, limit);
+  }
+
+  /**
    * Update the information of the authenticated client.
    * @param file The updated image file for the user.
    * @param userData The updated user data.
@@ -43,11 +113,12 @@ export class UsersController {
   @DefaultUploadFileValidationDecorator({ isOptional: true })
   @ApiOperation({ summary: 'Update authenticated client' })
   async updateSelf(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles()
+    files: { imageFile: Express.Multer.File },
     @Body() userData: UpdateUserDto,
     @AuthUserId() userId: string,
   ): Promise<UserResponseDto> {
-    const updatedUser = { ...userData, imageFile: file };
+    const updatedUser = { ...userData, imageFile: files.imageFile };
     return this.usersService.update(userId, updatedUser);
   }
 
@@ -113,23 +184,6 @@ export class UsersController {
   }
 
   /**
-   * Get a list of all users.
-   * @returns A list of user response DTOs.
-   */
-  @Auth(JwtRole.ADMIN)
-  @Version('1.0')
-  @Get()
-  @ApiOperation({ summary: 'Get users' })
-  @ApiResponse({
-    status: 200,
-    description: 'User list',
-    type: UserResponseDto,
-  })
-  async findAll(): Promise<UserResponseDto[]> {
-    return this.usersService.findAll();
-  }
-
-  /**
    * Create a new user.
    * @param file The image file for the user.
    * @param userData The data for creating the user.
@@ -141,10 +195,11 @@ export class UsersController {
   @DefaultUploadFileValidationDecorator()
   @ApiOperation({ summary: 'Create new user' })
   async create(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles()
+    files: { imageFile: Express.Multer.File },
     @Body() userData: CreateUserDto,
   ): Promise<UserResponseDto> {
-    const user = { ...userData, imageFile: file };
+    const user = { ...userData, imageFile: files.imageFile };
     return this.usersService.create(user);
   }
 
@@ -161,11 +216,12 @@ export class UsersController {
   @DefaultUploadFileValidationDecorator({ isOptional: true })
   @ApiOperation({ summary: 'Update user and profile picture' })
   async update(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles()
+    files: { imageFile: Express.Multer.File },
     @Param('id') id: string,
     @Body() userData: UpdateUserDto,
   ): Promise<UserResponseDto> {
-    const user = { ...userData, imageFile: file };
+    const user = { ...userData, imageFile: files.imageFile };
     return this.usersService.update(id, user);
   }
 
@@ -197,75 +253,5 @@ export class UsersController {
   })
   async getUserById(@Param('id') id: string): Promise<UserResponseDto> {
     return this.usersService.getUserById(id);
-  }
-
-  /**
-   * Search for users by name.
-   * @param name The name to search for.
-   * @returns A list of users matching the name.
-   */
-  @Auth(JwtRole.ADMIN)
-  @Version('1.0')
-  @Get('search/:name')
-  @ApiOperation({ summary: 'Search users by name' })
-  @ApiResponse({
-    status: 200,
-    description: 'List of users matching the name',
-    type: [UserResponseDto],
-  })
-  async searchByName(@Param('name') name: string): Promise<UserResponseDto[]> {
-    return this.usersService.searchByName(name);
-  }
-
-  /**
-   * Search for users by name and filter by role (ADMIN or CLIENT), and paginate the results.
-   * @param {string} name - The search term to filter users by name.
-   * @param {JwtRole} role - The role to filter users by role (ADMIN or CLIENT).
-   * @param {number} page - The page number for pagination (default is 1).
-   * @param {number} limit - The number of items per page (default is 10).
-   * @returns {Promise<Pagination<UserResponseDto>>} - A paginated result of UserResponseDto.
-   */
-  @Auth(JwtRole.ADMIN)
-  @Version('1.0')
-  @Get('search')
-  @ApiOperation({
-    summary: 'Search for users by name and filter by role (ADMIN or CLIENT)',
-  })
-  @ApiQuery({
-    name: 'name',
-    required: false,
-    description: 'Search term for filtering users by name',
-  })
-  @ApiQuery({
-    name: 'role',
-    enum: JwtRole,
-    required: false,
-    description: 'Filter users by role (ADMIN or CLIENT)',
-  })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    description: 'Page number ( 1 ... )',
-    type: Number,
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    description: 'Items per page ( 1 ... 100 )',
-    type: Number,
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Filtered and paginated users',
-    type: UserResponseDto,
-    isArray: true,
-  })
-  async searchAndPaginateUsers(
-    @Query('name') name: string,
-    @Query('role') role: JwtRole,
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
-  ): Promise<Pagination<UserResponseDto>> {
-    return this.usersService.searchAndPaginateUsers(name, role, page, limit);
   }
 }

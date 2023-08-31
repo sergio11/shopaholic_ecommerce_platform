@@ -18,10 +18,26 @@ export class UserService {
   }
 
   filter(option: IFFilterUser) {
-    return this.http.get(
-      `${this.END_POINT}search?term=${option.searchTerm || ''}&page=${
-        option.page || ''
-      }&limit=${option.take || ''}&type=${option.type || ''}`
-    );
+    const queryParams: string[] = [];
+
+    if (option.searchTerm !== undefined && option.searchTerm !== null) {
+      queryParams.push(`name=${option.searchTerm}`);
+    }
+
+    if (option.page !== undefined && option.page !== null) {
+      queryParams.push(`page=${option.page}`);
+    }
+
+    if (option.take !== undefined && option.take !== null) {
+      queryParams.push(`limit=${option.take}`);
+    }
+
+    if (option.type !== undefined && option.type !== null) {
+      queryParams.push(`role=${option.type}`);
+    }
+
+    const queryString = queryParams.join('&');
+
+    return this.http.get(`${this.END_POINT}search?${queryString}`);
   }
 }

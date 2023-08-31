@@ -99,18 +99,11 @@ export class AddressService extends SupportService {
    * @throws {NotFoundException} If the address is not found.
    */
   private async findAddress(id: string): Promise<AddressEntity> {
-    const addressFound = await this.addressRepository.findOneBy({ id: id });
-    if (!addressFound) {
-      this.throwNotFoundException('ADDRESS_NOT_FOUND');
-    }
-    return addressFound;
+    return this.findEntityById(id, this.addressRepository, 'ADDRESS_NOT_FOUND');
   }
 
   private async findUser(id: string): Promise<UserEntity> {
-    const userFound = await this.userRepository.findOneBy({ id: id });
-    if (!userFound) {
-      this.throwNotFoundException('USER_NOT_FOUND');
-    }
-    return userFound;
+    console.log(`findUser id: ${id} - USER_NOT_FOUND`)
+    return this.findEntityById(id, this.userRepository, 'USER_NOT_FOUND');
   }
 }

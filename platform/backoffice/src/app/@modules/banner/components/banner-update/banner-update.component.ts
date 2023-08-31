@@ -4,7 +4,6 @@ import { BannerService } from 'src/app/@shared/services/banner.service';
 import { FormBuilder } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
-import { UtilsService } from 'src/app/@shared/services/utils.service';
 import { BannerType } from 'src/app/@shared/enums';
 
 @Component({
@@ -19,7 +18,6 @@ export class BannerUpdateComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private utilsService: UtilsService,
     private notificationService: NzNotificationService,
     private bannerService: BannerService
   ) {}
@@ -38,7 +36,7 @@ export class BannerUpdateComponent implements OnInit {
   }
   //*Image update
   imageUploadLoading: boolean = false;
-  imageUploadEndPoint = this.utilsService.uploadImageEndPoint;
+  imageUploadEndPoint: string = "";
   imageUrl: string = '';
   onChangeImageUpload(info: { file: NzUploadFile }): void {
     switch (info.file.status) {
