@@ -12,13 +12,6 @@ export const content: Routes = [
       import('../../@modules/users/users.module').then((m) => m.UsersModule),
   },
   {
-    path: 'department',
-    loadChildren: () =>
-      import('../../@modules/departments/departments.module').then(
-        (m) => m.DepartmentModule
-      ),
-  },
-  {
     path: 'category',
     loadChildren: () =>
       import('../../@modules/category/category.module').then(

@@ -4,7 +4,7 @@ export interface IFChangePhoneNumber {
   newPhoneNumber?: string;
 }
 
-type TFUser = 'ADMIN' | 'CUSTOMER' | 'VENDOR';
+type TFUser = 'ADMIN' | 'CLIENT';
 
 export interface IFFilterUser extends IBaseFilterQuery {
   type?: TFUser;

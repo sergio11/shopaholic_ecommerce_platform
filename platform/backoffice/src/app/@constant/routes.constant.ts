@@ -10,12 +10,8 @@ export const routesConstant = {
   userProfile: `${LAYOUT_PATH}users/profile`,
   userProfileUpdate: `${LAYOUT_PATH}users/profile-update`,
   userSecurity: `${LAYOUT_PATH}users/security`,
-
-  department: `${LAYOUT_PATH}department`,
-
   category: `${LAYOUT_PATH}category`,
   categoryList: `${LAYOUT_PATH}category/list`,
-
   bannerList: `${LAYOUT_PATH}banner/list`,
   brandList: `${LAYOUT_PATH}brand/list`,
   productsList: `${LAYOUT_PATH}products/list`,

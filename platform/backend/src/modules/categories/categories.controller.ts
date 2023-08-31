@@ -1,5 +1,4 @@
 import {
-  UploadedFile,
   Param,
   Body,
   Post,

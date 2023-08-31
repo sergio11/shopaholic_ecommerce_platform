@@ -93,7 +93,6 @@ export class AuthService extends SupportService {
    */
   async validateUserById(id: string): Promise<UserEntity> {
     const token = await this.cacheService.get(`session:${id}`);
-    console.log(`validateUserById ${id} - token: ${token}`)
     if (!token) {
       this.throwUnAuthorizedException('INVALID_CREDENTIALS');
     }

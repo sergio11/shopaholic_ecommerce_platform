@@ -95,19 +95,6 @@ export class UsersService extends SupportService {
   }
 
   /**
-   * Search for users by name (case-insensitive).
-   * @param name The name to search for.
-   * @returns List of users matching the name.
-   */
-  async searchByName(name: string): Promise<UserResponseDto[]> {
-    const users = await this.usersRepository
-      .createQueryBuilder('user')
-      .where('LOWER(user.name) LIKE :name', { name: `%${name.toLowerCase()}%` })
-      .getMany();
-    return this.userMapper.mapUsersToResponseDtos(users);
-  }
-
-  /**
    * Search for users by name and filter by role, then paginate the results.
    * @param {string} name - The name to search for.
    * @param {JwtRole} role - The role to filter users by.
@@ -143,12 +130,11 @@ export class UsersService extends SupportService {
     if (role) {
       const roleId = await this.findRoleIdByJwtRole(role);
       queryBuilder = queryBuilder
-        .leftJoin('user.user_has_roles', 'user_roles')
-        .andWhere('user_roles.id_rol = :roleId', {
+        .leftJoin('user.roles', 'user_roles')
+        .andWhere('user.roles.id_rol = :roleId', {
           roleId,
         });
     }
-
     const paginatedUser = await paginate(queryBuilder, { page, limit });
     const items = paginatedUser.items.map((user) =>
       this.userMapper.mapUserToResponseDto(user),

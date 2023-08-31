@@ -7,10 +7,10 @@ import {
   ParseUUIDPipe,
   HttpStatus,
   Version,
-  UploadedFile,
   ParseIntPipe,
   Query,
   DefaultValuePipe,
+  UploadedFiles,
 } from '@nestjs/common';
 import { ApiResponse, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { BrandService } from './brands.service';
@@ -121,10 +121,11 @@ export class BrandController {
     type: BrandResponseDTO,
   })
   async create(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles()
+    files: { imageFile: Express.Multer.File },
     @Body() createBrandDto: CreateBrandDTO,
   ): Promise<BrandResponseDTO> {
-    const brand = { ...createBrandDto, imageFile: file };
+    const brand = { ...createBrandDto, imageFile: files.imageFile };
     return this.brandService.create(brand);
   }
 
@@ -144,11 +145,12 @@ export class BrandController {
     type: BrandResponseDTO,
   })
   async update(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles()
+    files: { imageFile: Express.Multer.File },
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateBrandDto: UpdateBrandDTO,
   ): Promise<BrandResponseDTO> {
-    const brand = { ...updateBrandDto, imageFile: file };
+    const brand = { ...updateBrandDto, imageFile: files.imageFile };
     return this.brandService.update(id, brand);
   }
 
