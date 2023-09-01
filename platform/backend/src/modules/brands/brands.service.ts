@@ -90,6 +90,7 @@ export class BrandService extends SupportService {
    * @returns A BrandResponseDto representing the newly created brand.
    */
   async create(createBrandDto: CreateBrandDTO): Promise<BrandResponseDTO> {
+    await this.checkBrandUniqueness(createBrandDto.name, createBrandDto.slug);
     createBrandDto.image = await this.fileSavingMixin.saveImageFile(
       createBrandDto.imageFile,
     );
@@ -110,6 +111,7 @@ export class BrandService extends SupportService {
     id: string,
     updateBrandDto: UpdateBrandDTO,
   ): Promise<BrandResponseDTO> {
+    await this.checkBrandUniqueness(updateBrandDto.name, updateBrandDto.slug);
     const brandToUpdate = await this.findBrand(id);
     updateBrandDto.image = await this.fileSavingMixin.saveImageFile(
       updateBrandDto.imageFile,
@@ -137,5 +139,19 @@ export class BrandService extends SupportService {
 
   private async findBrand(id: string): Promise<BrandsEntity> {
     return this.findEntityById(id, this.brandRepository, 'BRAND_NOT_FOUND');
+  }
+
+  private async checkBrandUniqueness(
+    name: string,
+    slug: string,
+  ): Promise<void> {
+    const existingBrand = await this.brandRepository
+      .createQueryBuilder('brand')
+      .where('brand.name = :name OR brand.slug = :slug', { name, slug })
+      .getOne();
+
+    if (existingBrand) {
+      this.throwConflictException('BRAND_ALREADY_EXISTS');
+    }
   }
 }

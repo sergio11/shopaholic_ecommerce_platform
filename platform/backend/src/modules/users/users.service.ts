@@ -127,14 +127,15 @@ export class UsersService extends SupportService {
       );
     }
 
+    // Add a filter for the "role" if provided
     if (role) {
-      const roleId = await this.findRoleIdByJwtRole(role);
-      queryBuilder = queryBuilder
-        .leftJoin('user.roles', 'user_roles')
-        .andWhere('user.roles.id_rol = :roleId', {
-          roleId,
-        });
+      queryBuilder = queryBuilder.innerJoinAndSelect(
+        'user.roles',
+        'user_roles',
+      );
+      queryBuilder = queryBuilder.andWhere('user_roles.name = :role', { role });
     }
+
     const paginatedUser = await paginate(queryBuilder, { page, limit });
     const items = paginatedUser.items.map((user) =>
       this.userMapper.mapUserToResponseDto(user),

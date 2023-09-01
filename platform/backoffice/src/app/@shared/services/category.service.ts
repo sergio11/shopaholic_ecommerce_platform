@@ -76,8 +76,8 @@ export class CategoryService {
    * @returns Observable with the deletion response.
    */
   delete(id: string) {
-    return this.http.delete(`${this.END_POINT}${id}`).pipe(
-      tap((_: any) => {
+    return this.http.delete(`${this.END_POINT}${id}`, { responseType: 'text' }).pipe(
+      tap(() => {
         this.categoryStore.remove(id);
       })
     );

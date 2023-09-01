@@ -69,8 +69,8 @@ export class BrandService {
   }
 
   delete(id: string) {
-    return this.http.delete(`${this.END_POINT}${id}`).pipe(
-      tap((_: any) => {
+    return this.http.delete(`${this.END_POINT}${id}`, { responseType: 'text' }).pipe(
+      tap(() => {
         this.brandStore.remove(id);
       })
     );
