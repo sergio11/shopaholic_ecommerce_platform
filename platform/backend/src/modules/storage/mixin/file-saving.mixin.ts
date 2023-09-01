@@ -29,6 +29,7 @@ export class StorageMixin {
      */
     async saveImageFile(file?: Express.Multer.File, oldImage?: ImageEntity): Promise<CreateImageDto> {
         if (file) {
+            console.log(`saveImageFile -> mimetype: ${file.mimetype}, ${file.size}, ${file.filename}`)
             const response = await this.storageService.saveFile(file.buffer, file.mimetype, file.size);
             await this.removeImageFile(oldImage);
             const imageDto: CreateImageDto = {

@@ -14,6 +14,7 @@ export class BrandItemComponent implements OnInit {
     private brandService: BrandService,
     private nzNotificationService: NzNotificationService
   ) {}
+  
   ngOnInit(): void {}
 
   //* update
@@ -24,6 +25,7 @@ export class BrandItemComponent implements OnInit {
   onCloseUpdateModal() {
     this.isUpdateModalOpen = false;
   }
+
   onDelete(id: string) {
     this.brandService.delete(id).subscribe((res: any) => {
       this.nzNotificationService.success('Deleted', '');

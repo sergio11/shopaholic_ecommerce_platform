@@ -31,18 +31,12 @@ export class BrandUpdateComponent implements OnInit {
   ngOnInit(): void {
     this.brandForm.patchValue({
       name: this.data.name,
-      isFeatured: this.data.isFeatured,
-      isActive: this.data.isActive,
-      isPopular: this.data.isPopular,
-      isHot: this.data.isHot,
-      isNew: this.data.isNew,
+      slug: this.data.slug
     });
   }
 
   onSubmit() {
-    if (!this.brandImageFileSelected) {
-      this.notificationService.error('Image Empty', '');
-    } else if (!this.brandForm.value.name) {
+    if (!this.brandForm.value.name) {
       this.notificationService.error('Name Empty', '');
     } else {
       this.brandService
