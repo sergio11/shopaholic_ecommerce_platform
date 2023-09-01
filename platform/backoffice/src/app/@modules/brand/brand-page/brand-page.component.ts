@@ -3,27 +3,27 @@ import { BrandService } from './../../../@shared/services/brand.service';
 import { Component } from '@angular/core';
 import { IFBannerFilter } from 'src/app/@shared/interfaces/banner.interface';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { IBrandState } from 'src/app/@shared/stores/brands/brand.store';
+import { createInitialState } from 'src/app/@shared/stores/core/generic-crud-store';
 
 @Component({
   templateUrl: './brand-page.component.html',
 })
 export class BrandPageComponent {
+
+  state: IBrandState = createInitialState();
+
   constructor(
     private brandService: BrandService,
     private brandQuery: BrandQuery,
     private nzNotificationService: NzNotificationService
   ) {}
-  banners = {
-    data: [],
-    page: 0,
-    take: 0,
-    total: 0,
-  };
-
+  
   ngOnInit() {
-    this.filterData({ page: 1, take: 12 });
-    this.brandQuery.select().subscribe((res: any) => {
-      this.banners = res;
+    this.filterData({ page: 1, take: 10 });
+    this.brandQuery.select().subscribe((state: IBrandState) => {
+      console.log(state)
+      this.state = state;
     });
   }
 
@@ -43,15 +43,15 @@ export class BrandPageComponent {
 
   onChangeSearch(e: any) {
     this.filterData({
-      page: this.banners.page,
-      take: this.banners.take,
+      page: this.state.meta.currentPage,
+      take: this.state.meta.itemsPerPage,
       searchTerm: e.target.value,
     });
   }
   onChangePage(e: any) {
     this.filterData({
       page: e,
-      take: this.banners.take,
+      take: this.state.meta.itemsPerPage,
     });
   }
 }

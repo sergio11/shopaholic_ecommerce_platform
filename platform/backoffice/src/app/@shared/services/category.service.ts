@@ -50,7 +50,7 @@ export class CategoryService {
     const formData = this.createFormData(payload);
     return this.http.post(`${this.END_POINT}`, formData).pipe(
       tap((data: any) => {
-        this.categoryStore.createCategory(data);
+        this.categoryStore.add(data);
       })
     );
   }
@@ -65,7 +65,7 @@ export class CategoryService {
     const formData = this.createFormData(payload);
     return this.http.post(`${this.END_POINT}${id}`, formData).pipe(
       tap((data: any) => {
-        this.categoryStore.updateCategory(data);
+        this.categoryStore.update(data);
       })
     );
   }
@@ -77,8 +77,8 @@ export class CategoryService {
    */
   delete(id: string) {
     return this.http.delete(`${this.END_POINT}${id}`).pipe(
-      tap((x: any) => {
-        this.categoryStore.deleteCategory(x?.data?.id);
+      tap((_: any) => {
+        this.categoryStore.remove(id);
       })
     );
   }

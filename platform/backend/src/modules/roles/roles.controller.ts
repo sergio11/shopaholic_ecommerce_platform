@@ -28,7 +28,7 @@ export class RolesController {
   @Auth(JwtRole.ADMIN)
   @Version('1.0')
   @Get('all')
-  @ApiOperation({ summary: 'Get a list of all roles' }) // Add an operation summary
+  @ApiOperation({ summary: 'Get a list of all roles' })
   @ApiResponse({
     status: 200,
     description: 'List of roles retrieved successfully',

@@ -1,8 +1,7 @@
 import { BrandStore } from './../stores/brands/brand.store';
 import { HttpClient } from '@angular/common/http';
 import { IBaseFilterQuery } from './../interfaces/base.interface';
-import { IBaseResponse } from 'src/app/@shared/interfaces/base.interface';
-import { IFBrand } from './../interfaces/brand.interface';
+import { ISaveBrand } from './../interfaces/brand.interface';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { tap } from 'rxjs/operators';
@@ -12,44 +11,87 @@ import { tap } from 'rxjs/operators';
 })
 export class BrandService {
   private readonly END_POINT = `${environment.API_ENDPOINT}brands/`;
+  private readonly BRAND_NAME_FIELD = 'name';
+  private readonly BRAND_SLUG_FIELD = 'slug';
+  private readonly BRAND_IMAGE_FIELD = 'imageFile';
+
   constructor(
     private readonly http: HttpClient,
     private brandStore: BrandStore
   ) {}
 
   filter(option: IBaseFilterQuery) {
-    return this.http
-      .get(
-        `${this.END_POINT}search?term=${option.searchTerm || ''}&page=${
-          option.page || ''
-        }&limit=${option.take || ''}`
-      )
-      .pipe(
-        tap((bannerResponse: IBaseResponse) => {
-          this.brandStore.update(bannerResponse);
-        })
-      );
+    // Create an object to hold the query parameters
+    const queryParams: { [param: string]: string } = {};
+
+    // Add the 'term' parameter if defined and not null
+    if (option.searchTerm) {
+      queryParams['term'] = option.searchTerm;
+    }
+
+    // Add the 'page' parameter if defined and not null
+    if (option.page !== undefined && option.page !== null) {
+      queryParams['page'] = option.page.toString();
+    }
+
+    // Add the 'limit' parameter if defined and not null
+    if (option.take !== undefined && option.take !== null) {
+      queryParams['limit'] = option.take.toString();
+    }
+
+    // Build the URL with the query parameters
+    const url = this.END_POINT + 'search';
+
+    // Use the HttpClient `params` option to pass the query parameters
+    return this.http.get(url, { params: queryParams }).pipe(
+      tap((data: any) => {
+        this.brandStore.update(data);
+      })
+    );
   }
 
-  create(payload: IFBrand) {
-    return this.http.post(`${this.END_POINT}`, payload).pipe(
-      tap((banner: IBaseResponse) => {
-        this.brandStore.createBanner(banner?.data);
+  create(payload: ISaveBrand) {
+    const formData = this.createFormData(payload);
+    return this.http.post(`${this.END_POINT}`, formData).pipe(
+      tap((data: any) => {
+        this.brandStore.add(data)
       })
     );
   }
-  update(id: string, payload: IFBrand) {
-    return this.http.put(`${this.END_POINT}${id}`, payload).pipe(
-      tap((banner: IBaseResponse) => {
-        this.brandStore.updateBanner(banner?.data);
+
+  update(id: string, payload: ISaveBrand) {
+    const formData = this.createFormData(payload);
+    return this.http.put(`${this.END_POINT}${id}`, formData).pipe(
+      tap((data: any) => {
+        this.brandStore.update(data);
       })
     );
   }
+
   delete(id: string) {
     return this.http.delete(`${this.END_POINT}${id}`).pipe(
-      tap((banner: IBaseResponse) => {
-        this.brandStore.deleteBanner(banner?.data?.id);
+      tap((_: any) => {
+        this.brandStore.remove(id);
       })
     );
+  }
+
+  /**
+   * Creates a FormData object and attaches fields, including the image if present.
+   * @param payload Category data, including the image.
+   * @returns FormData object with attached fields.
+   */
+  private createFormData(payload: ISaveBrand): FormData {
+    const formData = new FormData();
+    if (payload.name !== undefined) {
+      formData.append(this.BRAND_NAME_FIELD, payload.name);
+    }
+    if (payload.slug !== undefined) {
+      formData.append(this.BRAND_SLUG_FIELD, payload.slug);
+    }
+    if (payload.image instanceof File) {
+      formData.append(this.BRAND_IMAGE_FIELD, payload.image);
+    }
+    return formData;
   }
 }

@@ -1,6 +1,6 @@
 import {
   IFChangePhoneNumber,
-  IFFilterUser,
+  IFilterUser,
 } from '../interfaces/user.interface';
 
 import { HttpClient } from '@angular/common/http';
@@ -17,7 +17,7 @@ export class UserService {
     return this.http.put(`${this.END_POINT}changePhoneNumber`, payload);
   }
 
-  filter(option: IFFilterUser) {
+  filter(option: IFilterUser) {
     const queryParams: string[] = [];
 
     if (option.searchTerm !== undefined && option.searchTerm !== null) {

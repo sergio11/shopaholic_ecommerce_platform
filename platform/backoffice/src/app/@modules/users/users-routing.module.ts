@@ -6,7 +6,6 @@ import { UserProfileChangePassword } from './components/user-security/user-secur
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { UserProfileUpdateComponent } from './components/user-profile-update/user-profile-update.component';
 import { UsersComponent } from './components/users/users.component';
-import { VendorsComponent } from './components/vendors/vendors.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'admins' },
@@ -18,10 +17,6 @@ const routes: Routes = [
   {
     path: 'profile',
     component: UserProfileComponent,
-  },
-  {
-    path: 'vendors',
-    component: VendorsComponent,
   },
   {
     path: 'profile-update',
