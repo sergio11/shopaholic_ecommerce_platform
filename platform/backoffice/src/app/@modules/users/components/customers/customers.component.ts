@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { IBaseFilterResponse } from '../../../../@shared/interfaces/base.interface';
-import { IFFilterUser } from '../../../../@shared/interfaces/user.interface';
+import { IFilterUser } from '../../../../@shared/interfaces/user.interface';
 import { UserService } from 'src/app/@shared/services/user.service';
 
 @Component({
@@ -18,12 +18,13 @@ export class CustomersComponent implements OnInit {
   };
 
   constructor(private userService: UserService) {}
+  
   ngOnInit(): void {
-    this.fetchUsers({ page: 1, take: 10, type: 'CUSTOMER' });
+    this.fetchUsers({ page: 1, take: 10, type: 'CLIENT' });
   }
 
   //* Fetching Users
-  fetchUsers(option: IFFilterUser) {
+  fetchUsers(option: IFilterUser) {
     this.loading = true;
     this.userService.filter(option).subscribe((res: IBaseFilterResponse) => {
       this.loading = false;
@@ -31,16 +32,16 @@ export class CustomersComponent implements OnInit {
     });
   }
 
-  //*Table Pagination
   onChangePage(page: number) {
     this.fetchUsers({ page: page, take: 10 });
   }
+
   onChangeSearch(e: any) {
     this.fetchUsers({
       page: this.users?.page,
       take: 10,
       searchTerm: e.target.value,
-      type: 'CUSTOMER',
+      type: 'CLIENT',
     });
   }
 }

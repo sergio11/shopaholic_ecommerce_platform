@@ -4,10 +4,10 @@ export interface IFChangePhoneNumber {
   newPhoneNumber?: string;
 }
 
-type TFUser = 'ADMIN' | 'CLIENT';
+type RoleName = 'ADMIN' | 'CLIENT';
 
-export interface IFFilterUser extends IBaseFilterQuery {
-  type?: TFUser;
+export interface IFilterUser extends IBaseFilterQuery {
+  type?: RoleName;
 }
 
 export interface IFUser {

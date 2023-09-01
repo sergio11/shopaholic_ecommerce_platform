@@ -5,7 +5,8 @@ import {
 
 import { CategoryQuery } from '../../@shared/stores/categories/category.query';
 import { CategoryService } from './../../@shared/services/category.service';
-import { ICategoryState, createInitialState } from 'src/app/@shared/stores/categories/category.store';
+import { ICategoryState } from 'src/app/@shared/stores/categories/category.store';
+import { createInitialState } from 'src/app/@shared/stores/core/generic-crud-store';
 
 @Component({
   templateUrl: './category.component.html',

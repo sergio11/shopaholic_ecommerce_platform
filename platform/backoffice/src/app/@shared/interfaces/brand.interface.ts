@@ -1,7 +1,16 @@
-import { IBaseMetaAttribute } from './base.interface';
+import { IImage } from "./base.interface";
 
-export interface IFBrand extends IBaseMetaAttribute {
+export interface ISaveBrand {
   name: string;
   slug: string,
   image?: File;
+}
+
+export interface IBrand {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  image?: IImage;
+  slug: string;
 }

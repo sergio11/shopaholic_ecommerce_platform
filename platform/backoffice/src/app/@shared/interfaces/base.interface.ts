@@ -32,3 +32,7 @@ export interface IBaseFilterResponse extends IBaseResponse {
   take?: number;
   total?: number;
 }
+
+export interface IImage {
+  url: string;
+}

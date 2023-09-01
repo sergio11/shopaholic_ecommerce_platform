@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CategoryService } from './../../../../@shared/services/category.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ICategory } from 'src/app/@shared/stores/categories/category.store';
+import { ICategory } from 'src/app/@shared/interfaces/category.interface';
 
 @Component({
   selector: 'app-category-update',

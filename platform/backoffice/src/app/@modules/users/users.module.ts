@@ -10,7 +10,6 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
 import { UserProfileUpdateComponent } from './components/user-profile-update/user-profile-update.component';
 import { UsersComponent } from './components/users/users.component';
 import { UsersRoutingModule } from './users-routing.module';
-import { VendorsComponent } from './components/vendors/vendors.component';
 
 @NgModule({
   declarations: [
@@ -18,8 +17,7 @@ import { VendorsComponent } from './components/vendors/vendors.component';
     UserProfileUpdateComponent,
     UserProfileChangePassword,
     UsersComponent,
-    CustomersComponent,
-    VendorsComponent,
+    CustomersComponent
   ],
   imports: [
     CommonModule,
