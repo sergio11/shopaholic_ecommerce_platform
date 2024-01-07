@@ -156,6 +156,14 @@ namespace :shopaholic do
 				puts `docker push #{apiServiceDockerImage}`
 				puts `docker images`
 			end
+
+			desc "Running development server"
+			task :run_dev_server do
+				puts "Running development server ..."
+				Dir.chdir('./platform/backend') do
+					puts `npm run start:dev`
+				end
+			end
 		end
 
 		namespace :backoffice do
