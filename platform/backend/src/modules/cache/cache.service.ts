@@ -12,7 +12,7 @@ export class CacheService<T> {
   }
 
   async set(key: string, value: T, ttlInSeconds?: number): Promise<void> {
-    console.log(`Cache Service - save key: ${key} - value: ${value} - ttl: ${ttlInSeconds}`)
+    console.log(`Cache Service - save key: ${key} - ttl: ${ttlInSeconds}`)
     await this.cacheManager.set(key, value, ttlInSeconds * 1000);
   }
 
