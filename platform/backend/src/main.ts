@@ -24,8 +24,8 @@ async function bootstrap() {
   );
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Shopaholic API')
-    .setDescription('Shopaholic API description')
+    .setTitle('Shopaholic Ecommerce Platform')
+    .setDescription('Shopaholic Ecommerce: NestJS-driven fashion hub offering secure payments & personalized experiences for modern shopping.')
     .setVersion('1.0')
     .addTag('Shopaholic')
     .addBearerAuth()
