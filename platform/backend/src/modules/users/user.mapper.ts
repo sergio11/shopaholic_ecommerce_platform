@@ -13,8 +13,11 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserMapper {
   /**
    * Creates an instance of UserMapper.
+   * @param roleMapper - An instance of RoleMapper.
    */
-  constructor() {}
+  constructor(
+    private readonly roleMapper: RoleMapper,
+  ) {}
 
   /**
    * Maps a UserEntity object to a UserResponseDto object.
@@ -25,6 +28,7 @@ export class UserMapper {
     const userDto = plainToClass(UserResponseDto, user, {
       excludeExtraneousValues: true,
     });
+    userDto.roles = this.roleMapper.mapRolesToResponseDtos(user.roles);
     return userDto;
   }
 
