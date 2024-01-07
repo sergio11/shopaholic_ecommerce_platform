@@ -7,6 +7,7 @@ export class CacheService<T> {
   constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
 
   async get(key: string): Promise<T | undefined> {
+    console.log(`Cache Service - get key: ${key}`)
     return this.cacheManager.get<T>(key);
   }
 
@@ -16,6 +17,7 @@ export class CacheService<T> {
   }
 
   async delete(key: string): Promise<void> {
+    console.log(`Cache Service - delete key: ${key}`)
     await this.cacheManager.del(key);
   }
 }
