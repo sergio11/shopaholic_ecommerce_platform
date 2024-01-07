@@ -5,8 +5,6 @@ import {
   Body,
   Delete,
   Query,
-  DefaultValuePipe,
-  ParseIntPipe,
   UploadedFiles,
   Version,
   Put,
@@ -16,8 +14,6 @@ import { JwtRole } from '../auth/jwt/jwt-role';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { ProductEntity } from './product.entity';
-import { API } from 'src/config/config';
 import {
   ApiBody,
   ApiNotFoundResponse,

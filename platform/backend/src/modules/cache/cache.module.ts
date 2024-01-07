@@ -1,7 +1,6 @@
-import { CacheModule, CacheInterceptor } from '@nestjs/cache-manager';
+import { CacheModule } from '@nestjs/cache-manager';
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CacheService } from './cache.service';
 
 @Global()
@@ -30,10 +29,6 @@ import { CacheService } from './cache.service';
     }),
   ],
   providers: [
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor,
-    },
     CacheService
   ],
   exports: [CacheService]

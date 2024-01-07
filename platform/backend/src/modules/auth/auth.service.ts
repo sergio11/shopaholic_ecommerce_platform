@@ -225,7 +225,7 @@ export class AuthService extends SupportService {
       relations: ['roles'],
     });
     if (!userFound) {
-      this.throwNotFoundException('EMAIL_NOT_FOUND');
+      this.throwNotFoundException('USER_NOT_FOUND');
     }
 
     if (requiredRoles.length > 0) {
