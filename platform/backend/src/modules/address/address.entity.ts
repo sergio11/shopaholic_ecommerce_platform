@@ -1,12 +1,13 @@
 import { AbstractEntity } from 'src/core/abstract.entity';
 import { OrderEntity } from 'src/modules/orders/order.entity';
-import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, OneToMany, ManyToOne, JoinColumn, Index } from 'typeorm';
 import { UserEntity } from '../users/user.entity';
 
 /**
  * Entity representing an address.
  */
 @Entity({ name: 'address' })
+@Index(['name', 'neighborhood', 'city'], { unique: true })
 export class AddressEntity extends AbstractEntity {
   /**
    * Street address.

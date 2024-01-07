@@ -42,6 +42,13 @@ export class AddressService extends SupportService {
    * @returns {Promise<AddressResponseDto>} The newly created address.
    */
   async create(address: CreateAddressDto, userId: string): Promise<AddressResponseDto> {
+    const { name, neighborhood, city } = address;
+    const existingAddress = await this.addressRepository.findOne({
+      where: { name, neighborhood, city },
+    });
+    if (existingAddress) {
+      this.throwConflictException('ALREADY_ALREADY_CREATED');
+    }
     const userFound = await this.findUser(userId);
     const newAddress = this.mapper.mapCreateAddressDtoToEntity(address);
     newAddress.user = userFound;
