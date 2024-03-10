@@ -104,16 +104,13 @@ export class CategoriesService extends SupportService {
         name: createCategoryDto.name,
       },
     });
-    console.log(existingCategory);
 
     if (existingCategory) {
       throw this.throwConflictException('CATEGORY_NAME_ALREADY_EXIST');
     }
-
     createCategoryDto.image = await this.fileSavingMixin.saveImageFile(
       createCategoryDto.imageFile,
     );
-
     const newCategory =
       this.categoryMapper.mapCreateCategoryDtoToEntity(createCategoryDto);
 

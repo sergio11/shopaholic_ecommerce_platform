@@ -64,8 +64,8 @@ export class CategoriesController {
     files: { imageFile: Express.Multer.File },
     @Body() createCategoryData: CreateCategoryDTO,
   ): Promise<CategoryResponseDto> {
-    const category = { ...createCategoryData, imageFile: files.imageFile };
-    console.log(category);
+    const category = { ...createCategoryData, imageFile: files.imageFile[0] };
+    console.log("Create category", category);
     return this.categoriesService.create(category);
   }
 
