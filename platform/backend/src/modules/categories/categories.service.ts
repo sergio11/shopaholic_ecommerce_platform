@@ -113,7 +113,6 @@ export class CategoriesService extends SupportService {
     );
     const newCategory =
       this.categoryMapper.mapCreateCategoryDtoToEntity(createCategoryDto);
-
     const savedCategory = await this.categoriesRepository.save(newCategory);
     await this.invalidateCache();
 

@@ -22,7 +22,7 @@ export class CategoryEntity extends AbstractEntity {
   /**
    * The associated image for the category.
    */
-  @OneToOne(() => ImageEntity)
+  @OneToOne(() => ImageEntity, { cascade: true })
   @JoinColumn({ name: 'image_id' })
   image: ImageEntity;
 }
