@@ -1,4 +1,4 @@
-import { Body, Param, Post, Version } from '@nestjs/common';
+import { Body, Param, Post, Req, Version } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpAuthDto } from './dto/signup-auth.dto';
 import { SignInAuthDto } from './dto/signin-auth.dto';
@@ -35,7 +35,14 @@ export class AuthController {
     description: 'Successfully registered and authenticated',
     type: AuthResponseDto,
   })
-  async signup(@Body() signUpData: SignUpAuthDto): Promise<AuthResponseDto> {
+  async signup(
+    @Body() signUpData: SignUpAuthDto,
+    @Req() request: Request,
+  ): Promise<AuthResponseDto> {
+    // If language is not specified, determine the default value based on the request headers
+    if (signUpData.language === undefined) {
+      signUpData.language = this.determineDefaultLanguage(request);
+    }
     return this.authService.signup(signUpData);
   }
 
@@ -71,7 +78,12 @@ export class AuthController {
   })
   async adminSignup(
     @Body() adminSignUpData: AdminSignUpAuthDto,
+    @Req() request: Request,
   ): Promise<AuthResponseDto> {
+    // If language is not specified, determine the default value based on the request headers
+    if (adminSignUpData.language === undefined) {
+      adminSignUpData.language = this.determineDefaultLanguage(request);
+    }
     return this.authService.signupAdmin(adminSignUpData);
   }
 
@@ -145,5 +157,13 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Tokens revoked successfully' })
   async revokeToken(@Param('userId') userId: string): Promise<string> {
     return await this.authService.revokeUserTokens(userId);
+  }
+
+  private determineDefaultLanguage(request: Request): string {
+    // Access the request headers from the Request object
+    const acceptLanguageHeader = request.headers['accept-language'];
+    // Check if the Accept-Language header is present and return its value
+    // If not found or if you have other error handling logic, you can return a default value
+    return acceptLanguageHeader || 'en'; // Return the value of the Accept-Language header or 'en' as default
   }
 }

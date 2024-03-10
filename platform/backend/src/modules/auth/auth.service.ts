@@ -191,27 +191,46 @@ export class AuthService extends SupportService {
     return data;
   }
 
+  /**
+   * Creates a new user and generates a signed JWT (JSON Web Token) for the user.
+   * @param signUpData The user registration data. Can be SignUpAuthDto or AdminSignUpAuthDto.
+   * @param rolesToAssign The roles to assign to the new user.
+   * @returns A promise resolving to an AuthResponseDto object containing the JWT access token.
+   * @throws Throws an exception if the email is already registered or if no roles are found.
+   */
   private async createUserAndSignJwt(
     signUpData: SignUpAuthDto | AdminSignUpAuthDto,
     rolesToAssign: string[],
   ): Promise<AuthResponseDto> {
+    // Extract email from registration data
     const { email } = signUpData;
+
+    // Check if the email is already registered in the database
     const emailExist = await this.usersRepository.findOneBy({ email });
     if (emailExist) {
       this.throwConflictException('EMAIL_ALREADY_REGISTERED');
     }
 
+    // Create a new user with the provided data
     const newUser = this.usersRepository.create(signUpData);
+
+    // Find roles in the database that match the provided roles
     const roles = await this.rolesRepository.findBy({
       name: In(rolesToAssign),
     });
+
+    // If no roles are found, throw an exception
     if (roles.length === 0) {
       this.throwConflictException('NO_ROLES_FOUND');
     }
+
+    // Assign the found roles to the new user
     newUser.roles = roles;
 
+    // Save the new user to the database
     const userSaved = await this.usersRepository.save(newUser);
 
+    // Generate and sign a JWT for the saved user
     return this.generateAndSignJwt(userSaved);
   }
 
