@@ -1,4 +1,4 @@
-import { IsString, IsEmail, IsNotEmpty, MinLength } from "class-validator";
+import { IsString, IsEmail, IsNotEmpty, MinLength, IsOptional } from "class-validator";
 import { ApiProperty } from '@nestjs/swagger';
 
 export class SignUpAuthDto {
@@ -81,16 +81,16 @@ export class SignUpAuthDto {
     @IsString()
     country: string;
 
-    /**
-     * The language of the user
+     /**
+     * The preferred language of the user (optional)
      * @example 'en'
      */
     @ApiProperty({
-        description: `The language of the user`,
-        example: 'en'
+        description: `The preferred language of the user`,
+        example: 'en',
+        required: false,
     })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
-    language: string;
-
+    language?: string;
 }

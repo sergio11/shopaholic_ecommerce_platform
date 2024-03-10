@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 
 /**
  * DTO for admin signup.
@@ -55,4 +55,17 @@ export class AdminSignUpAuthDto {
   @IsString()
   @MinLength(6, { message: 'La contraseña debe tener minimo 6 caracteres' })
   password: string;
+
+  /**
+   * The preferred language of the user (optional)
+   * @example 'en'
+   */
+  @ApiProperty({
+    description: `The preferred language of the user`,
+    example: 'en',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  language?: string;
 }
