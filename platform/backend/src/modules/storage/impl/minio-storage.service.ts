@@ -105,9 +105,9 @@ export class MinioStorageService
     contentType: string,
     length: number,
   ): Promise<{ id: string; url: string }> {
-    const id = uuidv4();
+    const uuid = uuidv4();
     const fileExtension = contentType.split('/').pop(); // Extract file extension from Content-Type
-    const fileName = `${id}.${fileExtension}`; // Use the generated UUID with file extension
+    const fileId = `${uuid}.${fileExtension}`; // Use the generated UUID with file extension
 
     // Create a BufferList to handle the file content
     const bufferList = new BufferList();
@@ -123,19 +123,19 @@ export class MinioStorageService
     try {
       await this.minioClient.putObject(
         this.bucketName,
-        fileName,
+        fileId,
         readableStream,
         length,
         uploadOptions,
       );
       const url = await this.minioClient.presignedGetObject(
         this.bucketName,
-        fileName,
+        fileId,
       );
       if (!url) {
         this.throwInternalServerError('FILE_SAVING_ERROR');
       }
-      return { id, url };
+      return { id: fileId, url };
     } catch (error) {
       console.error('Error saving file to MinIO:', error);
       this.throwInternalServerError('FILE_SAVING_ERROR');
@@ -148,6 +148,7 @@ export class MinioStorageService
    * @returns {Promise<void>}
    */
   public async deleteFile(id: string): Promise<void> {
+    console.log("deleteFile: id", id)
     const existingObject = await this.getObjectInfo(id);
     if (!existingObject) {
       this.throwNotFoundException('FILE_NOT_FOUND');
@@ -172,6 +173,7 @@ export class MinioStorageService
         id,
         (err, stat: Minio.BucketItemStat) => {
           if (err) {
+            console.log("this.bucketName " + this.bucketName + " getObjectInfo err ", err)
             if ((err as any).code === 'NotFound') {
               // Use type assertion here
               resolve(null);

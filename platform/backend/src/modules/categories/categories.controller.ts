@@ -140,7 +140,7 @@ export class CategoriesController {
     @Param('id') id: string,
     @Body() categoryData: UpdateCategoryDTO,
   ): Promise<CategoryResponseDto> {
-    const category = { ...categoryData, imageFile: files.imageFile };
+    const category = { ...categoryData, imageFile: files.imageFile[0] };
     return this.categoriesService.update(id, category);
   }
 

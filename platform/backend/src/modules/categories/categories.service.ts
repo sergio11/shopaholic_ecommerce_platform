@@ -130,10 +130,12 @@ export class CategoriesService extends SupportService {
     updateCategoryDto: UpdateCategoryDTO,
   ): Promise<CategoryResponseDto> {
     const categoryFound = await this.findCategory(id);
-    updateCategoryDto.image = await this.fileSavingMixin.saveImageFile(
-      updateCategoryDto.imageFile,
-      categoryFound.image,
-    );
+    if(updateCategoryDto.imageFile) {
+      updateCategoryDto.image = await this.fileSavingMixin.saveImageFile(
+        updateCategoryDto.imageFile,
+        categoryFound.image,
+      );
+    }
     const updatedCategory = this.categoryMapper.mapUpdateCategoryDtoToEntity(
       updateCategoryDto,
       categoryFound,
