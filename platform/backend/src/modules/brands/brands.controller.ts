@@ -125,7 +125,7 @@ export class BrandController {
     files: { imageFile: Express.Multer.File },
     @Body() createBrandDto: CreateBrandDTO,
   ): Promise<BrandResponseDTO> {
-    const brand = { ...createBrandDto, imageFile: files.imageFile };
+    const brand = { ...createBrandDto, imageFile: files.imageFile[0] };
     return this.brandService.create(brand);
   }
 
@@ -150,7 +150,7 @@ export class BrandController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateBrandDto: UpdateBrandDTO,
   ): Promise<BrandResponseDTO> {
-    const brand = { ...updateBrandDto, imageFile: files.imageFile };
+    const brand = { ...updateBrandDto, imageFile: files.imageFile[0] };
     return this.brandService.update(id, brand);
   }
 

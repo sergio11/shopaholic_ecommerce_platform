@@ -10,16 +10,22 @@ import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
 import { StorageMixin } from '../storage/mixin/file-saving.mixin';
 import { Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { CacheService } from '../cache/cache.service';
 
 /**
  * Service responsible for handling brand-related operations.
  */
 @Injectable()
 export class BrandService extends SupportService {
+
+  private readonly CACHE_KEY = 'cache:brands:all';
+  private readonly DEFAULT_TTL_IN_SECONDS: number = 120;
+
   constructor(
     @InjectRepository(BrandsEntity)
     private brandRepository: Repository<BrandsEntity>,
     private readonly brandMapper: BrandsMapper,
+    private readonly cacheService: CacheService<BrandResponseDTO[]>,
     private readonly fileSavingMixin: StorageMixin,
     i18n: I18nService,
   ) {
@@ -31,8 +37,18 @@ export class BrandService extends SupportService {
    * @returns An array of BrandResponseDto objects representing the brands.
    */
   async findAll(): Promise<BrandResponseDTO[]> {
-    const brands = await this.brandRepository.find();
-    return this.brandMapper.mapBrandsToResponseDtos(brands);
+    const cachedBrands = await this.cacheService.get(this.CACHE_KEY);
+    if (cachedBrands) {
+      return cachedBrands;
+    }
+    const brands = await this.brandRepository.find({relations: ["image"]});
+    const brandDtos = this.brandMapper.mapBrandsToResponseDtos(brands);
+    await this.cacheService.set(
+      this.CACHE_KEY,
+      brandDtos,
+      this.DEFAULT_TTL_IN_SECONDS,
+    );
+    return brandDtos;
   }
 
   /**
@@ -97,6 +113,7 @@ export class BrandService extends SupportService {
     const brandEntity =
       this.brandMapper.mapCreateBrandDtoToEntity(createBrandDto);
     const createdBrand = await this.brandRepository.save(brandEntity);
+    await this.invalidateCache();
     return this.brandMapper.mapBrandToResponseDto(createdBrand);
   }
 
@@ -122,6 +139,7 @@ export class BrandService extends SupportService {
       brandToUpdate,
     );
     const updatedBrand = await this.brandRepository.save(updatedBrandEntity);
+    await this.invalidateCache();
     return this.brandMapper.mapBrandToResponseDto(updatedBrand);
   }
 
@@ -134,11 +152,12 @@ export class BrandService extends SupportService {
     const brandToRemove = await this.findBrand(id);
     await this.fileSavingMixin.removeImageFile(brandToRemove.image);
     await this.brandRepository.remove(brandToRemove);
+    await this.invalidateCache();
     return this.resolveString('BRAND_REMOVED_SUCCESFULLY');
   }
 
   private async findBrand(id: string): Promise<BrandsEntity> {
-    return this.findEntityById(id, this.brandRepository, 'BRAND_NOT_FOUND');
+    return this.findEntityById(id, this.brandRepository, 'BRAND_NOT_FOUND', ["image"]);
   }
 
   private async checkBrandUniqueness(
@@ -153,5 +172,13 @@ export class BrandService extends SupportService {
     if (existingBrand) {
       this.throwConflictException('BRAND_ALREADY_EXISTS');
     }
+  }
+
+  /**
+   * Invalidate the cache storing category data.
+   * @private
+   */
+  private async invalidateCache() {
+    await this.cacheService.delete(this.CACHE_KEY);
   }
 }

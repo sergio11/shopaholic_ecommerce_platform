@@ -25,7 +25,7 @@ export class BrandsEntity extends AbstractEntity {
   /**
    * The associated image for the category.
    */
-  @OneToOne(() => ImageEntity)
+  @OneToOne(() => ImageEntity, { cascade: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'image_id' })
   image: ImageEntity;
 
