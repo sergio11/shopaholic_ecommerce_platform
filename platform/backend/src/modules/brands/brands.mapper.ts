@@ -4,13 +4,22 @@ import { BrandsEntity } from './brand.entity';
 import { BrandResponseDTO } from './dto/brand-response.dto';
 import { CreateBrandDTO } from './dto/create-brand.dto';
 import { UpdateBrandDTO } from './dto/update-brand.dto';
+import { ImageMapper } from '../images/image.mapper';
 
 @Injectable()
 export class BrandsMapper {
+
+  constructor(private readonly imageMapper: ImageMapper) {}
+
   mapBrandToResponseDto(brand: BrandsEntity): BrandResponseDTO {
-    return plainToClass(BrandResponseDTO, brand, {
+    const brandResponseDto = plainToClass(BrandResponseDTO, brand, {
       excludeExtraneousValues: true,
     });
+    if (brand.image) {
+      const imageDto = this.imageMapper.mapImageToResponseDto(brand.image);
+      brandResponseDto.image = imageDto;
+    }
+    return brandResponseDto;
   }
 
   mapBrandsToResponseDtos(brands: BrandsEntity[]): BrandResponseDTO[] {
