@@ -177,9 +177,10 @@ export class ProductsController {
   ): Promise<ProductResponseDto> {
     const product = {
       ...productData,
-      mainImageFile: files.mainImageFile,
-      secondaryImageFile: files.secondaryImageFile,
+      mainImageFile: files.mainImageFile[0],
+      secondaryImageFile: files.secondaryImageFile[0],
     };
+    console.log(product)
     return this.productsService.create(product);
   }
 
@@ -217,8 +218,8 @@ export class ProductsController {
   ): Promise<ProductResponseDto> {
     const product = {
       ...productData,
-      mainImageFile: files.mainImageFile,
-      secondaryImageFile: files.secondaryImageFile,
+      mainImageFile: files.mainImageFile[0],
+      secondaryImageFile: files.secondaryImageFile[0],
     };
     return this.productsService.update(id, product);
   }
