@@ -239,32 +239,41 @@ export class ProductsService extends SupportService {
     idUser: string,
     reactionField: 'likes' | 'dislikes',
   ): Promise<ProductEntity> {
-    const userFound = await this.findUser(idUser);
     const otherReactionField = reactionField === 'likes' ? 'dislikes' : 'likes';
-    const productFound = await this.findProduct(idProduct, [reactionField, otherReactionField]);
-    const userReactionIndex = productFound[reactionField].findIndex(reactionUser => reactionUser && reactionUser.id === idUser);
+    const userFound = await this.findUser(idUser);
+    const allProducts = await this.productsRepository.find({ relations:[reactionField, otherReactionField]});
+    const updatedProducts: ProductEntity[] = [];
 
-    if (userReactionIndex !== -1) {
-      // User has already reacted, remove the reaction
-      productFound[reactionField].splice(userReactionIndex, 1);
-    } else {
-      // User has not reacted, add the reaction
-      productFound[reactionField].push(userFound);
-      // Remove other reaction if the user has reacted before
-      const otherUserReactionIndex = productFound[otherReactionField].findIndex(reactionUser => reactionUser && reactionUser.id === idUser);
-      if (otherUserReactionIndex !== -1) { 
-        productFound[otherReactionField].splice(otherUserReactionIndex, 1);
+    for (const r of allProducts) {
+      if (r.id === idProduct) {
+        if (
+          r[reactionField].some((reactionUser) => reactionUser.id === idUser)
+        ) {
+          // User has already reacted, remove the reaction
+          r[reactionField] = r[reactionField].filter(
+            (reactionUser) => reactionUser.id !== idUser,
+          );
+        } else {
+          // User has not reacted, add the reaction
+          r[reactionField].push(userFound);
+          // Remove other reaction if the user has reacted before
+          r[otherReactionField] = r[otherReactionField].filter(
+            (otherReactionUser) => otherReactionUser.id !== idUser,
+          );
+        }
       }
-    }
 
-    // Recalculate isBestRated and isWorstRated
-    const likesCount = productFound.likes.length;
-    const dislikesCount = productFound.dislikes.length;
-    productFound.likesCount = likesCount;
-    productFound.dislikesCount = dislikesCount;
-    productFound.isBestRated = likesCount >= dislikesCount;
-    productFound.isWorstRated = dislikesCount > likesCount;
-    await this.productsRepository.save(productFound);
+      const likesCount = r.likes.length;
+      const dislikesCount = r.dislikes.length;
+      r.likesCount = likesCount;
+      r.dislikesCount = dislikesCount;
+      r.isBestRated = likesCount >= dislikesCount;
+      r.isWorstRated = dislikesCount > likesCount;
+
+      updatedProducts.push(r);
+    }
+    
+    await this.productsRepository.save(updatedProducts);
     return this.findProduct(idProduct); // Return the updated product entity
   }
 
