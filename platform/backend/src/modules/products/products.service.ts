@@ -239,57 +239,33 @@ export class ProductsService extends SupportService {
     idUser: string,
     reactionField: 'likes' | 'dislikes',
   ): Promise<ProductEntity> {
-    const review = await this.findProduct(idProduct, [reactionField]);
+    const userFound = await this.findUser(idUser);
     const otherReactionField = reactionField === 'likes' ? 'dislikes' : 'likes';
+    const productFound = await this.findProduct(idProduct, [reactionField, otherReactionField]);
+    const userReactionIndex = productFound[reactionField].findIndex(reactionUser => reactionUser && reactionUser.id === idUser);
 
-    const user = await this.usersRepository.findOne({ where: { id: idUser } });
-    if (!user) {
-      throw this.throwNotFoundException('USER_NOT_FOUND');
-    }
-
-    const allProducts = await this.productsRepository.find();
-    const updatedProducts: ProductEntity[] = [];
-    let targetProduct: ProductEntity | undefined;
-
-    for (const r of allProducts) {
-      if (r.id === idProduct) {
-        targetProduct = r;
-        if (
-          r[reactionField].some((reactionUser) => reactionUser.id === idUser)
-        ) {
-          // User has already reacted, remove the reaction
-          r[reactionField] = r[reactionField].filter(
-            (reactionUser) => reactionUser.id !== idUser,
-          );
-        } else {
-          // User has not reacted, add the reaction
-          r[reactionField].push(user);
-          // Remove other reaction if the user has reacted before
-          r[otherReactionField] = r[otherReactionField].filter(
-            (otherReactionUser) => otherReactionUser.id !== idUser,
-          );
-        }
+    if (userReactionIndex !== -1) {
+      // User has already reacted, remove the reaction
+      productFound[reactionField].splice(userReactionIndex, 1);
+    } else {
+      // User has not reacted, add the reaction
+      productFound[reactionField].push(userFound);
+      // Remove other reaction if the user has reacted before
+      const otherUserReactionIndex = productFound[otherReactionField].findIndex(reactionUser => reactionUser && reactionUser.id === idUser);
+      if (otherUserReactionIndex !== -1) { 
+        productFound[otherReactionField].splice(otherUserReactionIndex, 1);
       }
-
-      // Recalculate isBestRated and isWorstRated for other reviews
-      const likesCount = r.likes.length;
-      const dislikesCount = r.dislikes.length;
-      r.isBestRated = likesCount >= dislikesCount;
-      r.isWorstRated = dislikesCount > likesCount;
-
-      updatedProducts.push(r);
     }
 
-    if (targetProduct) {
-      targetProduct.isBestRated =
-        targetProduct.likes.length >= targetProduct.dislikes.length;
-      targetProduct.isWorstRated =
-        targetProduct.dislikes.length > targetProduct.likes.length;
-      updatedProducts.push(targetProduct);
-    }
-
-    await this.productsRepository.save(updatedProducts);
-    return review;
+    // Recalculate isBestRated and isWorstRated
+    const likesCount = productFound.likes.length;
+    const dislikesCount = productFound.dislikes.length;
+    productFound.likesCount = likesCount;
+    productFound.dislikesCount = dislikesCount;
+    productFound.isBestRated = likesCount >= dislikesCount;
+    productFound.isWorstRated = dislikesCount > likesCount;
+    await this.productsRepository.save(productFound);
+    return this.findProduct(idProduct); // Return the updated product entity
   }
 
   private async findProduct(
@@ -318,6 +294,18 @@ export class ProductsService extends SupportService {
       this.brandsRepository,
       'BRAND_NOT_FOUND',
     );
+  }
+
+  /**
+   * Finds a user by their ID.
+   * @param id ID of the user to be found.
+   * @returns The found user entity.
+   * @throws NotFoundException if user is not found.
+   */
+  private async findUser(id: string): Promise<UserEntity> {
+    return this.findEntityById(id, this.usersRepository, 'USER_NOT_FOUND', [
+      'roles',
+    ]);
   }
 
   private async invalidateCache() {

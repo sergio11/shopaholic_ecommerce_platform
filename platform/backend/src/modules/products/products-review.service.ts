@@ -73,8 +73,8 @@ export class ProductReviewService extends SupportService {
    */
   async delete(id: string): Promise<string> {
     const reviewToDelete = await this.findProductReview(id);
-    await this.productReviewRepository.remove(reviewToDelete);
     this.updateProductStats(reviewToDelete.product); // Update product stats asynchronously
+    await this.productReviewRepository.remove(reviewToDelete);
     return this.resolveString('PRODUCT_REVIEW_DELETED_SUCCESSFULLY');
   }
 
