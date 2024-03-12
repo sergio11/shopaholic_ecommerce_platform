@@ -51,7 +51,11 @@ export class StorageMixin {
     async removeImageFile(image?: ImageEntity): Promise<void> { 
         if(image) {
             await this.imagesService.deleteImageByStorageId(image.storageId);
-            await this.storageService.deleteFile(image.storageId);
+            try {
+                await this.storageService.deleteFile(image.storageId);
+            } catch (error) {
+                console.error('Error deleting image file:', error);
+            }
         }
     }
 }

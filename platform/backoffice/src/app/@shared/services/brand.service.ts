@@ -61,7 +61,7 @@ export class BrandService {
 
   update(id: string, payload: ISaveBrand) {
     const formData = this.createFormData(payload);
-    return this.http.put(`${this.END_POINT}${id}`, formData).pipe(
+    return this.http.post(`${this.END_POINT}${id}`, formData).pipe(
       tap((data: any) => {
         this.brandStore.update(data);
       })
