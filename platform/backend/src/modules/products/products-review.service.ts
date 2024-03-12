@@ -134,22 +134,13 @@ export class ProductReviewService extends SupportService {
     idUser: string,
     reactionField: 'likes' | 'dislikes',
   ): Promise<ProductReviewEntity> {
-    const review = await this.findProductReview(reviewId, [reactionField]);
     const otherReactionField = reactionField === 'likes' ? 'dislikes' : 'likes';
-
-    // Encuentra el usuario por su id
-    const user = await this.userRepository.findOne({ where: { id: idUser } });
-    if (!user) {
-      throw this.throwNotFoundException('USER_NOT_FOUND');
-    }
-
-    const allReviews = await this.productReviewRepository.find();
+    const userFound = await this.findUser(idUser);
+    const allReviews = await this.productReviewRepository.find({ relations:[reactionField, otherReactionField]});
     const updatedReviews: ProductReviewEntity[] = [];
-    let targetReview: ProductReviewEntity | undefined;
 
     for (const r of allReviews) {
       if (r.id === reviewId) {
-        targetReview = r;
         if (
           r[reactionField].some((reactionUser) => reactionUser.id === idUser)
         ) {
@@ -159,7 +150,7 @@ export class ProductReviewService extends SupportService {
           );
         } else {
           // User has not reacted, add the reaction
-          r[reactionField].push(user);
+          r[reactionField].push(userFound);
           // Remove other reaction if the user has reacted before
           r[otherReactionField] = r[otherReactionField].filter(
             (otherReactionUser) => otherReactionUser.id !== idUser,
@@ -176,19 +167,9 @@ export class ProductReviewService extends SupportService {
 
       updatedReviews.push(r);
     }
-
-    if (targetReview) {
-      targetReview.likesCount = targetReview.likes.length;
-      targetReview.dislikesCount = targetReview.dislikes.length;
-      targetReview.isBestRated =
-        targetReview.likes.length >= targetReview.dislikes.length;
-      targetReview.isWorstRated =
-        targetReview.dislikes.length > targetReview.likes.length;
-      updatedReviews.push(targetReview);
-    }
-
+    
     await this.productReviewRepository.save(updatedReviews);
-    return review;
+    return this.findProductReview(reviewId, [reactionField, otherReactionField]);
   }
 
   /**
