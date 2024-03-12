@@ -37,7 +37,11 @@ export class ProductReviewService extends SupportService {
   async create(
     createDto: CreateProductReviewDto,
   ): Promise<ProductReviewResponseDto> {
+    const userFound = await this.findUser(createDto.idUser);
+    const productFound = await this.findProduct(createDto.idProduct);
     const newReview = this.productReviewMapper.mapCreateDtoToEntity(createDto);
+    newReview.product = productFound
+    newReview.user = userFound
     const savedReview = await this.productReviewRepository.save(newReview);
     this.updateProductStats(savedReview.product); // Update product stats asynchronously
     return this.productReviewMapper.mapProductReviewToResponseDto(savedReview);
@@ -82,10 +86,14 @@ export class ProductReviewService extends SupportService {
   async getProductReviews(
     idProduct: string,
   ): Promise<ProductReviewResponseDto[]> {
-    const productReviews = await this.productReviewRepository.find({
-      where: { idProduct, isHidden: false },
-      order: { createdAt: 'DESC' },
-    });
+    const productReviews = await this.productReviewRepository
+      .createQueryBuilder('review')
+      .leftJoinAndSelect('review.product', 'product')
+      .leftJoinAndSelect('review.user', 'user')
+      .where('review.product = :productId', { productId: idProduct })
+      .andWhere('review.isHidden = :isHidden', { isHidden: false })
+      .orderBy('review.createdAt', 'DESC')
+      .getMany();
     return this.productReviewMapper.mapProductReviewsToResponseDtos(
       productReviews,
     );
@@ -183,11 +191,19 @@ export class ProductReviewService extends SupportService {
     return review;
   }
 
-
+  /**
+   * Updates the statistics of a product including the number of reviews and the average rating.
+   * @param product The product entity whose statistics need to be updated.
+   * @returns A Promise that resolves when the update operation is complete.
+   */
   private async updateProductStats(product: ProductEntity): Promise<void> {
-    const reviews = await this.productReviewRepository.find({
-      where: { idProduct: product.id, isHidden: false },
-    });
+    const reviews = await this.productReviewRepository
+      .createQueryBuilder('review')
+      .leftJoinAndSelect('review.product', 'product')
+      .leftJoinAndSelect('review.user', 'user')
+      .where('review.product = :productId', { productId: product.id })
+      .andWhere('review.isHidden = :isHidden', { isHidden: false })
+      .getMany();
 
     const reviewsCount = reviews.length;
     const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
@@ -220,5 +236,35 @@ export class ProductReviewService extends SupportService {
       this.throwNotFoundException('PRODUCT_REVIEW_NOT_FOUND');
     }
     return review;
+  }
+
+  /**
+   * Finds a user by their ID.
+   * @param id ID of the user to be found.
+   * @returns The found user entity.
+   * @throws NotFoundException if user is not found.
+   */
+  private async findUser(id: string): Promise<UserEntity> {
+    return this.findEntityById(id, this.userRepository, 'USER_NOT_FOUND', [
+      'roles',
+    ]);
+  }
+
+  /**
+   * Finds a product by its ID and retrieves optional relations.
+   * @param id The ID of the product to find.
+   * @param relations Optional array of relation names to be retrieved along with the product.
+   * @returns A Promise that resolves with the found ProductEntity or throws an error if not found.
+   */
+  private async findProduct(
+    id: string,
+    relations?: string[],
+  ): Promise<ProductEntity> {
+    return await this.findEntityById(
+      id,
+      this.productRepository,
+      'PRODUCT_NOT_FOUND',
+      relations,
+    );
   }
 }
