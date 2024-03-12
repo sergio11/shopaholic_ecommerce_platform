@@ -139,7 +139,7 @@ export class ProductEntity extends AbstractEntity {
    */
   @ManyToMany(() => UserEntity)
   @JoinTable({
-    name: 'product_dislikes',
+    name: 'product_likes',
     joinColumn: {
       name: 'product_id',
       referencedColumnName: 'id',
