@@ -57,14 +57,14 @@ export class ProductEntity extends AbstractEntity {
   /**
    * Main image of the product.
    */
-  @OneToOne(() => ImageEntity, { cascade: true })
+  @OneToOne(() => ImageEntity, { cascade: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'id_main_image' })
   mainImage: ImageEntity;
 
   /**
    * Secondary image of the product.
    */
-  @OneToOne(() => ImageEntity, { cascade: true })
+  @OneToOne(() => ImageEntity, { cascade: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'id_secondary_image' })
   secondaryImage: ImageEntity;
 

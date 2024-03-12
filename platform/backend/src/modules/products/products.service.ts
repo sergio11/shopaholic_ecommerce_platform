@@ -46,7 +46,7 @@ export class ProductsService extends SupportService {
     if (cachedProducts) {
       return cachedProducts;
     }
-    const products = await this.productsRepository.find();
+    const products = await this.productsRepository.find({relations: ["mainImage", "secondaryImage", "brand", "category"]});
     const mappedProducts = this.mapper.mapProductsToResponseDtos(products);
     await this.cacheService.set(
       this.CACHE_KEY,
@@ -57,6 +57,17 @@ export class ProductsService extends SupportService {
   }
 
   /**
+   * Retrieves a single product by its ID.
+   * @param id - The ID of the product.
+   * @returns A ProductResponseDto representing the product.
+   * @throws NotFoundException if the product with the provided ID is not found.
+   */
+  async findOne(id: string): Promise<ProductResponseDto> {
+    const product = await this.findProduct(id, ["mainImage", "secondaryImage", "brand", "category"]);
+    return this.mapper.mapProductToResponseDto(product);
+  }
+
+  /**
    * Find products by category.
    * @param {string} idCategory - Category ID.
    * @returns {Promise<ProductResponseDto[]>} - Array of product response DTOs.
@@ -64,6 +75,7 @@ export class ProductsService extends SupportService {
   async findByCategory(idCategory: string): Promise<ProductResponseDto[]> {
     const products = await this.productsRepository.find({
       where: { idCategory },
+      relations: ["mainImage", "secondaryImage", "brand", "category"]
     });
     return this.mapper.mapProductsToResponseDtos(products);
   }
@@ -142,6 +154,7 @@ export class ProductsService extends SupportService {
     newProduct.category = categoryFound;
     newProduct.brand = brandFound;
     const savedProduct = await this.productsRepository.save(newProduct);
+    await this.invalidateCache();
     return this.mapper.mapProductToResponseDto(savedProduct);
   }
 
@@ -173,6 +186,7 @@ export class ProductsService extends SupportService {
     productToUpdate.category = categoryFound;
     productToUpdate.brand = brandFound;
     const productUpdated = await this.productsRepository.save(productToUpdate);
+    await this.invalidateCache();
     return this.mapper.mapProductToResponseDto(productUpdated);
   }
 
@@ -186,6 +200,7 @@ export class ProductsService extends SupportService {
     await this.fileSavingMixin.removeImageFile(product.mainImage);
     await this.fileSavingMixin.removeImageFile(product.secondaryImage);
     await this.productsRepository.delete(id);
+    await this.invalidateCache();
     return this.resolveString('PRODUCT_DELETED_SUCCESSFULLY');
   }
 
@@ -227,7 +242,6 @@ export class ProductsService extends SupportService {
     const review = await this.findProduct(idProduct, [reactionField]);
     const otherReactionField = reactionField === 'likes' ? 'dislikes' : 'likes';
 
-    // Encuentra el usuario por su id
     const user = await this.usersRepository.findOne({ where: { id: idUser } });
     if (!user) {
       throw this.throwNotFoundException('USER_NOT_FOUND');
@@ -304,5 +318,9 @@ export class ProductsService extends SupportService {
       this.brandsRepository,
       'BRAND_NOT_FOUND',
     );
+  }
+
+  private async invalidateCache() {
+    await this.cacheService.delete(this.CACHE_KEY);
   }
 }
