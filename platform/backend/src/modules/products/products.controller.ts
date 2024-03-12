@@ -8,6 +8,8 @@ import {
   UploadedFiles,
   Version,
   Put,
+  HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { JwtRole } from '../auth/jwt/jwt-role';
@@ -62,6 +64,25 @@ export class ProductsController {
   })
   async findAll(): Promise<ProductResponseDto[]> {
     return this.productsService.findAll();
+  }
+
+  /**
+   * Retrieves a product by its ID.
+   * @param id - The ID of the product.
+   * @returns A ProductResponseDto representing the product.
+   */
+  @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
+  @Version('1.0')
+  @Get(':id')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Retrieved a product by ID.',
+    type: ProductResponseDto,
+  })
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ProductResponseDto> {
+    return this.productsService.findOne(id);
   }
 
   /**

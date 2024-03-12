@@ -6,6 +6,7 @@ import { CategoryMapper } from '../categories/category.mapper';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { BrandsMapper } from '../brands/brands.mapper';
+import { ImageMapper } from '../images/image.mapper';
 
 @Injectable()
 export class ProductMapper {
@@ -13,10 +14,12 @@ export class ProductMapper {
    * Creates an instance of ProductMapper.
    * @param categoryMapper - An instance of CategoryMapper.
    * @param brandsMapper - An instance of BrandsMapper.
+   * @param imageMapper - An instance of ImageMapper
    */
   constructor(
     private readonly categoryMapper: CategoryMapper,
     private readonly brandsMapper: BrandsMapper,
+    private readonly imageMapper: ImageMapper
   ) {}
 
   /**
@@ -36,6 +39,12 @@ export class ProductMapper {
     }
     if (product.brand) {
       productDto.brand = this.brandsMapper.mapBrandToResponseDto(product.brand);
+    }
+    if (product.mainImage) {
+      productDto.mainImage = this.imageMapper.mapImageToResponseDto(product.mainImage);
+    }
+    if (product.secondaryImage) {
+      productDto.secondaryImage = this.imageMapper.mapImageToResponseDto(product.secondaryImage);
     }
     return productDto;
   }
