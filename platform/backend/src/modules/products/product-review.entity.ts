@@ -34,18 +34,6 @@ export class ProductReviewEntity extends AbstractEntity {
   readonly isHidden: boolean;
 
   /**
-   * ID of the product to which the review belongs.
-   */
-  @Column({ name: 'id_product' })
-  readonly idProduct: string;
-
-  /**
-   * ID of the user associated with the product review.
-   */
-  @Column({ name: 'is_user' })
-  readonly idUser: string;
-
-  /**
    * Product associated with this review.
    */
   @ManyToOne(() => ProductEntity, (product) => product.reviews, {
@@ -57,7 +45,9 @@ export class ProductReviewEntity extends AbstractEntity {
   /**
    * User who wrote the review.
    */
-  @ManyToOne(() => UserEntity, (user) => user.productReviews)
+  @ManyToOne(() => UserEntity, (user) => user.productReviews, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
