@@ -71,7 +71,8 @@ export class BrandService extends SupportService {
       this.throwBadRequestException('LIMIT_NUMBER_NOT_VALID');
     }
     const options = { page, limit };
-    let queryBuilder = this.brandRepository.createQueryBuilder('brand');
+    let queryBuilder = this.brandRepository.createQueryBuilder('brand')
+        .leftJoinAndSelect('brand.image', 'image')
     if (term) {
       queryBuilder = queryBuilder.where('LOWER(brand.name) LIKE LOWER(:term)', {
         term: `%${term}%`,
@@ -128,12 +129,14 @@ export class BrandService extends SupportService {
     id: string,
     updateBrandDto: UpdateBrandDTO,
   ): Promise<BrandResponseDTO> {
-    await this.checkBrandUniqueness(updateBrandDto.name, updateBrandDto.slug);
+    await this.checkBrandUniqueness(updateBrandDto.name, updateBrandDto.slug, id);
     const brandToUpdate = await this.findBrand(id);
-    updateBrandDto.image = await this.fileSavingMixin.saveImageFile(
-      updateBrandDto.imageFile,
-      brandToUpdate.image,
-    );
+    if(updateBrandDto.imageFile) {
+      updateBrandDto.image = await this.fileSavingMixin.saveImageFile(
+        updateBrandDto.imageFile,
+        brandToUpdate.image,
+      );
+    }
     const updatedBrandEntity = this.brandMapper.mapUpdateBrandDtoToEntity(
       updateBrandDto,
       brandToUpdate,
@@ -160,16 +163,23 @@ export class BrandService extends SupportService {
     return this.findEntityById(id, this.brandRepository, 'BRAND_NOT_FOUND', ["image"]);
   }
 
+  /**
+   * Checks the uniqueness of a brand by name and slug, optionally excluding a brand with a specific ID.
+   * @param {string} name - The name of the brand.
+   * @param {string} slug - The slug of the brand.
+   * @param {string} [id] - The ID of the brand to exclude from the uniqueness check (optional, defaults to undefined).
+   * @returns {Promise<void>} A Promise that resolves if the brand is unique, otherwise throws a conflict exception.
+   */
   private async checkBrandUniqueness(
     name: string,
     slug: string,
+    id?: string
   ): Promise<void> {
-    const existingBrand = await this.brandRepository
-      .createQueryBuilder('brand')
-      .where('brand.name = :name OR brand.slug = :slug', { name, slug })
-      .getOne();
-
-    if (existingBrand) {
+    let queryBuilder = this.brandRepository.createQueryBuilder('brand')
+        .where('brand.name = :name', { name })
+        .orWhere('brand.slug = :slug', { slug })
+    const existingBrand = await queryBuilder.getOne();
+    if (existingBrand && (id == undefined || existingBrand.id != id)) {
       this.throwConflictException('BRAND_ALREADY_EXISTS');
     }
   }

@@ -150,7 +150,7 @@ export class BrandController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateBrandDto: UpdateBrandDTO,
   ): Promise<BrandResponseDTO> {
-    const brand = { ...updateBrandDto, imageFile: files.imageFile[0] };
+    const brand = { ...updateBrandDto, imageFile: files.imageFile ? files.imageFile[0] : undefined };
     return this.brandService.update(id, brand);
   }
 

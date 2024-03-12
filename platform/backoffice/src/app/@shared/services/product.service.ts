@@ -35,6 +35,7 @@ export class ProductService {
       })
     );
   }
+
   update(id: string, payload: IProductCreate) {
     return this.http.put(`${this.END_POINT}${id}`, payload).pipe(
       tap((banner: IBaseResponse) => {
@@ -42,6 +43,7 @@ export class ProductService {
       })
     );
   }
+  
   delete(id: string) {
     return this.http.delete(`${this.END_POINT}${id}`).pipe(
       tap((banner: IBaseResponse) => {
