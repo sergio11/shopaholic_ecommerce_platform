@@ -1,10 +1,10 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsString, Min, ArrayMinSize } from 'class-validator';
+import { IsInt, IsNotEmpty, IsString, Min, ArrayMinSize, IsEmail } from 'class-validator';
 
 /**
  * Data transfer object for a cart item.
  */
-class CartItemDto {
+export class CartItemDto {
   /**
    * Product name.
    */
@@ -55,6 +55,75 @@ class CartItemDto {
 }
 
 /**
+ * Data transfer object for shipping address information.
+ */
+export class ShippingAddressDto {
+  /**
+   * Recipient's email address.
+   */
+  @IsEmail()
+  @IsNotEmpty()
+  @ApiProperty({ description: 'Email address', example: 'customer@example.com' })
+  email: string;
+
+  /**
+   * Recipient's full name.
+   */
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ description: 'Full name', example: 'David Lopez Fidalgo' })
+  fullName: string;
+
+  /**
+   * Recipient's phone number.
+   */
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ description: 'Phone number', example: '+34678564567' })
+  phoneNumber: string;
+
+  /**
+   * Address line 1.
+   */
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ description: 'Address line 1', example: '123 Main St' })
+  line1: string;
+
+  /**
+   * City.
+   */
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ description: 'City', example: 'Cityville' })
+  city: string;
+
+  /**
+   * State or Province.
+   */
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ description: 'State or Province', example: 'ST' })
+  state: string;
+
+  /**
+   * Postal Code.
+   */
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ description: 'Postal Code', example: '12345' })
+  postalCode: string;
+
+  /**
+   * Country.
+   */
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ description: 'Country', example: 'US' })
+  country: string;
+}
+
+/**
  * Data transfer object for creating a payment.
  */
 export class CreatePaymentDto {
@@ -67,15 +136,17 @@ export class CreatePaymentDto {
   cartItems: CartItemDto[];
 
   /**
-   * Shipping Address Id
+   * Shipping Address.
    */
-  @ApiHideProperty()
-  shippingAddressId: string;
+  @ApiProperty({ type: ShippingAddressDto })
+  shippingAddress: ShippingAddressDto;
 
   /**
    * User ID.
    */
-  @ApiHideProperty()
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ description: 'User ID', example: '123456' })
   userId: string;
 }
 
