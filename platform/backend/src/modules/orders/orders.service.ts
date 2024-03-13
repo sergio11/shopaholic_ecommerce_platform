@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { OrderEntity } from './order.entity';
 import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
@@ -38,12 +38,14 @@ export class OrdersService extends SupportService {
   }
 
   /**
-   * Retrieve orders for any client with pagination.
-   * @param {number} page - The page number for pagination (default is 1).
-   * @param {number} limit - The number of items per page (default is 10).
-   * @returns {Promise<Pagination<OrderResponseDto>>} Paginated list of orders.
+   * Searches and paginates orders based on a search term.
+   * @param term The search term to match against user's name, user's last name, or product name.
+   * @param page The page number for pagination (default: 1).
+   * @param limit The maximum number of items per page (default: 10).
+   * @returns A Promise resolving to a Pagination object containing the paginated orders.
    */
-  async findOrdersForAnyClientWithPagination(
+  async searchAndPaginate(
+    term: string,
     page: number = 1,
     limit: number = 10,
   ): Promise<Pagination<OrderResponseDto>> {
@@ -55,14 +57,27 @@ export class OrdersService extends SupportService {
       this.throwBadRequestException('LIMIT_NUMBER_NOT_VALID');
     }
 
+    const options = { page, limit };
     const queryBuilder = this.ordersRepository
       .createQueryBuilder('order')
       .leftJoinAndSelect('order.user', 'client')
       .orderBy('order.createdAt', 'DESC');
 
-    const paginatedOrders = await paginate(queryBuilder, { page, limit });
-    const items = this.mapper.mapOrdersToResponseDtos(paginatedOrders.items);
+    if (term) {
+      queryBuilder.andWhere(
+        new Brackets(qb => {
+          qb.where('LOWER(client.name) LIKE LOWER(:term)', {
+            term: `%${term}%`,
+          }).orWhere('LOWER(client.lastname) LIKE LOWER(:term)', {
+            term: `%${term}%`,
+          })
+        }),
+      );
+    }
 
+    const paginatedOrders = await paginate(queryBuilder, options);
+    const items = this.mapper.mapOrdersToResponseDtos(paginatedOrders.items);
+    
     return {
       ...paginatedOrders,
       items,

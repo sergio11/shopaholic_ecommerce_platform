@@ -12,40 +12,55 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 export class OrdersController {
   constructor(private ordersService: OrdersService) {}
 
-   /**
-   * Retrieve orders for any client with pagination.
-   * @param {number} page - The page number for pagination (default is 1).
-   * @param {number} limit - The number of items per page (default is 10).
-   * @returns {Promise<Pagination<OrderResponseDto>>} Paginated list of orders.
+
+  /**
+   * Endpoint to search for orders based on a search term and paginate the results.
+   * Available for CLIENT and ADMIN roles.
+   * @version 1.0
+   * @summary Search for orders based on a search term and paginate the results.
+   * @param term The search term for filtering orders (optional).
+   * @param page The page number for pagination (optional, default: 1).
+   * @param limit The number of items per page (optional, default: 10, range: 1-100).
+   * @returns Filtered and paginated orders.
    */
-   @Auth(JwtRole.ADMIN)
+   @Auth(JwtRole.CLIENT, JwtRole.ADMIN)
    @Version('1.0')
-   @Get('all')
-   @ApiOperation({ summary: 'Retrieve orders for any client with pagination' })
+   @Get('search')
+   @ApiQuery({
+     name: 'term',
+     required: false,
+     description: 'Search term for filtering orders',
+   })
    @ApiQuery({
      name: 'page',
      required: false,
-     description: 'Page number (default is 1)',
+     description: 'Page number (1 .. )',
      example: 1,
      type: Number,
    })
    @ApiQuery({
      name: 'limit',
      required: false,
-     description: 'Items per page (default is 10)',
+     description: 'Items per page (1 - 100)',
      example: 10,
      type: Number,
    })
+   @ApiOperation({
+     summary:
+       'Search for orders based on a search term and paginate the results',
+   })
    @ApiResponse({
      status: 200,
-     description: 'Paginated list of orders',
-     type: Pagination<OrderResponseDto>,
+     description: 'Filtered and paginated orders',
+     type: OrderResponseDto,
+     isArray: true,
    })
-   async findOrdersForAnyClientWithPagination(
+   async searchAndPaginate(
+     @Query('term') term: string,
      @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
      @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
    ): Promise<Pagination<OrderResponseDto>> {
-     return this.ordersService.findOrdersForAnyClientWithPagination(page, limit);
+     return this.ordersService.searchAndPaginate(term, page, limit);
    }
 
   /**
@@ -74,7 +89,7 @@ export class OrdersController {
    * @param {string} id - ID of the order to cancel.
    * @returns {Promise<string>} Message confirming the cancellation.
    */
-  @Auth(JwtRole.CLIENT)
+  @Auth(JwtRole.CLIENT, JwtRole.ADMIN)
   @Delete(':id/cancel')
   @ApiOperation({ summary: 'Cancel an order by ID' })
   @ApiParam({ name: 'id', description: 'ID of the order to cancel' })
