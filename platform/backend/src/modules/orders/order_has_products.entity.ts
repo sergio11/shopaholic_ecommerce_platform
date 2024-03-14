@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { OrderEntity } from 'src/modules/orders/order.entity';
 import { ProductEntity } from 'src/modules/products/product.entity';
 import { AbstractEntity } from 'src/core/abstract.entity';
@@ -8,19 +8,6 @@ import { AbstractEntity } from 'src/core/abstract.entity';
  */
 @Entity({ name: 'order_has_products' })
 export class OrderHasProductsEntity extends AbstractEntity {
-  /**
-   * ID of the order associated with the relationship.
-   * @type {string}
-   */
-  @PrimaryColumn({ name: 'id_order' })
-  readonly idOrder: string;
-
-  /**
-   * ID of the product associated with the relationship.
-   * @type {string}
-   */
-  @PrimaryColumn({ name: 'id_product' })
-  readonly idProduct: string;
 
   /**
    * Quantity of the product in the order.
