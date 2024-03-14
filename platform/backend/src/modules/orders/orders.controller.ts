@@ -1,4 +1,4 @@
-import { Delete, Param, Get, Version, DefaultValuePipe, ParseIntPipe, Query } from '@nestjs/common';
+import { Delete, Param, Get, Version, DefaultValuePipe, ParseIntPipe, Query, Post, HttpStatus, Body } from '@nestjs/common';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { OrdersService } from './orders.service';
 import { ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
@@ -7,6 +7,7 @@ import { Auth } from '../auth/decorator/auth.decorator';
 import { ApiController } from 'src/core/decorator/default-api.decorator';
 import { AuthUserId } from '../auth/decorator/auth-user-id.decorator';
 import { Pagination } from 'nestjs-typeorm-paginate';
+import { CreateOrderDto } from './dto/create-order.dto';
 
 @ApiController('orders')
 export class OrdersController {
@@ -90,6 +91,7 @@ export class OrdersController {
    * @returns {Promise<string>} Message confirming the cancellation.
    */
   @Auth(JwtRole.CLIENT, JwtRole.ADMIN)
+  @Version('1.0')
   @Delete(':id/cancel')
   @ApiOperation({ summary: 'Cancel an order by ID' })
   @ApiParam({ name: 'id', description: 'ID of the order to cancel' })
@@ -110,6 +112,7 @@ export class OrdersController {
    * @returns {Promise<string>} Message confirming the deletion.
    */
   @Auth(JwtRole.ADMIN)
+  @Version('1.0')
   @Delete(':id/delete')
   @ApiOperation({ summary: 'Delete an order by ID' })
   @ApiParam({ name: 'id', description: 'ID of the order to delete' })
@@ -119,5 +122,26 @@ export class OrdersController {
   })
   async deleteOrder(@Param('id') id: string): Promise<string> {
     return await this.ordersService.deleteOrder(id);
+  }
+
+  /**
+   * Creates a new order.
+   * @param createOrderDto The DTO containing information to create the order.
+   * @returns A promise resolving to an OrderResponseDto representing the created order.
+   */
+  @Auth(JwtRole.CLIENT, JwtRole.ADMIN)
+  @Version('1.0')
+  @Post()
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Order created successfully.',
+    type: OrderResponseDto,
+  })
+  async createOrder(
+    @AuthUserId() userId: string,
+    @Body() createOrderDto: CreateOrderDto,
+  ): Promise<OrderResponseDto> {
+    createOrderDto.idClient = userId;
+    return await this.ordersService.createOrder(createOrderDto);
   }
 }

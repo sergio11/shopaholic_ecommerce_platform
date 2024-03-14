@@ -8,13 +8,13 @@ import {
   Min,
   IsInt,
 } from 'class-validator';
-import { Type } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
+import { Exclude, Type } from 'class-transformer';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 
 /**
  * Input structure for individual products in the order.
  */
-class ProductInput {
+class OrderProductInputDTO {
   /**
    * ID of the product.
    */
@@ -46,12 +46,8 @@ export class CreateOrderDto {
   /**
    * ID of the client placing the order.
    */
-  @IsNotEmpty()
-  @IsUUID()
-  @ApiProperty({
-    description: 'ID of the client placing the order',
-    example: 'c5e1e99a-7efc-4a63-83da-5ef5e6cb6d16',
-  })
+  @ApiHideProperty()
+  @Exclude()
   idClient: string;
 
   /**
@@ -73,10 +69,10 @@ export class CreateOrderDto {
   @ArrayNotEmpty()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
-  @Type(() => ProductInput)
+  @Type(() => OrderProductInputDTO)
   @ApiProperty({
     description: 'Array of products included in the order',
-    type: [ProductInput],
+    type: [OrderProductInputDTO],
   })
-  products: ProductInput[];
+  products: OrderProductInputDTO[];
 }

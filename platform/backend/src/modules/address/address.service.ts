@@ -47,7 +47,7 @@ export class AddressService extends SupportService {
       where: { name, neighborhood, city },
     });
     if (existingAddress) {
-      this.throwConflictException('ALREADY_ALREADY_CREATED');
+      this.throwConflictException('ADDRESS_ALREADY_CREATED');
     }
     const userFound = await this.findUser(userId);
     const newAddress = this.mapper.mapCreateAddressDtoToEntity(address);

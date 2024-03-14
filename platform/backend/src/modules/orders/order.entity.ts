@@ -10,17 +10,6 @@ import { OrderStatus } from './order-status.enum';
  */
 @Entity({ name: 'orders' })
 export class OrderEntity extends AbstractEntity {
-  /**
-   * ID of the client placing the order.
-   */
-  @Column({ name: 'id_client' })
-  idClient: string;
-
-  /**
-   * ID of the delivery address for the order.
-   */
-  @Column({ name: 'id_address' })
-  idAddress: string;
 
   /**
    * Status of the order.
@@ -45,7 +34,7 @@ export class OrderEntity extends AbstractEntity {
   /**
    * List of products included in the order.
    */
-  @OneToMany(() => OrderHasProductsEntity, (ohp) => ohp.order)
+  @OneToMany(() => OrderHasProductsEntity, (ohp) => ohp.order,  { cascade: true })
   @JoinColumn({ referencedColumnName: 'id_order' })
   orderHasProducts: OrderHasProductsEntity[];
 }
