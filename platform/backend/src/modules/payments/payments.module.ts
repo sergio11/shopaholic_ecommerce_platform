@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { PaymentsController } from './payments.controller';
 import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrderEntity } from '../orders/order.entity';
@@ -24,7 +23,6 @@ import { UserEntity } from '../users/user.entity';
   ],
   exports: [
     PaymentProcessorService
-  ],
-  controllers: [PaymentsController]
+  ]
 })
 export class PaymentsModule {}
