@@ -97,7 +97,6 @@ export class OrdersService extends SupportService {
    * @returns {Promise<OrderResponseDto[]>} - The array of order response DTOs.
    */
   async findByClient(idClient: string): Promise<OrderResponseDto[]> {
-    console.log("idClient", idClient);
     const orders = await this.ordersRepository.createQueryBuilder('order')
       .leftJoinAndSelect('order.address', 'address')
       .leftJoinAndSelect('order.orderHasProducts', 'orderHasProducts')
@@ -123,26 +122,28 @@ export class OrdersService extends SupportService {
       .leftJoinAndSelect('orderHasProducts.product', 'product')
       .where('order.id = :orderId', { orderId })
       .getOne();
-    console.log("order", order);
     const isAdmin = user.roles.some(role => role.name === "ADMIN");
     if (!isAdmin && order.user.id !== userId) {
-      throw this.throwForbiddenException('OPERATION_NOT_ALLOWED');
+      throw this.throwForbiddenException('INVALID_CREDENTIALS');
     }
     return this.mapper.mapOrderToResponseDto(order);
   }
 
   /**
-   * Cancel an order by ID.
-   * @param {string} id - ID of the order to cancel.
-   * @returns {Promise<void>}
-   * @throws {NotFoundException} If the order is not found.
-   * @throws {ForbiddenException} If the user is not the owner of the order.
+   * Cancels an order with the specified ID, provided the user has the necessary permissions.
+   * @param {string} id - The ID of the order to be cancelled.
+   * @param {string} idUser - The ID of the user requesting the cancellation.
+   * @returns {Promise<string>} - A string indicating the result of the cancellation operation.
+   * @throws {ForbiddenException} - If the user attempting to cancel the order is not the owner.
    */
   async cancelOrder(id: string, idUser: string): Promise<string> {
-    const order = await this.findOrder(id);
+    const order = await this.findOrder(id, ["user"]);
     // Check if the authenticated user is the owner of the order
     if (order.user.id !== idUser) {
       this.throwForbiddenException('INVALID_CREDENTIALS');
+    }
+    if (order.status !== OrderStatus.PENDING) { 
+      this.throwForbiddenException('INVALID_ORDER_STATUS');
     }
     order.status = OrderStatus.CANCELLED;
     await this.ordersRepository.save(order);
@@ -150,13 +151,21 @@ export class OrdersService extends SupportService {
   }
 
   /**
-   * Delete an order by ID.
-   * @param {string} id - ID of the order to delete.
-   * @returns {Promise<void>}
-   * @throws {NotFoundException} If the order is not found.
+   * Deletes an order with the specified ID, provided the user has the necessary permissions.
+   * @param {string} id - The ID of the order to be deleted.
+   * @param {string} idUser - The ID of the user requesting the deletion.
+   * @returns {Promise<string>} - A string indicating the result of the deletion operation.
+   * @throws {ForbiddenException} - If the user attempting to delete the order is not the owner.
    */
-  async deleteOrder(id: string): Promise<string> {
-    const order = await this.findOrder(id);
+  async deleteOrder(id: string, idUser: string): Promise<string> {
+    const order = await this.findOrder(id, ["user"]);
+    // Check if the authenticated user is the owner of the order
+    if (order.user.id !== idUser) {
+      this.throwForbiddenException('INVALID_CREDENTIALS');
+    }
+    if (order.status === OrderStatus.PENDING) { 
+      this.throwForbiddenException('INVALID_ORDER_STATUS');
+    }
     await this.ordersRepository.remove(order);
     return this.resolveString('ORDER_DELETED_SUCCESSFULLY');
   }

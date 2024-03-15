@@ -141,8 +141,11 @@ export class OrdersController {
     status: 200,
     description: 'Order deleted successfully',
   })
-  async deleteOrder(@Param('id') id: string): Promise<string> {
-    return await this.ordersService.deleteOrder(id);
+  async deleteOrder(
+    @Param('id') id: string,
+    @AuthUserId() userId: string,
+  ): Promise<string> {
+    return await this.ordersService.deleteOrder(id, userId);
   }
 
   /**
