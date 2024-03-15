@@ -148,5 +148,13 @@ export class CreatePaymentDto {
   @IsNotEmpty()
   @ApiProperty({ description: 'User ID', example: '123456' })
   userId: string;
+
+  /**
+   * User Language.
+   */
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ description: 'Language', example: 'es-ES' })
+  language: string;
 }
 

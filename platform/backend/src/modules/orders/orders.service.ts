@@ -13,6 +13,8 @@ import { UserEntity } from '../users/user.entity';
 import { AddressEntity } from '../address/address.entity';
 import { ProductEntity } from '../products/product.entity';
 import { OrderHasProductsEntity } from './order_has_products.entity';
+import { CartItemDto, CreatePaymentDto, ShippingAddressDto } from '../payments/dto/create-payment.dto';
+import { PaymentProcessorService } from '../payments/payment-processor.service';
 
 @Injectable()
 export class OrdersService extends SupportService {
@@ -28,6 +30,7 @@ export class OrdersService extends SupportService {
     @InjectRepository(ProductEntity)
     private readonly productRepository: Repository<ProductEntity>,
     private readonly mapper: OrderMapper,
+    private readonly paymentProcessorService: PaymentProcessorService,
     i18n: I18nService,
   ) {
     super(i18n);
@@ -188,11 +191,37 @@ export class OrdersService extends SupportService {
     newOrder.address = clientAddress;
     newOrder.orderHasProducts = await Promise.all(createOrderDto.products.map(async product =>  {
       const orderHasProduct = new OrderHasProductsEntity();
-      orderHasProduct.product = await this.findProduct(product.id);
+      orderHasProduct.product = await this.findProduct(product.id, ["mainImage"]);
       orderHasProduct.quantity = product.quantity;
       return orderHasProduct;
     }));
     const savedOrder = await this.ordersRepository.save(newOrder);
+    const paymentDto = new CreatePaymentDto();
+    // Map client and address details
+    paymentDto.userId = client.id;
+    paymentDto.language = client.language;
+    const shippingAddressDto = new ShippingAddressDto();
+    shippingAddressDto.email = client.email;
+    shippingAddressDto.fullName = `${client.name} ${client.lastname}`;
+    shippingAddressDto.phoneNumber = client.phone;
+    shippingAddressDto.line1 = `${clientAddress.name} ${clientAddress.neighborhood}`;
+    shippingAddressDto.country = clientAddress.country;
+    shippingAddressDto.city = clientAddress.city;
+    shippingAddressDto.state = clientAddress.state;
+    shippingAddressDto.postalCode = clientAddress.postalCode;
+    paymentDto.shippingAddress = shippingAddressDto;
+    paymentDto.cartItems = newOrder.orderHasProducts.map(lineOrder => {
+      const item = new CartItemDto();
+      item.id = lineOrder.id;
+      item.name = lineOrder.product.name;
+      item.desc = lineOrder.product.description;
+      item.price = lineOrder.product.price;
+      item.image = lineOrder.product.mainImage.url;
+      item.cartQuantity = lineOrder.quantity;
+      return item;
+    });
+    const paymentResponse = await this.paymentProcessorService.createPayment(paymentDto);
+    console.log("paymentResponse",  paymentResponse);
     return this.mapper.mapOrderToResponseDto(savedOrder);
   }
 
@@ -231,7 +260,7 @@ export class OrdersService extends SupportService {
    * @returns A promise resolving to a ProductEntity object if the product is found.
    * @throws Error if the product is not found in the database.
    */
-  private async findProduct(id: string): Promise<ProductEntity> {
-    return this.findEntityById(id, this.productRepository, 'PRODUCT_NOT_FOUND');
+  private async findProduct(id: string, relations?: string[]): Promise<ProductEntity> {
+    return this.findEntityById(id, this.productRepository, 'PRODUCT_NOT_FOUND', relations);
   }
 }
