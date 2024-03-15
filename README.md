@@ -1,8 +1,10 @@
-# Shopaholic Ecommerce Platform
+# 🛍️ Shopaholic Ecommerce Platform 🛒
 
-Welcome to Shopaholic, your ultimate destination for fashion ecommerce. This state-of-the-art platform, powered by NestJS (Typescript), brings you a curated selection of clothing items. With robust features like intuitive product search, secure payment processing through Stripe and MercadoPago, and a collaborative filtering recommendation system, shopping here is a breeze.
+Welcome to Shopaholic! 🎉 Your ultimate destination for fashion ecommerce. This state-of-the-art platform, powered by NestJS (Typescript) 🚀, brings you a curated selection of clothing items. With robust features like intuitive product search 🔍, secure payment processing through Stripe and MercadoPago 💳💰, and a collaborative filtering recommendation system 🤝, shopping here is a breeze.
 
-Not only does Shopaholic cater to customers, but it also empowers administrators with an Angular-based backoffice. Manage products, orders, and users effortlessly. The deployment is Dockerized for scalability, while a HaProxy load balancer ensures smooth traffic distribution. Explore Shopaholic now for a modern, seamless, and delightful shopping experience.
+Not only does Shopaholic cater to customers, but it also empowers administrators with an Angular-based backoffice 🖥️. Manage products, orders, and users effortlessly. The deployment is Dockerized for scalability 🐳, while a HaProxy load balancer ensures smooth traffic distribution 🔄.
+
+Explore Shopaholic now for a modern, seamless, and delightful shopping experience! 😊👗👠
 
 
 <p align="center">
@@ -17,6 +19,9 @@ Not only does Shopaholic cater to customers, but it also empowers administrators
   <img src="https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-badge&logo=redis&logoColor=white" />
   <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=white" />
   <img src="https://img.shields.io/badge/ts--node-3178C6?style=for-the-badge&logo=ts-node&logoColor=white" />
+  <img src="https://img.shields.io/badge/prettier-1A2C34?style=for-the-badge&logo=prettier&logoColor=F7BA3E" />
+  <img src="https://img.shields.io/badge/eslint-3A33D1?style=for-the-badge&logo=eslint&logoColor=white" />
+  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white" />
 </p>
 
 ## Features
