@@ -5,7 +5,19 @@ Welcome to Shopaholic, your ultimate destination for fashion ecommerce. This sta
 Not only does Shopaholic cater to customers, but it also empowers administrators with an Angular-based backoffice. Manage products, orders, and users effortlessly. The deployment is Dockerized for scalability, while a HaProxy load balancer ensures smooth traffic distribution. Explore Shopaholic now for a modern, seamless, and delightful shopping experience.
 
 
-Note: This README provides a concise snapshot of the project's essence, offering a glimpse into its offerings, technologies, deployment, and usage. It is designed to efficiently communicate the project's scope and value to users.
+<p align="center">
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Visual_Studio_Code-0078D4?style=for-the-badge&logo=visual%20studio%20code&logoColor=white" />
+  <img src="https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" />
+  <img src="https://img.shields.io/badge/Stripe-626CD9?style=for-the-badge&logo=Stripe&logoColor=white" />
+  <img src="https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white" />
+  <img src="https://img.shields.io/badge/Node%20js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
+  <img src="https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white" />
+  <img src="https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white" />
+  <img src="https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-badge&logo=redis&logoColor=white" />
+  <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=white" />
+  <img src="https://img.shields.io/badge/ts--node-3178C6?style=for-the-badge&logo=ts-node&logoColor=white" />
+</p>
 
 ## Features
 
