@@ -27,14 +27,14 @@ Explore Shopaholic now for a modern, seamless, and delightful shopping experienc
 
 ## Features
 
-- Fashion product catalog.
-- Product search and filtering.
-- Shopping cart and checkout process.
-- Integration with Stripe and MercadoPago for payment processing.
-- Collaborative filtering-based recommendation system to suggest products.
-- User account and profile management.
-- Social media integration for sharing products.
-- Administration panel for managing products, orders, and users.
+- 👗 **Fashion Product Catalog**
+- 🔍 **Product Search and Filtering**
+- 🛒 **Shopping Cart and Checkout Process**
+- 💳 **Integration with Stripe and MercadoPago for Secure Payments**
+- 🛍️ **Collaborative Filtering-Based Recommendation System to Suggest Products**
+- 👤 **User Account and Profile Management**
+- 📱 **Social Media Integration for Sharing Products**
+- 🖥️ **Administration Panel for Managing Products, Orders, and Users**
 
 ## Technologies Used
 
