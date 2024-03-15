@@ -10,6 +10,7 @@ import { ProductEntity } from '../products/product.entity';
 import { OrderMapper } from './order.mapper';
 import { AddressModule } from '../address/address.module';
 import { UsersModule } from '../users/users.module';
+import { ProductsModule } from '../products/products.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UsersModule } from '../users/users.module';
     ]),
     AddressModule,
     UsersModule,
+    ProductsModule
   ],
   providers: [OrdersService, OrderMapper],
   controllers: [OrdersController],

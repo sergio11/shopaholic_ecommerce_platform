@@ -97,11 +97,38 @@ export class OrdersService extends SupportService {
    * @returns {Promise<OrderResponseDto[]>} - The array of order response DTOs.
    */
   async findByClient(idClient: string): Promise<OrderResponseDto[]> {
-    const orders = await this.ordersRepository.find({
-      relations: ['user', 'address', 'orderHasProducts.product'],
-      //where: { idClient: idClient },
-    });
+    console.log("idClient", idClient);
+    const orders = await this.ordersRepository.createQueryBuilder('order')
+      .leftJoinAndSelect('order.address', 'address')
+      .leftJoinAndSelect('order.orderHasProducts', 'orderHasProducts')
+      .leftJoinAndSelect('orderHasProducts.product', 'product')
+      .where('order.user.id = :idClient', { idClient })
+      .getMany();
     return this.mapper.mapOrdersToResponseDtos(orders);
+  }
+
+  /**
+   * Retrieves an order by its ID and the associated user ID.
+   * 
+   * @param {string} orderId - The ID of the order to retrieve.
+   * @param {string} userId - The ID of the user associated with the order.
+   * @returns {Promise<OrderResponseDto>} The retrieved order.
+   */
+  async findOne(orderId: string, userId: string): Promise<OrderResponseDto> {
+    const user = await this.findUser(userId, ["roles"]);
+    const order = await this.ordersRepository.createQueryBuilder('order')
+      .leftJoinAndSelect('order.user', 'user')
+      .leftJoinAndSelect('order.address', 'address')
+      .leftJoinAndSelect('order.orderHasProducts', 'orderHasProducts')
+      .leftJoinAndSelect('orderHasProducts.product', 'product')
+      .where('order.id = :orderId', { orderId })
+      .getOne();
+    console.log("order", order);
+    const isAdmin = user.roles.some(role => role.name === "ADMIN");
+    if (!isAdmin && order.user.id !== userId) {
+      throw this.throwForbiddenException('OPERATION_NOT_ALLOWED');
+    }
+    return this.mapper.mapOrderToResponseDto(order);
   }
 
   /**
@@ -165,8 +192,8 @@ export class OrdersService extends SupportService {
    * @param {string} id - The ID of the order.
    * @returns {Promise<OrderEntity>} - The found order entity.
    */
-  private async findOrder(id: string): Promise<OrderEntity> {
-    return this.findEntityById(id, this.ordersRepository, 'ORDER_NOT_FOUND');
+  private async findOrder(id: string, relations?: string[]): Promise<OrderEntity> {
+    return this.findEntityById(id, this.ordersRepository, 'ORDER_NOT_FOUND', relations);
   }
 
   /**
@@ -175,10 +202,8 @@ export class OrdersService extends SupportService {
    * @returns A promise resolving to a UserEntity object if the user is found.
    * @throws Error if the user is not found in the database.
    */
-  private async findUser(id: string): Promise<UserEntity> {
-    return this.findEntityById(id, this.usersRepository, 'USER_NOT_FOUND', [
-      'roles',
-    ]);
+  private async findUser(id: string, relations?: string[]): Promise<UserEntity> {
+    return this.findEntityById(id, this.usersRepository, 'USER_NOT_FOUND', relations);
   }
 
   /**
