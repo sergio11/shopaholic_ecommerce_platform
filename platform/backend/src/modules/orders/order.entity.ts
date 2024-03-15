@@ -37,4 +37,16 @@ export class OrderEntity extends AbstractEntity {
   @OneToMany(() => OrderHasProductsEntity, (ohp) => ohp.order,  { cascade: true })
   @JoinColumn({ referencedColumnName: 'id_order' })
   orderHasProducts: OrderHasProductsEntity[];
+
+  /**
+   * URL of the payment checkout.
+   */
+  @Column({ name: 'payment_checkout_url', type: 'varchar', length: 1000, nullable: true})
+  paymentCheckoutUrl: string;
+
+  /**
+   * Identifier of the payment.
+   */
+  @Column({ name: 'payment_id', type: 'varchar', length: 255, nullable: false })
+  paymentId: string;
 }

@@ -184,8 +184,6 @@ export class OrdersService extends SupportService {
     }
     const client = await this.findUser(createOrderDto.idClient);
     const clientAddress = await this.findAddress(createOrderDto.idAddress);
-    console.log("createOrderDto", createOrderDto);
-    console.log("products", createOrderDto.products);
     const newOrder = new OrderEntity();
     newOrder.user = client;
     newOrder.address = clientAddress;
@@ -195,7 +193,6 @@ export class OrdersService extends SupportService {
       orderHasProduct.quantity = product.quantity;
       return orderHasProduct;
     }));
-    const savedOrder = await this.ordersRepository.save(newOrder);
     const paymentDto = new CreatePaymentDto();
     // Map client and address details
     paymentDto.userId = client.id;
@@ -221,7 +218,9 @@ export class OrdersService extends SupportService {
       return item;
     });
     const paymentResponse = await this.paymentProcessorService.createPayment(paymentDto);
-    console.log("paymentResponse",  paymentResponse);
+    newOrder.paymentCheckoutUrl = paymentResponse.url;
+    newOrder.paymentId = paymentResponse.id;
+    const savedOrder = await this.ordersRepository.save(newOrder);
     return this.mapper.mapOrderToResponseDto(savedOrder);
   }
 
