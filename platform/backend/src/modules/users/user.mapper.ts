@@ -28,7 +28,9 @@ export class UserMapper {
     const userDto = plainToClass(UserResponseDto, user, {
       excludeExtraneousValues: true,
     });
-    userDto.roles = this.roleMapper.mapRolesToResponseDtos(user.roles);
+    if(user.roles) {
+      userDto.roles = this.roleMapper.mapRolesToResponseDtos(user.roles);
+    }
     return userDto;
   }
 

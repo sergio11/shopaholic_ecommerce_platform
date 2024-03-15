@@ -1,4 +1,4 @@
-import { Delete, Param, Get, Version, DefaultValuePipe, ParseIntPipe, Query, Post, HttpStatus, Body } from '@nestjs/common';
+import { Delete, Param, Get, Version, DefaultValuePipe, ParseIntPipe, Query, Post, HttpStatus, Body, ParseUUIDPipe } from '@nestjs/common';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { OrdersService } from './orders.service';
 import { ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
@@ -71,9 +71,9 @@ export class OrdersController {
    */
   @Auth(JwtRole.CLIENT, JwtRole.ADMIN)
   @Version('1.0')
-  @Get(':idClient')
+  @Get('clients/:idClient')
   @ApiOperation({ summary: 'Retrieve orders by client ID' })
-  @ApiParam({ name: 'id_client', description: 'ID of the client' })
+  @ApiParam({ name: 'idClient', description: 'ID of the client' })
   @ApiResponse({
     status: 200,
     description: 'List of orders',
@@ -83,6 +83,27 @@ export class OrdersController {
     @Param('idClient') idClient: string,
   ): Promise<OrderResponseDto[]> {
     return this.ordersService.findByClient(idClient);
+  }
+
+  /**
+   * Controller endpoint to retrieve an order by its ID.
+   * Only accessible to users with ADMIN or CLIENT roles.
+   * @param {string} id - The ID of the order to retrieve.
+   * @returns {Promise<OrderResponseDto>} The retrieved order.
+   */
+  @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
+  @Version('1.0')
+  @Get(':id')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Retrieved a order by ID.',
+    type: OrderResponseDto,
+  })
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+    @AuthUserId() userId: string,
+  ): Promise<OrderResponseDto> {
+    return this.ordersService.findOne(id, userId);
   }
 
   /**

@@ -6,12 +6,14 @@ import { OrderHasProductResponseDto } from './dto/order-has-product-response.dto
 import { UserMapper } from '../users/user.mapper';
 import { OrderHasProductsEntity } from './order_has_products.entity';
 import { AddressMapper } from '../address/address.mapper';
+import { ProductMapper } from '../products/product.mapper';
 
 @Injectable()
 export class OrderMapper {
   constructor(
     private readonly userMapper: UserMapper,
     private readonly addressMapper: AddressMapper,
+    private readonly productMapper: ProductMapper
   ) {}
 
   mapOrderToResponseDto(order: OrderEntity): OrderResponseDto {
@@ -50,6 +52,9 @@ export class OrderMapper {
       orderHasProduct,
       { excludeExtraneousValues: true },
     );
+    if(orderHasProduct.product) {
+      orderHasProductDto.product = this.productMapper.mapProductToResponseDto(orderHasProduct.product);
+    }
     return orderHasProductDto;
   }
 
