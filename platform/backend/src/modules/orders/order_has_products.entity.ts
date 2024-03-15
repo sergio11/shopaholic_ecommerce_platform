@@ -20,7 +20,10 @@ export class OrderHasProductsEntity extends AbstractEntity {
    * OrderEntity instance associated with the relationship.
    * @type {OrderEntity}
    */
-  @ManyToOne(() => OrderEntity, (order) => order.id)
+  @ManyToOne(() => OrderEntity, (order) => order.id, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn({ name: 'id_order' })
   order: OrderEntity;
 
