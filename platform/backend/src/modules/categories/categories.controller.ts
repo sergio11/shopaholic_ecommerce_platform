@@ -9,6 +9,7 @@ import {
   Query,
   DefaultValuePipe,
   UploadedFiles,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { JwtRole } from '../auth/jwt/jwt-role';
@@ -156,7 +157,7 @@ export class CategoriesController {
     status: 200,
     description: 'Category successfully deleted',
   })
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', ParseUUIDPipe) id: string) {
     return this.categoriesService.delete(id);
   }
 }
