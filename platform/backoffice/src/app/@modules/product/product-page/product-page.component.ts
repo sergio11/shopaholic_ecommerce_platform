@@ -3,28 +3,30 @@ import { IFBannerFilter } from 'src/app/@shared/interfaces/banner.interface';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProductService } from './../../../@shared/services/product.service';
 import { ProductsQuery } from 'src/app/@shared/stores/products/products.query';
+import { IProductState } from 'src/app/@shared/stores/products/products.store';
+import { createInitialState } from 'src/app/@shared/stores/core/generic-crud-store';
 
 @Component({
   templateUrl: './product-page.component.html',
 })
 export class ProductPageComponent {
+
+  filterLoading = false;
+  state: IProductState = createInitialState();
+
   constructor(
     private productService: ProductService,
     private productQuery: ProductsQuery,
     private nzNotificationService: NzNotificationService
   ) {}
-  products = {
-    data: [],
-    page: 0,
-    take: 0,
-    total: 0,
-  };
+
 
   ngOnInit() {
     this.filterData({ page: 1, take: 12 });
-    this.productQuery.select().subscribe((res: any) => {
-      this.products = res;
-    });
+    this.productQuery.select().subscribe((state: IProductState) => {
+      console.log(state)
+      this.state = state;
+    }); 
   }
 
   //*Crate
@@ -38,20 +40,20 @@ export class ProductPageComponent {
 
   //*Filter
   async filterData(option: IFBannerFilter) {
+    this.filterLoading = true;
     await this.productService.search(option).toPromise();
+    this.filterLoading = false;
   }
 
   onChangeSearch(e: any) {
     this.filterData({
-      page: this.products.page,
-      take: this.products.take,
-      searchTerm: e.target.value,
+      page: this.state.meta.currentPage,
+      take: 10,
+      searchTerm: e?.target?.value,
     });
   }
-  onChangePage(e: any) {
-    this.filterData({
-      page: e,
-      take: this.products.take,
-    });
+
+  onChangePage(page: any) {
+    this.filterData({ page, take: 10 });
   }
 }

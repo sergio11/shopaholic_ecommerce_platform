@@ -2,7 +2,7 @@
   <nz-card-meta
     nzTitle="{{ data.name }}"
     [nzAvatar]="avatarTemplate"
-    nzDescription="{{ data.mrp }}.TK"
+    nzDescription="{{ data.description }}"
   >
   </nz-card-meta>
 </nz-card>
@@ -11,8 +11,8 @@
 <ng-template #coverTemplate>
   <img
     style="height: 165px; width: 100%; object-fit: cover"
-    alt="example"
-    src="{{ data.productImages }}"
+    alt="{{ data.name }}"
+    src="{{ data.mainImage.url }}"
   />
 </ng-template>
 

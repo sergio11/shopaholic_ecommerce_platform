@@ -8,12 +8,14 @@ import { ProductService } from './../../../../@shared/services/product.service';
   templateUrl: './product-item.component.html',
 })
 export class ProductItemComponent implements OnInit {
+
   @Input() data: any = {};
 
   constructor(
     private productService: ProductService,
     private nzNotificationService: NzNotificationService
   ) {}
+  
   ngOnInit(): void {}
 
   //* update
