@@ -10,10 +10,14 @@
 >
   <ng-container *nzDrawerContent>
     <form [formGroup]="productForm">
-      <app-file-upload
-        [(fileSelected)]="mainImageFileSelected"
-      ></app-file-upload>
+      <app-file-upload 
+        [(fileSelected)]="mainImageFileSelected" 
+        [selectImageText]="'Select main image'"></app-file-upload>
 
+      <app-file-upload
+        [(fileSelected)]="secondaryImageFileSelected"
+        [selectImageText]="'Select secondary image'"
+      ></app-file-upload>
       <div nz-row [nzGutter]="16">
         <div nz-col nzSpan="12">
           <label>Name</label>
@@ -44,9 +48,9 @@
             [nzDropdownRender]="renderTemplate"
           >
             <nz-option
-              *ngFor="let o of categoryOptionList"
-              [nzValue]="o?.id"
-              [nzLabel]="o?.name"
+              *ngFor="let category of categoryOptionList"
+              [nzValue]="category.id"
+              [nzLabel]="category.name"
             ></nz-option>
           </nz-select>
         </div>
@@ -61,9 +65,9 @@
             [nzDropdownRender]="renderTemplate"
           >
             <nz-option
-              *ngFor="let o of brandOptionList"
-              [nzValue]="o?.id"
-              [nzLabel]="o?.name"
+              *ngFor="let brand of brandOptionList"
+              [nzValue]="brand.id"
+              [nzLabel]="brand.name"
             ></nz-option>
           </nz-select>
         </div>
@@ -88,7 +92,7 @@
         <div nz-col nzSpan="9">
           <label>Product Code</label>
           <input
-            type="number"
+            type="text"
             formControlName="productCode"
             nz-input
             placeholder="Product Code"

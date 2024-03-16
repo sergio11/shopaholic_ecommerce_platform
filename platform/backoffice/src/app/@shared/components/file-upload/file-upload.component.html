@@ -1,26 +1,30 @@
-<nz-upload
-  [(nzFileList)]="fileList"
-  [nzShowUploadList]="false"
-  [nzAccept]="['image/png', 'image/jpeg']"
-  [nzLimit]="1"
-  nzName="image"
-  nzListType="picture-card"
-  (nzChange)="handleUploadChange($event)"
->
-  <ng-container *ngIf="!hasAnyFileSelected()">
-    <i class="upload-icon" nz-icon [nzType]="'plus'"></i>
-    <div class="ant-upload-text">Upload</div>
-  </ng-container>
-  <img
-    *ngIf="hasAnyFileSelected()"
-    [src]="fileList[0].thumbUrl"
-    [ngStyle]="{ width: '100px', height: '100px', objectFit: 'cover' }"
-  />
-</nz-upload>
+<div class="upload-wrapper">
+  <h3>{{ selectImageText }}</h3>
+  <nz-upload
+    [(nzFileList)]="fileList"
+    [nzShowUploadList]="false"
+    [nzAccept]="['image/png', 'image/jpeg']"
+    [nzLimit]="1"
+    nzName="image"
+    nzListType="picture-card"
+    (nzChange)="handleUploadChange($event)"
+    class="ngFileUpload"
+  >
+    <ng-container *ngIf="!hasAnyFileSelected()">
+      <i class="upload-icon" nz-icon [nzType]="'plus'"></i>
+      <div class="ant-upload-text">Upload</div>
+    </ng-container>
+    <img
+      *ngIf="hasAnyFileSelected()"
+      [src]="fileList[0].thumbUrl"
+      [ngStyle]="{ width: '100px', height: '100px', objectFit: 'cover' }"
+    />
+  </nz-upload>
+</div>
 
 <nz-modal
   [(nzVisible)]="previewVisible"
-  [nzTitle]="'Image Selected'"
+  [nzTitle]="selectImageText"
   [nzContent]="modalContent"
   [nzFooter]="modalFooter"
 >
