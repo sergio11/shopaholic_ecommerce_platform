@@ -66,24 +66,6 @@ export class ProductsController {
     return this.productsService.findAll();
   }
 
-  /**
-   * Retrieves a product by its ID.
-   * @param id - The ID of the product.
-   * @returns A ProductResponseDto representing the product.
-   */
-  @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
-  @Version('1.0')
-  @Get(':id')
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Retrieved a product by ID.',
-    type: ProductResponseDto,
-  })
-  async findOne(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<ProductResponseDto> {
-    return this.productsService.findOne(id);
-  }
 
   /**
    * Search for products based on a search term and paginate the results.
@@ -100,8 +82,9 @@ export class ProductsController {
   })
   @ApiQuery({
     name: 'term',
-    required: true,
+    required: false,
     description: 'Search term for filtering products',
+    type: String
   })
   @ApiQuery({
     name: 'page',
@@ -144,7 +127,7 @@ export class ProductsController {
     isArray: true,
   })
   async findByCategory(
-    @Param('id_category') id_category: string,
+    @Param('id_category', ParseUUIDPipe) id_category: string,
   ): Promise<ProductResponseDto[]> {
     return this.productsService.findByCategory(id_category);
   }
@@ -156,7 +139,7 @@ export class ProductsController {
    */
   @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
   @Version('1.0')
-  @Get('search/:name')
+  @Get('searchByName/:name')
   @ApiResponse({
     status: 200,
     description: 'Retrieved products by name.',
@@ -165,6 +148,25 @@ export class ProductsController {
   })
   async findByName(@Param('name') name: string): Promise<ProductResponseDto[]> {
     return this.productsService.findByName(name);
+  }
+
+  /**
+   * Retrieves a product by its ID.
+   * @param id - The ID of the product.
+   * @returns A ProductResponseDto representing the product.
+   */
+  @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
+  @Version('1.0')
+  @Get(':id')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Retrieved a product by ID.',
+    type: ProductResponseDto,
+  })
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ProductResponseDto> {
+    return this.productsService.findOne(id);
   }
 
   /**
@@ -234,7 +236,7 @@ export class ProductsController {
       mainImageFile?: Express.Multer.File;
       secondaryImageFile?: Express.Multer.File;
     },
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() productData: UpdateProductDto,
   ): Promise<ProductResponseDto> {
     const product = {
@@ -253,7 +255,7 @@ export class ProductsController {
   @Version('1.0')
   @Delete(':id')
   @ApiResponse({ status: 200, description: 'Product deleted successfully.' })
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.delete(id);
   }
 
@@ -268,7 +270,7 @@ export class ProductsController {
   @Post(':id/like')
   @ApiResponse({ status: 200, description: 'Product liked successfully.' })
   async like(
-    @Param('id') idProduct: string,
+    @Param('id', ParseUUIDPipe) idProduct: string,
     @AuthUserId() userId: string,
   ): Promise<string> {
     return await this.productsService.like(idProduct, userId);
@@ -285,12 +287,17 @@ export class ProductsController {
   @Post(':id/dislike')
   @ApiResponse({ status: 200, description: 'Product disliked successfully.' })
   async dislike(
-    @Param('id') idProduct: string,
+    @Param('id', ParseUUIDPipe) idProduct: string,
     @AuthUserId() userId: string,
   ): Promise<string> {
     return await this.productsService.dislike(idProduct, userId);
   }
 
+  /**
+   * Retrieves reviews for a specific product identified by its ID.
+   * @param idProduct The ID of the product to retrieve reviews for.
+   * @returns An array of ProductReviewResponseDto representing the reviews for the specified product.
+   */
   @ApiOperation({ summary: 'Get reviews for a product' })
   @ApiOkResponse({
     status: 200,
@@ -301,7 +308,7 @@ export class ProductsController {
   @Version('1.0')
   @Get(':id/reviews')
   async getProductReviews(
-    @Param('id') idProduct: string,
+    @Param('id', ParseUUIDPipe) idProduct: string,
   ): Promise<ProductReviewResponseDto[]> {
     return this.productReviewService.getProductReviews(idProduct);
   }
@@ -325,7 +332,7 @@ export class ProductsController {
   @Version('1.0')
   @Post(':id/reviews')
   async createReview(
-    @Param('id') idProduct: string,
+    @Param('id', ParseUUIDPipe) idProduct: string,
     @AuthUserId() idAuthUser: string,
     @Body() createReviewDto: CreateProductReviewDto,
   ): Promise<ProductReviewResponseDto> {
@@ -357,7 +364,7 @@ export class ProductsController {
   @Version('1.0')
   @Put(':id/reviews/:reviewId')
   async updateReview(
-    @Param('id') idProduct: string,
+    @Param('id', ParseUUIDPipe) idProduct: string,
     @Param('reviewId') reviewId: string,
     @AuthUserId() idAuthUser: string,
     @Body() updateReviewDto: UpdateProductReviewDto,
@@ -380,7 +387,9 @@ export class ProductsController {
   @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
   @Version('1.0')
   @Delete('reviews/:reviewId')
-  async deleteReview(@Param('reviewId') reviewId: string): Promise<string> {
+  async deleteReview(
+    @Param('reviewId', ParseUUIDPipe) reviewId: string
+    ): Promise<string> {
     return await this.productReviewService.delete(reviewId);
   }
 
@@ -395,7 +404,7 @@ export class ProductsController {
   @Post('reviews/:reviewId/like')
   @ApiResponse({ status: 200, description: 'Review liked successfully.' })
   async likeReview(
-    @Param('reviewId') reviewId: string,
+    @Param('reviewId', ParseUUIDPipe) reviewId: string,
     @AuthUserId() userId: string,
   ): Promise<string> {
     return await this.productReviewService.likeReview(reviewId, userId);
@@ -412,7 +421,7 @@ export class ProductsController {
   @Post('reviews/:reviewId/dislike')
   @ApiResponse({ status: 200, description: 'Review disliked successfully.' })
   async dislikeReview(
-    @Param('reviewId') reviewId: string,
+    @Param('reviewId', ParseUUIDPipe) reviewId: string,
     @AuthUserId() userId: string,
   ): Promise<string> {
     return await this.productReviewService.dislikeReview(reviewId, userId);

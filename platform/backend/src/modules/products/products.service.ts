@@ -102,7 +102,10 @@ export class ProductsService extends SupportService {
     }
 
     const options = { page, limit };
-    let queryBuilder = this.productsRepository.createQueryBuilder('product');
+    let queryBuilder = this.productsRepository
+        .createQueryBuilder('product')
+        .leftJoinAndSelect('product.mainImage', 'image')
+        .orderBy('product.name');
     if (term) {
       queryBuilder = queryBuilder.where(
         'LOWER(product.name) LIKE LOWER(:term)',
