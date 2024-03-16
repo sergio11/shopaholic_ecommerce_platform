@@ -1,22 +1,40 @@
-# Shopaholic Ecommerce Platform
+# 🛍️ Shopaholic Ecommerce Platform 🛒
 
-Welcome to Shopaholic, your ultimate destination for fashion ecommerce. This state-of-the-art platform, powered by NestJS (Typescript), brings you a curated selection of clothing items. With robust features like intuitive product search, secure payment processing through Stripe and MercadoPago, and a collaborative filtering recommendation system, shopping here is a breeze.
+Welcome to Shopaholic! 🎉 Your ultimate destination for fashion ecommerce. This state-of-the-art platform, powered by NestJS (Typescript) 🚀, brings you a curated selection of clothing items. With robust features like intuitive product search 🔍, secure payment processing through Stripe and MercadoPago 💳💰, and a collaborative filtering recommendation system 🤝, shopping here is a breeze.
 
-Not only does Shopaholic cater to customers, but it also empowers administrators with an Angular-based backoffice. Manage products, orders, and users effortlessly. The deployment is Dockerized for scalability, while a HaProxy load balancer ensures smooth traffic distribution. Explore Shopaholic now for a modern, seamless, and delightful shopping experience.
+Not only does Shopaholic cater to customers, but it also empowers administrators with an Angular-based backoffice 🖥️. Manage products, orders, and users effortlessly. The deployment is Dockerized for scalability 🐳, while a HaProxy load balancer ensures smooth traffic distribution 🔄.
+
+Explore Shopaholic now for a modern, seamless, and delightful shopping experience! 😊👗👠
 
 
-Note: This README provides a concise snapshot of the project's essence, offering a glimpse into its offerings, technologies, deployment, and usage. It is designed to efficiently communicate the project's scope and value to users.
+<p align="center">
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Visual_Studio_Code-0078D4?style=for-the-badge&logo=visual%20studio%20code&logoColor=white" />
+  <img src="https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" />
+  <img src="https://img.shields.io/badge/Stripe-626CD9?style=for-the-badge&logo=Stripe&logoColor=white" />
+  <img src="https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white" />
+  <img src="https://img.shields.io/badge/Node%20js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
+  <img src="https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white" />
+  <img src="https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white" />
+  <img src="https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-badge&logo=redis&logoColor=white" />
+  <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=white" />
+  <img src="https://img.shields.io/badge/ts--node-3178C6?style=for-the-badge&logo=ts-node&logoColor=white" />
+  <img src="https://img.shields.io/badge/prettier-1A2C34?style=for-the-badge&logo=prettier&logoColor=F7BA3E" />
+  <img src="https://img.shields.io/badge/eslint-3A33D1?style=for-the-badge&logo=eslint&logoColor=white" />
+  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white" />
+  <img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white" />
+</p>
 
 ## Features
 
-- Fashion product catalog.
-- Product search and filtering.
-- Shopping cart and checkout process.
-- Integration with Stripe and MercadoPago for payment processing.
-- Collaborative filtering-based recommendation system to suggest products.
-- User account and profile management.
-- Social media integration for sharing products.
-- Administration panel for managing products, orders, and users.
+- 👗 **Fashion Product Catalog**
+- 🔍 **Product Search and Filtering**
+- 🛒 **Shopping Cart and Checkout Process**
+- 💳 **Integration with Stripe and MercadoPago for Secure Payments**
+- 🛍️ **Collaborative Filtering-Based Recommendation System to Suggest Products**
+- 👤 **User Account and Profile Management**
+- 📱 **Social Media Integration for Sharing Products**
+- 🖥️ **Administration Panel for Managing Products, Orders, and Users**
 
 ## Technologies Used
 
