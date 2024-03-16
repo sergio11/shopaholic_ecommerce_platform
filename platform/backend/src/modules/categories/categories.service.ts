@@ -152,8 +152,8 @@ export class CategoriesService extends SupportService {
   async delete(id: string): Promise<string> {
     const category = await this.findCategory(id);
     await this.invalidateCache();
-    await this.fileSavingMixin.removeImageFile(category.image);
     await this.categoriesRepository.delete(id);
+    await this.fileSavingMixin.removeImageFile(category.image);
     return this.resolveString('CATEGORY_DELETED_SUCCESSFULLY');
   }
 
