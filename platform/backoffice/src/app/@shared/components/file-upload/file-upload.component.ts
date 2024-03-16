@@ -4,10 +4,12 @@ import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
 @Component({
   selector: 'app-file-upload',
   templateUrl: './file-upload.component.html',
+  styleUrls: ['./file-upload.component.scss'],
 })
 export class FileUploadComponent {
 
   @Input() fileSelected: File | undefined;
+  @Input() selectImageText: string = 'Upload';
   @Output() fileSelectedChange = new EventEmitter<File | undefined>();
 
   previewVisible = false;

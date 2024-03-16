@@ -40,7 +40,7 @@ export class ProductUpdateComponent implements OnInit {
   ngOnInit(): void {
     this.loadMoreCategory();
     this.loadMoreBrands();
-    this.productForm.patchValue({
+    /*this.productForm.patchValue({
       name: this.data?.name,
       description: this.data?.description,
       category: this.data?.category.id,
@@ -48,7 +48,7 @@ export class ProductUpdateComponent implements OnInit {
       price: this.data?.price,
       productCode: this.data?.productCode,
       brand: this.data?.brand?.id
-    });
+    });*/
   }
 
   onSubmitCreate() {

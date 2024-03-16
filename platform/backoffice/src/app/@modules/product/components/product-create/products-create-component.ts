@@ -6,6 +6,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProductService } from '../../../../@shared/services/product.service';
 import { ICreateProduct } from 'src/app/@shared/interfaces/product.interface';
+import { ICategory } from 'src/app/@shared/interfaces/category.interface';
+import { IBrand } from 'src/app/@shared/interfaces/brand.interface';
+
 @Component({
   selector: 'app-products-create',
   templateUrl: './products-create-component.html',
@@ -15,12 +18,13 @@ export class ProductsCreateComponent {
   @Input() isOpen: boolean = false;
   @Output() onClose = new EventEmitter<void>();
 
-  isLoading = false;
-  categoryOptionList: any[] = [];
-  cPage = 1;
-  brandOptionList: any[] = [];
-  bPage = 1;
   mainImageFileSelected: File | undefined;
+  secondaryImageFileSelected: File | undefined;
+  isLoading = false;
+  categoryOptionList: ICategory[] = [];
+  brandOptionList: IBrand[] = [];
+  cPage = 1;
+  bPage = 1;
   productForm: FormGroup;
 
   constructor(
@@ -48,7 +52,9 @@ export class ProductsCreateComponent {
 
   onSubmitCreate() {
     if (!this.mainImageFileSelected) {
-      this.notificationService.error('Image Empty', '');
+      this.notificationService.error('You must select a main product image', '');
+    } else if (!this.secondaryImageFileSelected) {
+      this.notificationService.error('You must select a secondary product image', '');
     } else if (!this.productForm.value.name) {
       this.notificationService.error('Name Empty', '');
     } else {
@@ -60,9 +66,11 @@ export class ProductsCreateComponent {
         price: Number(this.productForm.value.price),
         productCode: this.productForm.value.productCode || '',
         brandId: this.productForm.value.brand || '',
+        mainImage: this.mainImageFileSelected,
+        secondaryImage: this.secondaryImageFileSelected
       };
       this.productService.create(productData).subscribe((res: any) => {
-        this.notificationService.success('Created', '');
+        this.notificationService.success('Product created successfully', '');
         this.onClose.emit();
         this.productForm.reset();
       });
@@ -73,9 +81,9 @@ export class ProductsCreateComponent {
     this.isLoading = true;
     this.categoryService
       .search({ page: this.cPage, take: 10 })
-      .subscribe((res: any) => {
+      .subscribe((data: any) => {
         this.isLoading = false;
-        this.categoryOptionList = res.data;
+        this.categoryOptionList = data.items;
         this.cPage++;
       });
   }
@@ -84,9 +92,9 @@ export class ProductsCreateComponent {
     this.isLoading = true;
     this.brandService
       .filter({ page: this.bPage, take: 10 })
-      .subscribe((res: any) => {
+      .subscribe((data: any) => {
         this.isLoading = false;
-        this.brandOptionList = res.data;
+        this.brandOptionList = data.items;
         this.bPage++;
       });
   }

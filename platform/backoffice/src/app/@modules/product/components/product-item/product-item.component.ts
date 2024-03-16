@@ -28,7 +28,7 @@ export class ProductItemComponent implements OnInit {
   }
   onDelete(id: string) {
     this.productService.delete(id).subscribe((res: any) => {
-      this.nzNotificationService.success('Deleted', '');
+      this.nzNotificationService.success('Product deleted successfully', '');
     });
   }
 }
