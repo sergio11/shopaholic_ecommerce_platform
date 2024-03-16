@@ -1,6 +1,6 @@
 # 🛍️ Shopaholic Ecommerce Platform 🛒
 
-<img width="auto" height="250" align="left" src="./doc/logo.png" />
+<img width="auto" height="250" align="left" src="./doc/images/logo.png" />
 
 Welcome to Shopaholic! 🎉 Your ultimate destination for fashion ecommerce. This state-of-the-art platform, powered by NestJS (Typescript) 🚀, brings you a curated selection of clothing items. With robust features like intuitive product search 🔍, secure payment processing through Stripe and MercadoPago 💳💰, and a collaborative filtering recommendation system 🤝, shopping here is a breeze.
 
@@ -42,14 +42,14 @@ Explore Shopaholic now for a modern, seamless, and delightful shopping experienc
 
 | Technology                  | Description                                                                 | Logo                                                                                   |
 |----------------------------|-----------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
-| NestJS (Typescript)        | Backend framework for building scalable applications.                     | ![NestJS Logo](url_to_logo)                                                           |
-| MariaDB Galera Cluster     | High availability and replication relational database.                    | ![MariaDB Logo](url_to_logo)                                                          |
-| Redis Cluster              | In-memory storage system for caching and session management.              | ![Redis Logo](url_to_logo)                                                           |
-| Stripe                     | Online payment platform for transaction processing.                        | ![Stripe Logo](url_to_logo)                                                          |
-| MercadoPago                | Online payment and collections solution for ecommerce.                    | ![MercadoPago Logo](url_to_logo)                                                     |
-| MinIO Cluster              | High-performance object storage for handling media and assets.            | ![MinIO Logo](url_to_logo)                                                           |
-| Swagger Documentation     | Automatically generated API documentation using Swagger.                  | ![Swagger Logo](url_to_logo)                                                         |
-| HaProxy Load Balancer      | Load balancer for distributing traffic among backend services.             | ![HaProxy Logo](url_to_logo)                                                         |
+| NestJS (Typescript)        | Backend framework for building scalable applications.                     | <img width="auto" height="100"   src="./doc/images/nestjs_logo.png" />                                                        |
+| MariaDB Galera Cluster     | High availability and replication relational database.                    | <img width="auto" height="100"  src="./doc/images/mariadb_logo.png" />                                                          |
+| Redis Cluster              | In-memory storage system for caching and session management.              | <img width="auto" height="100"  src="./doc/images/redis_logo.png" />                                                       |
+| Stripe                     | Online payment platform for transaction processing.                        | <img width="auto" height="100"  src="./doc/images/stripe_logo.png" />                                                       |
+| MercadoPago                | Online payment and collections solution for ecommerce.                    | <img width="auto" height="100"  src="./doc/images/mercadopago_logo.png" />                                                    |
+| MinIO Cluster              | High-performance object storage for handling media and assets.            | <img width="auto" height="100"  src="./doc/images/minio_logo.png" />                                                       |
+| Swagger Documentation     | Automatically generated API documentation using Swagger.                  | <img width="auto" height="100"  src="./doc/images/swagger_logo.png" />                                                         |
+| HaProxy Load Balancer      | Load balancer for distributing traffic among backend services.             | <img width="auto" height="100" src="./doc/images/haproxy_logo.png" />                                                         |
 
 ## Technology Stack and Rationale 🛠️
 
