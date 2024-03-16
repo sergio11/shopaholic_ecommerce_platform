@@ -49,6 +49,35 @@ Explore Shopaholic now for a modern, seamless, and delightful shopping experienc
 | Swagger Documentation     | Automatically generated API documentation using Swagger.                  | ![Swagger Logo](url_to_logo)                                                         |
 | HaProxy Load Balancer      | Load balancer for distributing traffic among backend services.             | ![HaProxy Logo](url_to_logo)                                                         |
 
+## Technology Stack and Rationale 🛠️
+
+### NestJS (Typescript) 🚀
+NestJS was selected as the foundation of Shopaholic's backend due to its versatility, scalability, and robustness. With TypeScript support, NestJS ensures strong typing and enhanced tooling, leading to cleaner and more maintainable code. Its modular architecture facilitates seamless integration with other libraries and frameworks, making it an ideal choice for building sophisticated ecommerce applications like Shopaholic.
+
+### MariaDB Galera Cluster 💿
+MariaDB Galera Cluster was chosen as Shopaholic's relational database management system for its high availability and replication capabilities. The Galera Cluster ensures data consistency and redundancy, crucial for ecommerce platforms where data integrity is paramount.
+
+### Redis Cluster 🔄
+Redis Cluster is employed in Shopaholic for in-memory caching and session management, enhancing performance and scalability by reducing database load and response times.
+
+### Stripe 💳
+Stripe serves as Shopaholic's primary online payment platform, providing robust transaction processing capabilities and support for various payment methods to ensure secure and seamless transactions for customers.
+
+### MercadoPago 💰
+MercadoPago is integrated into Shopaholic to cater to customers preferring alternative payment methods. Its widespread adoption and popularity in Latin America make it an essential component for expanding Shopaholic's customer base.
+
+### MinIO Cluster 📦
+MinIO Cluster serves as Shopaholic's high-performance object storage solution, enabling efficient storage and retrieval of media and assets. Its distributed architecture and compatibility with S3 API make it ideal for handling large volumes of multimedia content.
+
+### Angular 🅰️
+Angular powers Shopaholic's admin backoffice, providing a robust and feature-rich frontend framework for managing products, orders, and users. Angular's component-based architecture and two-way data binding simplify development and maintenance tasks, ensuring a seamless user experience for administrators.
+
+### Swagger Documentation 📖
+Swagger Documentation is utilized in Shopaholic to automatically generate comprehensive API documentation, streamlining development, testing, and collaboration efforts.
+
+### HaProxy Load Balancer 🔄
+HaProxy Load Balancer is employed to distribute traffic evenly among backend services, ensuring high availability, fault tolerance, and scalability for Shopaholic, particularly during peak traffic periods.
+
 ## Installation and Usage
 
 1. Clone this repository.
