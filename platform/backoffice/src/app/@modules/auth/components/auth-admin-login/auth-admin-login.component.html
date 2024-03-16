@@ -1,4 +1,5 @@
 <div class="auth-page">
+  <div class="auth-page-background"></div>
   <div class="auth-page-card">
     <div class="auth-logo">
       <img
@@ -6,7 +7,7 @@
         src="../../../../../assets/logo-icon.png"
         alt=""
       />
-      <h4 nz-typography>Admin Login</h4>
+      <h4 nz-typography>Welcome to Shopaholic Admin Portal!</h4>
     </div>
     <form
       nz-form
@@ -21,7 +22,7 @@
               type="email"
               nz-input
               formControlName="email"
-              placeholder="admin@shopaholic.com"
+              placeholder="Enter your email"
             />
           </nz-input-group>
         </nz-form-control>
@@ -33,7 +34,7 @@
               type="password"
               nz-input
               formControlName="password"
-              placeholder="Password"
+              placeholder="Enter your password"
             />
           </nz-input-group>
         </nz-form-control>
@@ -55,7 +56,7 @@
         Log in
       </button>
       Or
-      <a [routerLink]="[routesConstant.adminRegister]"> register now! </a>
+      <a [routerLink]="[routesConstant.adminRegister]"> sign up now! </a>
     </form>
   </div>
 </div>
