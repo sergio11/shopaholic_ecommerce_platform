@@ -16,4 +16,9 @@ export enum OrderStatus {
    * The order has been canceled.
    */
   CANCELLED = 'CANCELLED',
+
+  /**
+   * The order has been failed.
+   */
+  FAILED = 'FAILED',
 }

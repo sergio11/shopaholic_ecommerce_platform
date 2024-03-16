@@ -168,4 +168,44 @@ export class OrdersController {
     createOrderDto.idClient = userId;
     return await this.ordersService.createOrder(createOrderDto);
   }
+
+  /**
+   * Handles the successful checkout of an order.
+   * @param orderId - The ID of the order.
+   * @param token - The token received as a query parameter.
+   * @returns A string indicating the success of the checkout process.
+   */
+  @Version('1.0')
+  @Get(':id/checkout/success')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Endpoint for handling successful order checkout.',
+    type: String,
+  })
+  async orderCheckoutSuccess(
+    @Param('id', ParseUUIDPipe) orderId: string,
+    @Query('token') token: string,
+  ): Promise<string> {
+    return this.ordersService.checkoutSuccess(orderId, token);
+  }
+
+  /**
+   * Handles the cancellation of an order checkout.
+   * @param orderId - The ID of the order to cancel.
+   * @param token - The session token used to verify the cancellation request.
+   * @returns A string indicating the success of the cancellation process.
+   */
+  @Version('1.0')
+  @Get(':id/checkout/cancelled')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Endpoint for handling cancel order checkout.',
+    type: String,
+  })
+  async orderCheckoutCancelled(
+    @Param('id', ParseUUIDPipe) orderId: string,
+    @Query('token') token: string,
+  ): Promise<string> {
+    return this.ordersService.checkoutCacelled(orderId, token);
+  }
 }
