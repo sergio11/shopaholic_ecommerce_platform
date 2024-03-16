@@ -1,57 +1,12 @@
-import { Store, StoreConfig } from '@datorama/akita';
-
 import { Injectable } from '@angular/core';
+import { EntityState, GenericCrudStore } from '../core/generic-crud-store';
+import { StoreConfig } from '@datorama/akita';
+import { IProduct } from '../../interfaces/product.interface';
 
-export interface IFProductsState {
-  data: [];
-  page: 0;
-  take: 0;
-  total: 0;
-}
+export interface IProductState extends EntityState<IProduct> {}
 
 @Injectable({
   providedIn: 'root',
 })
-@StoreConfig({
-  name: 'products',
-})
-export class ProductsStore extends Store<IFProductsState> {
-  constructor() {
-    super({
-      data: [],
-      page: 0,
-      take: 0,
-      total: 0,
-    });
-  }
-  //* Crete Banner
-  createBanner(cat: any) {
-    const _newDates: any = [cat, ...this.getValue().data];
-    this.update({
-      ...this.getValue(),
-      data: _newDates,
-    });
-  }
-
-  //* Delete Banner
-  deleteBanner(id: string) {
-    const _updatedData: any = this.getValue().data.filter(
-      (x: any) => x.id !== id
-    );
-    this.update({
-      ...this.getValue(),
-      data: _updatedData,
-    });
-  }
-
-  //* Update Banner
-  updateBanner(data: any) {
-    const _data: any = [...this.getValue().data];
-    const fIdx = _data.findIndex((x: any) => x.id === data.id);
-    _data[fIdx] = data;
-    this.update({
-      ...this.getValue(),
-      data: _data,
-    });
-  }
-}
+@StoreConfig({ name: 'products' })
+export class ProductsStore extends GenericCrudStore<IProduct> {}

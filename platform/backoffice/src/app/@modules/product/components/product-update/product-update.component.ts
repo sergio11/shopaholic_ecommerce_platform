@@ -2,10 +2,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { BrandService } from 'src/app/@shared/services/brand.service';
 import { CategoryService } from 'src/app/@shared/services/category.service';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProductService } from './../../../../@shared/services/product.service';
-import { IProductCreate } from 'src/app/@shared/interfaces/product.interface';
+import { ICreateProduct } from 'src/app/@shared/interfaces/product.interface';
 
 @Component({
   selector: 'app-product-update',
@@ -16,25 +16,26 @@ export class ProductUpdateComponent implements OnInit {
   @Input() isOpen: boolean = false;
   @Output() onClose = new EventEmitter<any>();
 
+  productForm: FormGroup;
+  mainImageFileSelected: File | undefined;
+
   constructor(
     private productService: ProductService,
     private fb: FormBuilder,
     private notificationService: NzNotificationService,
     private categoryService: CategoryService,
     private brandService: BrandService
-  ) {}
-
-  mainImageFileSelected: File | undefined;
-  productForm = this.fb.group({
-    name: [''],
-    description: [''],
-    category: [''],
-    stock: [''],
-    price: [''],
-    productCode: [''],
-    brand: ['']
-  });
-
+  ) {
+    this.productForm = this.fb.group({
+      name: [''],
+      description: [''],
+      category: [''],
+      stock: [''],
+      price: [''],
+      productCode: [''],
+      brand: ['']
+    });
+  }
 
   ngOnInit(): void {
     this.loadMoreCategory();
@@ -56,7 +57,7 @@ export class ProductUpdateComponent implements OnInit {
     } else if (!this.productForm.value.name) {
       this.notificationService.error('Name Empty', '');
     } else {
-      const productData: IProductCreate = {
+      const productData: ICreateProduct = {
         name: this.productForm.value.name || '',
         description: this.productForm.value.description || '',
         categoryId: this.productForm.value.category || '',

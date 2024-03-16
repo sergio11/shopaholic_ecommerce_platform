@@ -5,7 +5,7 @@ import { CategoryService } from '../../../../@shared/services/category.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProductService } from '../../../../@shared/services/product.service';
-import { IProductCreate } from 'src/app/@shared/interfaces/product.interface';
+import { ICreateProduct } from 'src/app/@shared/interfaces/product.interface';
 @Component({
   selector: 'app-products-create',
   templateUrl: './products-create-component.html',
@@ -52,7 +52,7 @@ export class ProductsCreateComponent {
     } else if (!this.productForm.value.name) {
       this.notificationService.error('Name Empty', '');
     } else {
-      const productData: IProductCreate = {
+      const productData: ICreateProduct = {
         name: this.productForm.value.name || '',
         description: this.productForm.value.description || '',
         categoryId: this.productForm.value.category || '',
