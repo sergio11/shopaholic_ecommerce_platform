@@ -153,8 +153,8 @@ export class BrandService extends SupportService {
    */
   async remove(id: string): Promise<string> {
     const brandToRemove = await this.findBrand(id);
-    await this.fileSavingMixin.removeImageFile(brandToRemove.image);
     await this.brandRepository.remove(brandToRemove);
+    await this.fileSavingMixin.removeImageFile(brandToRemove.image);
     await this.invalidateCache();
     return this.resolveString('BRAND_REMOVED_SUCCESFULLY');
   }
