@@ -47,6 +47,12 @@ export class OrderEntity extends AbstractEntity {
   /**
    * Identifier of the payment.
    */
-  @Column({ name: 'payment_id', type: 'varchar', length: 255, nullable: false })
+  @Column({ name: 'payment_id', type: 'varchar', length: 255, nullable: true })
   paymentId: string;
+
+  /**
+  * Token for the checkout session.
+  */
+  @Column({ name: 'checkout_session_token', type: 'varchar', length: 255, nullable: true })
+  checkoutSessionToken: string;
 }

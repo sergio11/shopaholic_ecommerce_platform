@@ -193,35 +193,64 @@ export class OrdersService extends SupportService {
       orderHasProduct.quantity = product.quantity;
       return orderHasProduct;
     }));
-    const paymentDto = new CreatePaymentDto();
-    // Map client and address details
-    paymentDto.userId = client.id;
-    paymentDto.language = client.language;
-    const shippingAddressDto = new ShippingAddressDto();
-    shippingAddressDto.email = client.email;
-    shippingAddressDto.fullName = `${client.name} ${client.lastname}`;
-    shippingAddressDto.phoneNumber = client.phone;
-    shippingAddressDto.line1 = `${clientAddress.name} ${clientAddress.neighborhood}`;
-    shippingAddressDto.country = clientAddress.country;
-    shippingAddressDto.city = clientAddress.city;
-    shippingAddressDto.state = clientAddress.state;
-    shippingAddressDto.postalCode = clientAddress.postalCode;
-    paymentDto.shippingAddress = shippingAddressDto;
-    paymentDto.cartItems = newOrder.orderHasProducts.map(lineOrder => {
-      const item = new CartItemDto();
-      item.id = lineOrder.id;
-      item.name = lineOrder.product.name;
-      item.desc = lineOrder.product.description;
-      item.price = lineOrder.product.price;
-      item.image = lineOrder.product.mainImage.url;
-      item.cartQuantity = lineOrder.quantity;
-      return item;
-    });
-    const paymentResponse = await this.paymentProcessorService.createPayment(paymentDto);
-    newOrder.paymentCheckoutUrl = paymentResponse.url;
-    newOrder.paymentId = paymentResponse.id;
-    const savedOrder = await this.ordersRepository.save(newOrder);
+    var savedOrder = await this.ordersRepository.save(newOrder);
+    try {
+      const createPaymentDTO = this.mapper.mapOrderToPaymentDto(savedOrder);
+      const paymentResponse = await this.paymentProcessorService.createPayment(createPaymentDTO);
+      savedOrder.paymentCheckoutUrl = paymentResponse.url;
+      savedOrder.paymentId = paymentResponse.id;
+      savedOrder.checkoutSessionToken = paymentResponse.token;
+      savedOrder = await this.ordersRepository.save(savedOrder);
+    } catch (error) { 
+      savedOrder.status = OrderStatus.FAILED;
+      savedOrder = await this.ordersRepository.save(savedOrder);
+      this.throwInternalServerError("ORDER_FAILED")
+    }
     return this.mapper.mapOrderToResponseDto(savedOrder);
+  }
+
+  /**
+   * Marks an order as paid upon successful completion of the checkout process.
+   * @param orderId - The ID of the order to mark as paid.
+   * @param sessionToken - The session token used to verify the checkout process.
+   * @returns A string indicating the success of marking the order as paid.
+   * @throws {ForbiddenException} If the order status is not PENDING or if the session token is invalid.
+   */
+  async checkoutSuccess(orderId: string, sessionToken: string): Promise<string> { 
+    const order = await this.findOrder(orderId);
+    if (order.status !== OrderStatus.PENDING) { 
+      this.throwForbiddenException('INVALID_ORDER_STATUS');
+    }
+    if (order.checkoutSessionToken !== sessionToken) {
+      this.throwForbiddenException('INVALID_SESSION_TOKEN');
+    }
+    order.status = OrderStatus.PAID;
+    order.checkoutSessionToken = null;
+    order.paymentCheckoutUrl = null;
+    await this.ordersRepository.save(order);
+    return this.resolveString('ORDER_CHECKOUT_SUCCESSFULLY');
+  }
+
+  /**
+   * Marks an order as cancelled when the checkout process is cancelled.
+   * @param orderId - The ID of the order to mark as cancelled.
+   * @param sessionToken - The session token used to verify the checkout process.
+   * @returns A string indicating the success of marking the order as cancelled.
+   * @throws {ForbiddenException} If the order status is not PENDING or if the session token is invalid.
+   */
+  async checkoutCacelled(orderId: string, sessionToken: string): Promise<string> { 
+    const order = await this.findOrder(orderId);
+    if (order.status !== OrderStatus.PENDING) { 
+      this.throwForbiddenException('INVALID_ORDER_STATUS');
+    }
+    if (order.checkoutSessionToken !== sessionToken) {
+      this.throwForbiddenException('INVALID_SESSION_TOKEN');
+    }
+    order.status = OrderStatus.CANCELLED;
+    order.checkoutSessionToken = null;
+    order.paymentCheckoutUrl = null;
+    await this.ordersRepository.save(order);
+    return this.resolveString('ORDER_CHECKOUT_CANCELLED');
   }
 
   /**

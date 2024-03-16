@@ -7,6 +7,7 @@ import { UserMapper } from '../users/user.mapper';
 import { OrderHasProductsEntity } from './order_has_products.entity';
 import { AddressMapper } from '../address/address.mapper';
 import { ProductMapper } from '../products/product.mapper';
+import { CartItemDto, CreatePaymentDto, ShippingAddressDto } from '../payments/dto/create-payment.dto';
 
 @Injectable()
 export class OrderMapper {
@@ -43,6 +44,38 @@ export class OrderMapper {
   mapOrdersToResponseDtos(orders: OrderEntity[]): OrderResponseDto[] {
     return orders.map((order) => this.mapOrderToResponseDto(order));
   }
+
+  mapOrderToPaymentDto(order: OrderEntity): CreatePaymentDto {
+    const paymentDto = new CreatePaymentDto();
+    paymentDto.orderId = order.id;
+    paymentDto.userId = order.user.id;
+    paymentDto.language = order.user.language;
+
+    const shippingAddressDto = new ShippingAddressDto();
+    shippingAddressDto.email = order.user.email;
+    shippingAddressDto.fullName = `${order.user.name} ${order.user.lastname}`;
+    shippingAddressDto.phoneNumber = order.user.phone;
+    shippingAddressDto.line1 = `${order.address.name} ${order.address.neighborhood}`;
+    shippingAddressDto.country = order.address.country;
+    shippingAddressDto.city = order.address.city;
+    shippingAddressDto.state = order.address.state;
+    shippingAddressDto.postalCode = order.address.postalCode;
+    paymentDto.shippingAddress = shippingAddressDto;
+
+    paymentDto.cartItems = order.orderHasProducts.map(lineOrder => {
+      const item = new CartItemDto();
+      item.id = lineOrder.id;
+      item.name = lineOrder.product.name;
+      item.desc = lineOrder.product.description;
+      item.price = lineOrder.product.price;
+      item.image = lineOrder.product.mainImage.url;
+      item.cartQuantity = lineOrder.quantity;
+      return item;
+    });
+
+    return paymentDto;
+  }
+
 
   private mapOrderHasProductToResponseDto(
     orderHasProduct: OrderHasProductsEntity,

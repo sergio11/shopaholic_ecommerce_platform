@@ -22,4 +22,12 @@ export class PaymentCheckoutResponseDto {
   @IsNotEmpty()
   @ApiProperty({ description: 'Checkout session URL', example: 'https://checkout' })
   url: string;
+
+  /**
+   * Token of the checkout session.
+   */
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ description: 'Checkout session token', example: 'abcdef123456' })
+  token: string;
 }

@@ -5,7 +5,8 @@ import { SupportService } from 'src/core/support.service';
 import { I18nService } from 'nestjs-i18n';
 import Stripe from 'stripe';
 import { PaymentCheckoutResponseDto } from '../dto/payment-checkout-response.dto';
-import { STRIPE_API_KEY } from 'src/config/config';
+import { ORDER_CHECKOUT_CANCELLED_URL, ORDER_CHECKOUT_SUCCESS_URL, STRIPE_API_KEY } from 'src/config/config';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class StripePaymentService
@@ -41,10 +42,7 @@ export class StripePaymentService
       const lineItems = this.createLineItems(data);
 
       // Create a checkout session in Stripe
-      const session = await this.createStripeCheckoutSession(customer, lineItems);
-
-      // Build payment checkout response DTO
-      return this.buildPaymentCheckoutResponse(session);
+      return await this.createStripeCheckoutSession(data.orderId, customer, lineItems);
     } catch (error) {
       // Handle payment error
       this.handlePaymentError(error);
@@ -129,12 +127,18 @@ export class StripePaymentService
   }
 
   /**
-   * Creates a checkout session in Stripe.
-   * @param customer - The Stripe customer associated with the checkout session.
-   * @param lineItems - The line items for the checkout session.
-   * @returns The created Stripe checkout session.
+   * Creates a checkout session in Stripe for processing payments.
+   * @param orderId - The ID of the order associated with the checkout session.
+   * @param customer - The Stripe customer object for the checkout session.
+   * @param lineItems - The line items representing the products in the checkout session.
+   * @returns A promise that resolves to a PaymentCheckoutResponseDto object containing the checkout session details.
    */
-  private async createStripeCheckoutSession(customer: Stripe.Customer, lineItems: Stripe.Checkout.SessionCreateParams.LineItem[]): Promise<Stripe.Checkout.Session> {
+  private async createStripeCheckoutSession(orderId: string, customer: Stripe.Customer, lineItems: Stripe.Checkout.SessionCreateParams.LineItem[]): Promise<PaymentCheckoutResponseDto> {
+    // Generate a unique session token
+    const sessionToken = this.generateUniqueToken(16);
+    // Replace placeholders in success and cancel URLs with orderId and sessionToken
+    const successUrl = ORDER_CHECKOUT_SUCCESS_URL.replace(':id', orderId).replace(":token", sessionToken);
+    const cancelledUrl = ORDER_CHECKOUT_CANCELLED_URL.replace(':id', orderId).replace(":token", sessionToken);
     // Create a checkout session in Stripe
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -142,21 +146,14 @@ export class StripePaymentService
       mode: 'payment',
       customer: customer.id,
       invoice_creation: { enabled: true },
-      success_url: `http://localhost:3000/api/v1/payments/checkout-success`,
-      cancel_url: `http://localhost:3000/api/v1/payments/cancelled`,
+      success_url: successUrl,
+      cancel_url: cancelledUrl,
     });
-    return session;
-  }
-
-  /**
-   * Builds the payment checkout response DTO.
-   * @param session - The Stripe checkout session.
-   * @returns The payment checkout response DTO.
-   */
-  private buildPaymentCheckoutResponse(session: Stripe.Checkout.Session): PaymentCheckoutResponseDto {
+    // Create a PaymentCheckoutResponseDto object with session details
     const paymentResponse = new PaymentCheckoutResponseDto();
     paymentResponse.id = session.id;
     paymentResponse.url = session.url;
+    paymentResponse.token = sessionToken;
     console.log('paymentResponse', paymentResponse);
     return paymentResponse;
   }
@@ -170,6 +167,10 @@ export class StripePaymentService
       console.log('Caught StripeError', error);
       // Handle the Stripe error here
     }
-    this.throwInternalServerError("PAYMENT_ERROR");
+    throw error;
+  }
+
+  private generateUniqueToken(length: number): string {
+    return randomBytes(length).toString('hex');
   }
 }
