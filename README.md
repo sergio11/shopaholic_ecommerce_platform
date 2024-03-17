@@ -121,6 +121,67 @@ We offer Docker Compose-based deployment for easy scaling and management:
 
 For detailed instructions on setting up and deploying using Docker, please check our [Docker Deployment Guide](link_to_docker_guide).
 
+
+## Shopaholic Rake Tasks 🚀
+
+Welcome to the Shopaholic Rake tasks section! Here you'll find a collection of tasks tailored to streamline the development and deployment processes of the Shopaholic platform.
+
+### General Tasks
+
+| Task                               | Description                                                                                               |
+|------------------------------------|-----------------------------------------------------------------------------------------------------------|
+| `shopaholic:login`                 | Authenticates with existing Docker credentials.                                                           |
+| `shopaholic:cleaning_environment_task` | Cleans the Docker environment by removing unused images and volumes.                                       |
+| `shopaholic:status`                | Displays the status of containers managed by Docker Compose.                                               |
+| `shopaholic:deploy`                | Deploys the Shopaholic platform containers and launches all services and daemons needed for proper functioning. |
+| `shopaholic:undeploy`              | Undeploys the Shopaholic platform containers.                                                             |
+| `shopaholic:check_docker_task`     | Checks the availability and version of Docker and Docker Compose.                                           |
+
+### MariaDB with Galera Cluster
+
+| Task                                   | Description                                                                                      |
+|----------------------------------------|--------------------------------------------------------------------------------------------------|
+| `shopaholic:galera:start`              | Starts the highly available MariaDB with Galera Cluster and HAProxy containers.                  |
+| `shopaholic:galera:stop`               | Stops the highly available MariaDB with Galera Cluster and HAProxy containers.                   |
+
+### MinIO Cluster
+
+| Task                                   | Description                                                                                      |
+|----------------------------------------|--------------------------------------------------------------------------------------------------|
+| `shopaholic:minio:start`               | Starts the MinIO cluster containers.                                                             |
+| `shopaholic:minio:stop`                | Stops the MinIO cluster containers.                                                              |
+
+### Redis Cluster
+
+| Task                                   | Description                                                                                      |
+|----------------------------------------|--------------------------------------------------------------------------------------------------|
+| `shopaholic:redis:start`               | Starts the Redis cluster containers.                                                             |
+| `shopaholic:redis:stop`                | Stops the Redis cluster containers.                                                              |
+
+### Platform Backend
+
+| Task                                   | Description                                                                                      |
+|----------------------------------------|--------------------------------------------------------------------------------------------------|
+| `shopaholic:platform:backend:start`    | Starts the Platform NodeJS containers for the backend.                                             |
+| `shopaholic:platform:backend:stop`     | Stops the Platform NodeJS containers for the backend.                                              |
+| `shopaholic:platform:backend:build`    | Builds the Docker image for the Platform NodeJS backend.                                            |
+| `shopaholic:platform:backend:run_dev_server` | Runs the development server for the Platform NodeJS backend.                                    |
+
+### Platform Backoffice
+
+| Task                                   | Description                                                                                      |
+|----------------------------------------|--------------------------------------------------------------------------------------------------|
+| `shopaholic:platform:backoffice:start` | Starts the Platform NodeJS containers for the backoffice.                                           |
+| `shopaholic:platform:backoffice:stop`  | Stops the Platform NodeJS containers for the backoffice.                                            |
+| `shopaholic:platform:backoffice:build` | Builds the Docker image for the Platform backoffice.                                                |
+
+### Utils Functions
+
+- `show_docker_version`: Displays the version of Docker.
+- `show_docker_compose_version`: Displays the version of Docker Compose.
+- `which`: Finds an executable in the system's `$PATH`.
+
+
 ## Screenshots
 
 Here are some screenshots showcasing the platform and backoffice:
