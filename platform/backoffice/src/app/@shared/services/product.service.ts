@@ -108,7 +108,7 @@ export class ProductService {
    */
   update(id: string, payload: ICreateProduct) {
     const formData = this.createFormData(payload);
-    return this.http.put(`${this.END_POINT}${id}`, formData).pipe(
+    return this.http.post(`${this.END_POINT}${id}`, formData).pipe(
       tap((data: any) => {
         this.productsStore.update(data);
       })

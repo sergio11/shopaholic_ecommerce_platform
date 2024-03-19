@@ -11,7 +11,14 @@
   <ng-container *nzDrawerContent>
     <form [formGroup]="productForm">
 
-      <app-file-upload [(fileSelected)]="mainImageFileSelected"></app-file-upload>
+      <app-file-upload 
+        [(fileSelected)]="mainImageFileSelected" 
+        [selectImageText]="'Select main image'"></app-file-upload>
+
+      <app-file-upload
+        [(fileSelected)]="secondaryImageFileSelected"
+        [selectImageText]="'Select secondary image'"
+      ></app-file-upload>
 
       <div nz-row [nzGutter]="16">
         <div nz-col nzSpan="12">
@@ -88,7 +95,7 @@
         <div nz-col nzSpan="9">
           <label>Product Code</label>
           <input
-            type="number"
+            type="text"
             formControlName="productCode"
             nz-input
             placeholder="Product Code"

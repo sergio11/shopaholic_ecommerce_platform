@@ -105,6 +105,8 @@ export class ProductsService extends SupportService {
     let queryBuilder = this.productsRepository
         .createQueryBuilder('product')
         .leftJoinAndSelect('product.mainImage', 'image')
+        .leftJoinAndSelect('product.brand', 'brand')
+        .leftJoinAndSelect('product.category', 'category')
         .orderBy('product.name');
     if (term) {
       queryBuilder = queryBuilder.where(
