@@ -17,29 +17,33 @@
 <ng-container>
   <nz-table
     #basicTable
-    [nzData]="orders.data"
+    [nzData]="state.items"
     [nzBordered]="true"
     [nzFrontPagination]="false"
     nzShowPagination
-    [nzTotal]="orders.total"
-    [nzPageSize]="orders.take"
+    [nzTotal]="state.meta.totalItems"
+    [nzPageSize]="state.meta.itemsPerPage"
     [nzLoading]="loading"
     (nzPageIndexChange)="onChangePage($event)"
   >
     <thead>
       <tr>
-        <th>Code</th>
-        <th>Approved</th>
+        <th>ID</th>
+        <th>Status</th>
         <th>CreatedAt</th>
-        <th>TotalAmount</th>
+        <th>UpdatedAt</th>
+        <th>Client</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of basicTable.data">
-        <td>{{ data.code }}</td>
-        <td>{{ data.approved }}</td>
-        <td>{{ data.createdAt }}</td>
-        <td>{{ data.totalAmount }} TK</td>
+        <td>{{ data.id }}</td>
+        <td>
+          <nz-tag [nzColor]="getStatusColor(data.status)">{{ data.status }}</nz-tag>
+        </td>
+        <td>{{ data.createdAt | date }}</td>
+        <td>{{ data.updatedAt | date }}</td>
+        <td>{{ data.client.name + ' ' + data.client.lastname }}</td>
       </tr>
     </tbody>
   </nz-table>

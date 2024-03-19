@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { IFBannerFilter } from 'src/app/@shared/interfaces/banner.interface';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProductService } from './../../../@shared/services/product.service';
 import { ProductsQuery } from 'src/app/@shared/stores/products/products.query';
 import { IProductState } from 'src/app/@shared/stores/products/products.store';
@@ -16,8 +15,7 @@ export class ProductPageComponent {
 
   constructor(
     private productService: ProductService,
-    private productQuery: ProductsQuery,
-    private nzNotificationService: NzNotificationService
+    private productQuery: ProductsQuery
   ) {}
 
 
