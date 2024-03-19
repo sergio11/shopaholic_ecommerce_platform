@@ -17,8 +17,8 @@ export class CategoryComponent implements OnInit {
   state: ICategoryState = createInitialState();
 
   constructor(
-    private categoryService: CategoryService,
-    private categoryQuery: CategoryQuery
+    private readonly categoryService: CategoryService,
+    private readonly categoryQuery: CategoryQuery
   ) {}
 
   ngOnInit() {

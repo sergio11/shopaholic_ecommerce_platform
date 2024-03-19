@@ -1,47 +1,47 @@
 import { Component, OnInit } from '@angular/core';
-
-import { IBaseFilterResponse } from '../../../../@shared/interfaces/base.interface';
 import { IFilterUser } from '../../../../@shared/interfaces/user.interface';
 import { UserService } from 'src/app/@shared/services/user.service';
+import { ICustomerState } from 'src/app/@shared/stores/customer/customers.store';
+import { createInitialState } from 'src/app/@shared/stores/core/generic-crud-store';
+import { CustomersQuery } from 'src/app/@shared/stores/customer/customers.query';
 
 @Component({
   templateUrl: './customers.component.html',
   styleUrls: ['./customers.component.scss'],
 })
 export class CustomersComponent implements OnInit {
-  loading = false;
-  users: any = {
-    data: [],
-    page: 0,
-    take: 0,
-    total: 0,
-  };
-
-  constructor(private userService: UserService) {}
   
-  ngOnInit(): void {
-    this.fetchUsers({ page: 1, take: 10, type: 'CLIENT' });
+  loading = false;
+  state: ICustomerState = createInitialState();
+
+  constructor(
+    private readonly userService: UserService,
+    private readonly customerQuery: CustomersQuery
+  ) {}
+  
+  ngOnInit() {
+    this.filterData({ page: 1, take: 10 });
+    this.customerQuery.select().subscribe((state: ICustomerState) => {
+      console.log(state)
+      this.state = state;
+    }); 
   }
 
-  //* Fetching Users
-  fetchUsers(option: IFilterUser) {
+  async filterData(option: IFilterUser) {
     this.loading = true;
-    this.userService.filter(option).subscribe((res: IBaseFilterResponse) => {
-      this.loading = false;
-      this.users = res;
-    });
+    await this.userService.searchCustomers(option).toPromise();
+    this.loading = false;
   }
 
   onChangePage(page: number) {
-    this.fetchUsers({ page: page, take: 10 });
+    this.filterData({ page: page, take: 10 });
   }
 
   onChangeSearch(e: any) {
-    this.fetchUsers({
-      page: this.users?.page,
+    this.filterData({
+      page: this.state.meta.currentPage,
       take: 10,
-      searchTerm: e.target.value,
-      type: 'CLIENT',
+      searchTerm: e?.target?.value,
     });
   }
 }
