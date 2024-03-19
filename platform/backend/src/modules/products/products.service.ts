@@ -176,14 +176,18 @@ export class ProductsService extends SupportService {
     const productFound = await this.findProduct(id);
     const categoryFound = await this.findCategory(updateProductDto.idCategory);
     const brandFound = await this.findBrand(updateProductDto.idBrand);
-    updateProductDto.mainImage = await this.fileSavingMixin.saveImageFile(
-      updateProductDto.mainImageFile,
-      productFound.mainImage,
-    );
-    updateProductDto.secondaryImage = await this.fileSavingMixin.saveImageFile(
-      updateProductDto.secondaryImageFile,
-      productFound.secondaryImage,
-    );
+    if(updateProductDto.mainImageFile) { 
+      updateProductDto.mainImage = await this.fileSavingMixin.saveImageFile(
+        updateProductDto.mainImageFile,
+        productFound.mainImage,
+      );
+    }
+    if(updateProductDto.secondaryImageFile) {  
+      updateProductDto.secondaryImage = await this.fileSavingMixin.saveImageFile(
+        updateProductDto.secondaryImageFile,
+        productFound.secondaryImage,
+      );
+    }
     const productToUpdate = this.mapper.mapUpdateProductDtoToEntity(
       updateProductDto,
       productFound,

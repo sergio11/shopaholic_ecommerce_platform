@@ -1,46 +1,63 @@
 import { Component, OnInit } from '@angular/core';
 import {
   IBaseFilterQuery,
-  IBaseFilterResponse,
 } from './../../../@shared/interfaces/base.interface';
 
 import { OrderService } from './../../../@shared/services/order.service';
+import { OrdersQuery } from 'src/app/@shared/stores/orders/orders.query';
+import { IOrderState } from 'src/app/@shared/stores/orders/orders.store';
+import { createInitialState } from 'src/app/@shared/stores/core/generic-crud-store';
 
 @Component({
   templateUrl: './orders-list-page.component.html',
 })
 export class OrderListComponent implements OnInit {
-  loading = false;
-  orders: any = {
-    data: [],
-    page: 0,
-    take: 0,
-    total: 0,
-  };
 
-  constructor(private orderService: OrderService) {}
+  loading = false;
+  state: IOrderState = createInitialState();
+
+  constructor(
+    private orderService: OrderService,
+    private productQuery: OrdersQuery
+  ) {}
+
   ngOnInit(): void {
-    this.fetchUsers({ page: 1, take: 10 });
+    this.filterData({ page: 1, take: 10 });
+    this.productQuery.select().subscribe((state: IOrderState) => {
+      console.log(state)
+      this.state = state;
+    }); 
   }
 
-  //* Fetching Users
-  fetchUsers(option: IBaseFilterQuery) {
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'PENDING':
+        return 'yellow';
+      case 'CANCELLED':
+        return 'red';
+      case 'PAID':
+        return 'green';
+      default:
+        return 'gray';
+    }
+  }
+  
+  async filterData(option: IBaseFilterQuery) {
     this.loading = true;
-    this.orderService.search(option).subscribe((res: IBaseFilterResponse) => {
-      this.orders = res;
-    });
+    await this.orderService.search(option).toPromise();
     this.loading = false;
   }
 
   //*Table Pagination
   onChangePage(page: number) {
-    this.fetchUsers({ page: page, take: 10 });
+    this.filterData({ page: page, take: 10 });
   }
+
   onChangeSearch(e: any) {
-    this.fetchUsers({
-      page: this.orders?.page,
+    this.filterData({
+      page: this.state.meta.currentPage,
       take: 10,
-      searchTerm: e.target.value,
+      searchTerm: e?.target?.value,
     });
   }
 }
