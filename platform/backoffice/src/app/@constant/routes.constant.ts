@@ -5,7 +5,6 @@ export const routesConstant = {
   adminRegister: '/auth/admin/register',
   adminDashboard: '/content',
   admins: `${LAYOUT_PATH}users/admins`,
-  vendors: `${LAYOUT_PATH}users/vendors`,
   customers: `${LAYOUT_PATH}users/customers`,
   userProfile: `${LAYOUT_PATH}users/profile`,
   userProfileUpdate: `${LAYOUT_PATH}users/profile-update`,
