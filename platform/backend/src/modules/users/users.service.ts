@@ -96,14 +96,14 @@ export class UsersService extends SupportService {
 
   /**
    * Search for users by name and filter by role, then paginate the results.
-   * @param {string} name - The name to search for.
+   * @param {string} term - The term to search for.
    * @param {JwtRole} role - The role to filter users by.
    * @param {number} page - The page number for pagination.
    * @param {number} limit - The maximum number of items per page.
    * @returns {Promise<Pagination<UserResponseDto>>} A Pagination object containing the matching users and pagination metadata.
    */
   async searchAndPaginateUsers(
-    name: string | undefined,
+    term: string | undefined,
     role: JwtRole | undefined,
     page: number = 1,
     limit: number = 10,
@@ -118,11 +118,12 @@ export class UsersService extends SupportService {
 
     let queryBuilder = this.usersRepository.createQueryBuilder('user');
 
-    if (name) {
+    if (term) {
+      console.log("queryBuilder.where term", term);
       queryBuilder = queryBuilder.where(
-        'LOWER(user.name) LIKE :name OR LOWER(user.lastname) LIKE :name',
+        '(LOWER(user.name) LIKE :term OR LOWER(user.lastname) LIKE :term)',
         {
-          name: `%${name.toLowerCase()}%`,
+          term: `%${term.toLowerCase()}%`,
         },
       );
     }
@@ -132,9 +133,14 @@ export class UsersService extends SupportService {
       queryBuilder = queryBuilder.innerJoinAndSelect(
         'user.roles',
         'user_roles',
+        'user_roles.name = :role',
+        { role }
       );
-      queryBuilder = queryBuilder.andWhere('user_roles.name = :role', { role });
     }
+
+    const [query, parameters] = queryBuilder.getQueryAndParameters();
+    console.log('SQL Query:', query);
+    console.log('Parameters:', parameters);
 
     const paginatedUser = await paginate(queryBuilder, { page, limit });
     const items = paginatedUser.items.map((user) =>

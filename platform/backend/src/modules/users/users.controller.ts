@@ -64,7 +64,7 @@ export class UsersController {
     summary: 'Search for users by name and filter by role (ADMIN or CLIENT)',
   })
   @ApiQuery({
-    name: 'name',
+    name: 'term',
     required: false,
     description: 'Search term for filtering users by name',
   })
@@ -93,12 +93,12 @@ export class UsersController {
     isArray: true,
   })
   async searchAndPaginateUsers(
-    @Query('name') name: string,
+    @Query('term') term: string,
     @Query('role') role: JwtRole,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ): Promise<Pagination<UserResponseDto>> {
-    return this.usersService.searchAndPaginateUsers(name, role, page, limit);
+    return this.usersService.searchAndPaginateUsers(term, role, page, limit);
   }
 
   /**

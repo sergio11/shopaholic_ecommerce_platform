@@ -1,46 +1,48 @@
 import { Component, OnInit } from '@angular/core';
 
-import { IBaseFilterResponse } from './../../../../@shared/interfaces/base.interface';
 import { IFilterUser } from './../../../../@shared/interfaces/user.interface';
 import { UserService } from 'src/app/@shared/services/user.service';
+import { createInitialState } from 'src/app/@shared/stores/core/generic-crud-store';
+import { AdminsQuery } from 'src/app/@shared/stores/admins/admins.query';
+import { IAdminState } from 'src/app/@shared/stores/admins/admins.store';
 
 @Component({
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
 export class UsersComponent implements OnInit {
+
   loading = false;
-  users: any = {
-    data: [],
-    page: 0,
-    take: 0,
-    total: 0,
-  };
+  state: IAdminState = createInitialState();
+  
+  constructor(
+    private readonly userService: UserService,
+    private readonly adminsQuery: AdminsQuery
+    ) {}
 
-  constructor(private userService: UserService) {}
-  ngOnInit(): void {
-    this.fetchUsers({ page: 1, take: 10, type: 'ADMIN' });
+  ngOnInit() {
+    this.filterData({ page: 1, take: 10 });
+    this.adminsQuery.select().subscribe((state: IAdminState) => {
+      console.log(state)
+      this.state = state;
+    }); 
   }
 
-  //* Fetching Users
-  fetchUsers(option: IFilterUser) {
+  async filterData(option: IFilterUser) {
     this.loading = true;
-    this.userService.filter(option).subscribe((res: IBaseFilterResponse) => {
-      this.loading = false;
-      this.users = res;
-    });
+    await this.userService.searchAdmins(option).toPromise();
+    this.loading = false;
   }
 
-  //*Table Pagination
   onChangePage(page: number) {
-    this.fetchUsers({ page: page, take: 10 });
+    this.filterData({ page: page, take: 10 });
   }
+
   onChangeSearch(e: any) {
-    this.fetchUsers({
-      page: this.users?.page,
+    this.filterData({
+      page: this.state.meta.currentPage,
       take: 10,
-      searchTerm: e.target.value,
-      type: 'ADMIN',
+      searchTerm: e?.target?.value,
     });
   }
 }

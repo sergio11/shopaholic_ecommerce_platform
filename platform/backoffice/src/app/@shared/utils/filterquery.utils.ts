@@ -4,11 +4,7 @@ import {
 } from './../interfaces/base.interface';
 
 export const baseFilterQueryUtils = (option: IBaseFilterQuery) => {
-  return `
-    ${option.searchTerm ? `term=${option.searchTerm}` : ''}
-    &${option.page ? `page=${option.page}` : ''}
-    &${option.take ? `limit=${option.take}` : ''}
-  `;
+  return `${option.searchTerm ? `term=${option.searchTerm}` : ''}&${option.page ? `page=${option.page}` : ''}&${option.take ? `limit=${option.take}` : ''}`;
 };
 
 

@@ -6,19 +6,8 @@ export interface IFChangePhoneNumber {
 
 type RoleName = 'ADMIN' | 'CLIENT';
 
-export interface IFilterUser extends IBaseFilterQuery {
-  type?: RoleName;
-}
+export interface IFilterUser extends IBaseFilterQuery {}
 
-export interface IFUser {
-  id?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  phoneNumber?: string;
-  password?: string;
-  type?: string;
-  userInfo?: IFUserInfo;
-}
 export interface IFUserInfo {
   id?: string;
   createdAt?: string;
@@ -31,4 +20,28 @@ export interface IFUserInfo {
   email?: string;
   phoneNumber?: string;
   gender?: string;
+}
+
+interface IRole {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  route: string;
+}
+
+export interface IUser {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  lastname: string;
+  email: string;
+  phone: string | null;
+  roles: IRole[];
+  country: string | null;
+  language: string;
+  city: string | null;
+  birthDate: string | null;
+  gender: string | null;
 }

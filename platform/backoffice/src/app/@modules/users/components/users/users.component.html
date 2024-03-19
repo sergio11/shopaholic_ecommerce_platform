@@ -18,35 +18,39 @@
 <ng-container>
   <nz-table
     #basicTable
-    [nzData]="users.data"
+    [nzData]="state.items"
     [nzBordered]="true"
     [nzFrontPagination]="false"
     nzShowPagination
-    [nzTotal]="users.total"
-    [nzPageSize]="users.take"
+    [nzTotal]="state.meta.totalItems"
+    [nzPageSize]="state.meta.itemsPerPage"
     [nzLoading]="loading"
     (nzPageIndexChange)="onChangePage($event)"
   >
     <thead>
       <tr>
-        <th>Number</th>
+        <th>ID</th>
         <th>Name</th>
         <th>Email</th>
-        <th>City</th>
+        <th>Phone</th>
         <th>Country</th>
-        <th>Gender</th>
+        <th>City</th>
+        <th>Language</th>
         <th>BirthDate</th>
+        <th>Gender</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of basicTable.data">
-        <td>{{ data.phoneNumber }}</td>
-        <td>{{ data.userInfo.firstName }} {{ data.userInfo.lastName }}</td>
-        <td>{{ data.userInfo.email }}</td>
-        <td>{{ data.userInfo.city }}</td>
-        <td>{{ data.userInfo.country }}</td>
-        <td>{{ data.userInfo.gender }}</td>
-        <td>{{ data.userInfo.birthDate | date }}</td>
+        <td>{{ data.id }}</td>
+        <td>{{ data.name }} {{ data.lastname }}</td>
+        <td>{{ data.email }}</td>
+        <td>{{ data.phone }}</td>
+        <td>{{ data.country ? data.country : 'Not Specified' }}</td>
+        <td>{{ data.city ? data.city : 'Not Specified' }}</td>
+        <td>{{ data.language ? data.language : 'Not Specified' }}</td>
+        <td>{{ data.birthDate | date }}</td>
+        <td>{{ data.gender ? data.gender : 'Not Specified' }}</td>
       </tr>
     </tbody>
   </nz-table>
