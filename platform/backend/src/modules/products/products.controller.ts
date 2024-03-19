@@ -241,8 +241,8 @@ export class ProductsController {
   ): Promise<ProductResponseDto> {
     const product = {
       ...productData,
-      mainImageFile: files.mainImageFile[0],
-      secondaryImageFile: files.secondaryImageFile[0],
+      mainImageFile: files.mainImageFile ? files.mainImageFile[0] : undefined,
+      secondaryImageFile: files.secondaryImageFile ? files.secondaryImageFile[0] : undefined,
     };
     return this.productsService.update(id, product);
   }

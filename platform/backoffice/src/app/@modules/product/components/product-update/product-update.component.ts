@@ -13,11 +13,13 @@ import { ICreateProduct } from 'src/app/@shared/interfaces/product.interface';
 })
 export class ProductUpdateComponent implements OnInit {
   @Input() data: any = {};
+  @Output() dataChange: EventEmitter<any> = new EventEmitter<any>();
   @Input() isOpen: boolean = false;
   @Output() onClose = new EventEmitter<any>();
 
   productForm: FormGroup;
   mainImageFileSelected: File | undefined;
+  secondaryImageFileSelected: File | undefined;
 
   constructor(
     private productService: ProductService,
@@ -40,7 +42,8 @@ export class ProductUpdateComponent implements OnInit {
   ngOnInit(): void {
     this.loadMoreCategory();
     this.loadMoreBrands();
-    /*this.productForm.patchValue({
+    console.log("Product update data", this.data);
+    this.productForm.patchValue({
       name: this.data?.name,
       description: this.data?.description,
       category: this.data?.category.id,
@@ -48,14 +51,12 @@ export class ProductUpdateComponent implements OnInit {
       price: this.data?.price,
       productCode: this.data?.productCode,
       brand: this.data?.brand?.id
-    });*/
+    });
   }
 
   onSubmitCreate() {
-    if (!this.mainImageFileSelected) {
-      this.notificationService.error('Image Empty', '');
-    } else if (!this.productForm.value.name) {
-      this.notificationService.error('Name Empty', '');
+    if (!this.productForm.value.name) {
+      this.notificationService.error('You must provide a product name', '');
     } else {
       const productData: ICreateProduct = {
         name: this.productForm.value.name || '',
@@ -69,9 +70,10 @@ export class ProductUpdateComponent implements OnInit {
 
       this.productService
         .update(this.data?.id, productData)
-        .subscribe((res: any) => {
-          console.log(res);
-          this.notificationService.success('Updated', '');
+        .subscribe((data: any) => {
+          console.log(data);
+          this.notificationService.success('Product Updated successfully', '');
+          this.dataChange.emit(data);
           this.onClose.emit();
         });
     }
@@ -85,9 +87,9 @@ export class ProductUpdateComponent implements OnInit {
     this.isLoading = true;
     this.categoryService
       .search({ page: this.cPage, take: 10 })
-      .subscribe((res: any) => {
+      .subscribe((data: any) => {
         this.isLoading = false;
-        this.categoryOptionList = res.data;
+        this.categoryOptionList = data.items;
         this.cPage++;
       });
   }
@@ -98,9 +100,9 @@ export class ProductUpdateComponent implements OnInit {
     this.isLoading = true;
     this.brandService
       .filter({ page: this.bPage, take: 10 })
-      .subscribe((res: any) => {
+      .subscribe((data: any) => {
         this.isLoading = false;
-        this.brandOptionList = res.data;
+        this.brandOptionList = data.items;
         this.bPage++;
       });
   }

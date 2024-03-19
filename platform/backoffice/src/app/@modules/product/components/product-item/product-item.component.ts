@@ -23,9 +23,11 @@ export class ProductItemComponent implements OnInit {
   onOpenUpdateModal() {
     this.isUpdateModalOpen = true;
   }
+  
   onCloseUpdateModal() {
     this.isUpdateModalOpen = false;
   }
+
   onDelete(id: string) {
     this.productService.delete(id).subscribe((res: any) => {
       this.nzNotificationService.success('Product deleted successfully', '');
