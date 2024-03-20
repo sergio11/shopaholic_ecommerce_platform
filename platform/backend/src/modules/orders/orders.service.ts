@@ -86,7 +86,7 @@ export class OrdersService extends SupportService {
     }
 
     const paginatedOrders = await paginate(queryBuilder, options);
-    const items = this.mapper.mapOrdersToResponseDtos(paginatedOrders.items);
+    const items = await this.mapper.mapOrdersToResponseDtos(paginatedOrders.items);
     
     return {
       ...paginatedOrders,
@@ -195,7 +195,7 @@ export class OrdersService extends SupportService {
     }));
     var savedOrder = await this.ordersRepository.save(newOrder);
     try {
-      const createPaymentDTO = this.mapper.mapOrderToPaymentDto(savedOrder);
+      const createPaymentDTO = await this.mapper.mapOrderToPaymentDto(savedOrder);
       const paymentResponse = await this.paymentProcessorService.createPayment(createPaymentDTO);
       savedOrder.paymentCheckoutUrl = paymentResponse.url;
       savedOrder.paymentId = paymentResponse.id;

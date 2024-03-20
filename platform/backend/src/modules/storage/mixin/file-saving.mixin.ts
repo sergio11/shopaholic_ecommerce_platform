@@ -31,12 +31,9 @@ export class StorageMixin {
         if (file) {
             console.log(`saveImageFile -> mimetype: ${file.mimetype}, ${file.size}, ${file.originalname}`)
             console.log(`oldImage`, oldImage)
-            const response = await this.storageService.saveFile(file.buffer, file.mimetype, file.size);
+            const storageId = await this.storageService.saveFile(file.buffer, file.mimetype, file.size);
             await this.removeImageFile(oldImage);
-            const imageDto: CreateImageDto = {
-                url: response.url,
-                storageId: response.id
-            };
+            const imageDto: CreateImageDto = { storageId: storageId };
             return imageDto;
         } else {
             return null;
@@ -56,6 +53,21 @@ export class StorageMixin {
             } catch (error) {
                 console.error('Error deleting image file:', error);
             }
+        }
+    }
+
+    /**
+     * Retrieves the URL of an image file from the storage service based on its storage ID.
+     * @param {string} storageId - The storage ID of the image file.
+     * @returns {Promise<string | null>} - The URL of the image file, or null if an error occurs.
+     */
+    async getImageUrl(storageId: string): Promise<string | null> {
+        try {
+            const url = await this.storageService.getFileUrl(storageId);
+            return url;
+        } catch (error) {
+            console.error('Error retrieving image URL:', error);
+            return null;
         }
     }
 }

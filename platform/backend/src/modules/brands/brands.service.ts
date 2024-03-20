@@ -42,7 +42,7 @@ export class BrandService extends SupportService {
       return cachedBrands;
     }
     const brands = await this.brandRepository.find({relations: ["image"]});
-    const brandDtos = this.brandMapper.mapBrandsToResponseDtos(brands);
+    const brandDtos = await this.brandMapper.mapBrandsToResponseDtos(brands);
     await this.cacheService.set(
       this.CACHE_KEY,
       brandDtos,
@@ -80,10 +80,8 @@ export class BrandService extends SupportService {
     }
     queryBuilder = queryBuilder.orderBy('brand.name');
     const paginatedBrands = await paginate(queryBuilder, options);
-    const items = paginatedBrands.items.map((brand) =>
-      this.brandMapper.mapBrandToResponseDto(brand),
-    );
-
+    const items = await this.brandMapper.mapBrandsToResponseDtos(paginatedBrands.items);
+    
     return {
       ...paginatedBrands,
       items,

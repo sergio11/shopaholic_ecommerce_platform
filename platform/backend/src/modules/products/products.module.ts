@@ -14,7 +14,6 @@ import { ProductReviewEntity } from './product-review.entity';
 import { ProductReviewService } from './products-review.service';
 import { ProductReviewMapper } from './product-review.mapper';
 import { UserEntity } from '../users/user.entity';
-import { ImagesModule } from '../images/images.module';
 
 @Module({
   imports: [
@@ -28,8 +27,7 @@ import { ImagesModule } from '../images/images.module';
     ]),
     CategoriesModule,
     BrandModule,
-    FilesStorageModule,
-    ImagesModule
+    FilesStorageModule
   ],
   controllers: [ProductsController],
   providers: [

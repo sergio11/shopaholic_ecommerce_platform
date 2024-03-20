@@ -5,10 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryEntity } from './category.entity';
 import { CategoryMapper } from './category.mapper';
 import { FilesStorageModule } from '../storage/storage.module';
-import { ImagesModule } from '../images/images.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CategoryEntity]), FilesStorageModule, ImagesModule],
+  imports: [TypeOrmModule.forFeature([CategoryEntity]), FilesStorageModule],
   providers: [CategoriesService, CategoryMapper],
   controllers: [CategoriesController],
   exports: [CategoriesService, CategoryMapper],

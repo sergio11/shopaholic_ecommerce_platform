@@ -179,7 +179,7 @@ export class AuthService extends SupportService {
       expiresIn: jwtConstants.expiresIn
     });
 
-    const userDTO = this.userMapper.mapUserToResponseDto(user);
+    const userDTO = await this.userMapper.mapUserToResponseDto(user);
     const data: AuthResponseDto = {
       user: userDTO,
       token: 'Bearer ' + token,

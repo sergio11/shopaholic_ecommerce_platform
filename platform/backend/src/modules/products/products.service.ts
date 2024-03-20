@@ -47,7 +47,7 @@ export class ProductsService extends SupportService {
       return cachedProducts;
     }
     const products = await this.productsRepository.find({relations: ["mainImage", "secondaryImage", "brand", "category"]});
-    const mappedProducts = this.mapper.mapProductsToResponseDtos(products);
+    const mappedProducts = await this.mapper.mapProductsToResponseDtos(products);
     await this.cacheService.set(
       this.CACHE_KEY,
       mappedProducts,
@@ -116,10 +116,8 @@ export class ProductsService extends SupportService {
     }
     queryBuilder = queryBuilder.orderBy('product.name');
     const paginatedProducts = await paginate(queryBuilder, options);
-    const items = paginatedProducts.items.map((product) =>
-      this.mapper.mapProductToResponseDto(product),
-    );
-
+    const items = await this.mapper.mapProductsToResponseDtos(paginatedProducts.items);
+    
     return {
       ...paginatedProducts,
       items,

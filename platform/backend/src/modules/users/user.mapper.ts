@@ -5,7 +5,8 @@ import { UserResponseDto } from './dto/user-response.dto';
 import { RoleMapper } from '../roles/role.mapper';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ImageMapper } from '../images/image.mapper';
+import { StorageMixin } from '../storage/mixin/file-saving.mixin';
+import { ImageResponseDto } from '../images/dto/image-response.dto';
 
 /**
  * Mapper service for converting UserEntity and DTO objects.
@@ -15,11 +16,11 @@ export class UserMapper {
   /**
    * Creates an instance of UserMapper.
    * @param roleMapper - An instance of RoleMapper.
-   * @param imageMapper - An instance of ImageMapper
+   * @param storageMixin - An instance of StorageMixin
    */
   constructor(
     private readonly roleMapper: RoleMapper,
-    private readonly imageMapper: ImageMapper
+    private readonly storageMixin: StorageMixin
   ) {}
 
   /**
@@ -27,7 +28,7 @@ export class UserMapper {
    * @param {UserEntity} user - The UserEntity to be mapped.
    * @returns {UserResponseDto} The mapped UserResponseDto object.
    */
-  mapUserToResponseDto(user: UserEntity): UserResponseDto {
+  async mapUserToResponseDto(user: UserEntity): Promise<UserResponseDto> {
     const userDto = plainToClass(UserResponseDto, user, {
       excludeExtraneousValues: true,
     });
@@ -35,7 +36,12 @@ export class UserMapper {
       userDto.roles = this.roleMapper.mapRolesToResponseDtos(user.roles);
     }
     if (user.image) {
-      userDto.image = this.imageMapper.mapImageToResponseDto(user.image);
+      const url = await this.storageMixin.getImageUrl(user.image.storageId);
+      if (url) {
+        const imageResponseDto = new ImageResponseDto();
+        imageResponseDto.url = url;
+        userDto.image = imageResponseDto;
+      }
     }
     return userDto;
   }
@@ -45,8 +51,13 @@ export class UserMapper {
    * @param {UserEntity[]} users - The array of UserEntity objects to be mapped.
    * @returns {UserResponseDto[]} The mapped array of UserResponseDto objects.
    */
-  mapUsersToResponseDtos(users: UserEntity[]): UserResponseDto[] {
-    return users.map((user) => this.mapUserToResponseDto(user));
+  async mapUsersToResponseDtos(users: UserEntity[]): Promise<UserResponseDto[]> {
+    const responseDtos: UserResponseDto[] = [];
+    for (const user of users) {
+      const userResponseDto = await this.mapUserToResponseDto(user);
+      responseDtos.push(userResponseDto);
+    }
+    return responseDtos;
   }
 
   /**

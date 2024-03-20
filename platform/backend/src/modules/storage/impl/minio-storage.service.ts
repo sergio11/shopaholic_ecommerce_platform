@@ -68,14 +68,14 @@ export class MinioStorageService
    * @param {Buffer} newFile - The new content of the file.
    * @param {string} contentType - The content type of the file.
    * @param {number} length - The length of the file.
-   * @returns {Promise<{ id: string; url: string }>} - The updated file information.
+   * @returns {Promise<string>} - The storage id of the saved file.
    */
   public async updateFile(
     id: string,
     newFile: Buffer,
     contentType: string,
     length: number,
-  ): Promise<{ id: string; url: string }> {
+  ): Promise<string> {
     const existingObject = await this.getObjectInfo(id);
     if (!existingObject) {
       this.throwNotFoundException('FILE_NOT_FOUND');
@@ -98,13 +98,13 @@ export class MinioStorageService
    * @param {Buffer} file - The content of the file.
    * @param {string} contentType - The content type of the file.
    * @param {number} length - The length of the file.
-   * @returns {Promise<{ id: string; url: string }>} - The saved file information.
+   * @returns {Promise<string>} - The storage id of the saved file.
    */
   public async saveFile(
     file: Buffer,
     contentType: string,
     length: number,
-  ): Promise<{ id: string; url: string }> {
+  ): Promise<string> {
     const uuid = uuidv4();
     const fileExtension = contentType.split('/').pop(); // Extract file extension from Content-Type
     const fileId = `${uuid}.${fileExtension}`; // Use the generated UUID with file extension
@@ -135,7 +135,7 @@ export class MinioStorageService
       if (!url) {
         this.throwInternalServerError('FILE_SAVING_ERROR');
       }
-      return { id: fileId, url };
+      return fileId;
     } catch (error) {
       console.error('Error saving file to MinIO:', error);
       this.throwInternalServerError('FILE_SAVING_ERROR');
@@ -158,6 +158,27 @@ export class MinioStorageService
     } catch (error) {
       console.error('Error deleting file from MinIO:', error);
       this.throwInternalServerError('FILE_DELETING_ERROR');
+    }
+  }
+
+  /**
+   * Retrieves the URL of a file from the storage service based on its ID.
+   * @param {string} id - The ID of the file.
+   * @returns {Promise<string>} - The URL of the file.
+   */
+  public async getFileUrl(id: string): Promise<string> {
+    try {
+      const url = await this.minioClient.presignedGetObject(
+        this.bucketName,
+        id,
+      );
+      if (!url) {
+        this.throwNotFoundException('FILE_NOT_FOUND');
+      }
+      return url;
+    } catch (error) {
+      console.error('Error retrieving file URL from MinIO:', error);
+      this.throwInternalServerError('FILE_URL_RETRIEVAL_ERROR');
     }
   }
 
