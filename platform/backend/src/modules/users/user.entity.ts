@@ -47,7 +47,7 @@ export class UserEntity extends AbstractEntity {
   /**
    * User's profile image.
    */
-  @OneToOne(() => ImageEntity)
+  @OneToOne(() => ImageEntity, { cascade: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'image_id' })
   image: ImageEntity;
 

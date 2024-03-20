@@ -134,7 +134,9 @@ export class UsersService extends SupportService {
 
     // Add a filter for the "role" if provided
     if (role) {
-      queryBuilder = queryBuilder.innerJoinAndSelect(
+      queryBuilder = queryBuilder
+      .leftJoinAndSelect('user.image', 'image')
+      .innerJoinAndSelect(
         'user.roles',
         'user_roles',
         'user_roles.name = :role',
@@ -217,18 +219,7 @@ export class UsersService extends SupportService {
    */
   private async findUser(id: string): Promise<UserEntity> {
     return this.findEntityById(id, this.usersRepository, 'USER_NOT_FOUND', [
-      'roles',
+      'roles', 'image'
     ]);
-  }
-
-  private async findRoleIdByJwtRole(role: JwtRole): Promise<string> {
-    const roleName = role === JwtRole.ADMIN ? 'ADMIN' : 'CLIENT';
-    const foundRole = await this.rolesRepository.findOne({
-      where: { name: roleName },
-    });
-    if (!foundRole) {
-      throw this.throwNotFoundException('ROLE_NOT_FOUND');
-    }
-    return foundRole.id;
   }
 }
