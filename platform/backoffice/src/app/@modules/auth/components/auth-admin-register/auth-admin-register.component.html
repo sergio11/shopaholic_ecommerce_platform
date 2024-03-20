@@ -14,13 +14,37 @@
       (ngSubmit)="submitForm()"
     >
       <nz-form-item>
-        <nz-form-control nzErrorTip="Please input your Phone Number!">
-          <nz-input-group nzPrefixIcon="user">
+        <nz-form-control nzErrorTip="Please input your name!">
+          <nz-input-group nzPrefixIcon="edit">
             <input
               type="text"
               nz-input
-              formControlName="phoneNumber"
-              placeholder="Enter your phone number"
+              formControlName="name"
+              placeholder="Enter your name"
+            />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please input your lastname!">
+          <nz-input-group nzPrefixIcon="edit">
+            <input
+              type="text"
+              nz-input
+              formControlName="lastname"
+              placeholder="Enter your lastname"
+            />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please input your email!">
+          <nz-input-group nzPrefixIcon="mail">
+            <input
+              type="email"
+              nz-input
+              formControlName="email"
+              placeholder="Enter your email"
             />
           </nz-input-group>
         </nz-form-control>

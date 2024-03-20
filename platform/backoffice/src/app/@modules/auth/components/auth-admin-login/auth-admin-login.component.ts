@@ -11,15 +11,18 @@ import { routesConstant } from 'src/app/@constant/routes.constant';
   styleUrls: ['./auth-admin-login.component.scss'],
 })
 export class AuthAdminLoginComponent implements OnInit {
+  
   readonly routesConstant = routesConstant;
   isLoading: boolean = false;
   validateForm!: FormGroup;
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private notification: NzNotificationService,
     private router: Router
   ) {}
+
   ngOnInit(): void {
     this.validateForm = this.fb.group({
       email: ['admin@shopaholic.com', [Validators.required]],
@@ -27,6 +30,7 @@ export class AuthAdminLoginComponent implements OnInit {
       remember: [true],
     });
   }
+
   submitForm(): void {
     const { email, password } = this.validateForm.value;
     this.isLoading = true;
