@@ -42,18 +42,6 @@ export class UpdateUserDto {
     phone?: string;
 
     /**
-     * The updated token used for push notifications.
-     */
-    @ApiProperty({
-        description: "The updated token used for push notifications.",
-        example: "f1d8e9c0-1234-5678-9abc-0def1ab234cd",
-        required: false
-    })
-    @IsOptional()
-    @IsString()
-    notification_token?: string;
-
-    /**
      * The updated country of the user.
      */
     @ApiProperty({
@@ -80,7 +68,11 @@ export class UpdateUserDto {
     /**
      * The updated image file associated with the user.
      */
-    @ApiProperty({ description: `The updated image file associated with the user`, type: 'string', format: 'binary' })
+    @ApiProperty({ 
+        description: `The updated image file associated with the user`,
+        type: 'string', 
+        format: 'binary' 
+    })
     imageFile?: Express.Multer.File;
 
     /**
@@ -120,8 +112,7 @@ export class UpdateUserDto {
      */
     @ApiProperty({
         description: "The updated gender of the user.",
-        enum: GenderEnum,
-        required: false
+        enum: GenderEnum
     })
     @IsOptional()
     @IsString()

@@ -33,7 +33,7 @@ export class UserService {
       tap((data) => {
         this.customerStore.update(data);
       })
-    );;
+    );
   }
 
   searchAdmins(option: IFilterUser) {

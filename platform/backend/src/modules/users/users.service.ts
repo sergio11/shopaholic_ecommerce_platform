@@ -82,10 +82,12 @@ export class UsersService extends SupportService {
     updateUserDto: UpdateUserDto,
   ): Promise<UserResponseDto> {
     const userFound = await this.findUser(id);
-    updateUserDto.image = await this.fileSavingMixin.saveImageFile(
-      updateUserDto.imageFile,
-      userFound.image,
-    );
+    if(updateUserDto.imageFile) {
+      updateUserDto.image = await this.fileSavingMixin.saveImageFile(
+        updateUserDto.imageFile,
+        userFound.image,
+      );
+    }
     const updatedUser = this.userMapper.mapUpdateUserDtoToEntity(
       updateUserDto,
       userFound,
