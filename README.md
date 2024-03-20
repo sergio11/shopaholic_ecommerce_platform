@@ -87,16 +87,13 @@ HaProxy Load Balancer is employed to distribute traffic evenly among backend ser
 3. Configure environment variables in a `.env` file.
 4. Run the application using `npm start`.
 
-For more detailed instructions on setting up and using the application, please refer to our [documentation](link_to_documentation).
-
 ## Backoffice Administration
 
-We have developed an Angular-based backoffice for administrators to easily manage the product catalog, orders, and users of the platform.
+I have developed an Angular-based backoffice for administrators to easily manage the product catalog, orders, and users of the platform.
 
 ### Backoffice Features
 
 - Secure administrator login.
-- Dashboard with key statistics and metrics.
 - Product management: Add, edit, and delete products from the catalog.
 - Order viewing and processing.
 - User account management: View and manage user profiles.
@@ -106,9 +103,10 @@ We have developed an Angular-based backoffice for administrators to easily manag
 
 | Technology  | Description                                                                | Logo                                                                                   |
 |-------------|----------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
-| Angular     | Frontend framework for creating dynamic user interfaces.                   | ![Angular Logo](url_to_logo)                                                         |
-| TypeScript  | Programming language for Angular application development.                  | ![TypeScript Logo](url_to_logo)                                                      |
-| Bootstrap   | CSS framework for creating responsive and appealing interfaces.            | ![Bootstrap Logo](url_to_logo)                                                       |
+| Angular     | Frontend framework for creating dynamic user interfaces.                   |  <img width="auto" height="100"   src="./doc/images/angular_logo.png" />              |
+| TypeScript  | Programming language for Angular application development.                  |  <img width="auto" height="100"   src="./doc/images/typescript_logo.png" />                                                     |
+| Akita   |  A Reactive State Management Tailored-Made for JS Applications          |  <img width="auto"   src="./doc/images/logo_akita.png" />                                                       |
+| NG Zorro   | An enterprise-class Angular UI component library based on Ant Design, all components are open source and free to use under MIT license.           |  <img width="auto" height="100"   src="./doc/images/ngzorro_logo.png" />                                                       |
 
 ## Docker Deployment
 
