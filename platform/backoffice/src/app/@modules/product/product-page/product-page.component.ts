@@ -14,10 +14,9 @@ export class ProductPageComponent {
   state: IProductState = createInitialState();
 
   constructor(
-    private productService: ProductService,
-    private productQuery: ProductsQuery
+    private readonly productService: ProductService,
+    private readonly productQuery: ProductsQuery
   ) {}
-
 
   ngOnInit() {
     this.filterData({ page: 1, take: 12 });

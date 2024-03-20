@@ -4,6 +4,7 @@ import { UserService } from 'src/app/@shared/services/user.service';
 import { ICustomerState } from 'src/app/@shared/stores/customer/customers.store';
 import { createInitialState } from 'src/app/@shared/stores/core/generic-crud-store';
 import { CustomersQuery } from 'src/app/@shared/stores/customer/customers.query';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   templateUrl: './customers.component.html',
@@ -16,7 +17,8 @@ export class CustomersComponent implements OnInit {
 
   constructor(
     private readonly userService: UserService,
-    private readonly customerQuery: CustomersQuery
+    private readonly customerQuery: CustomersQuery,
+    private readonly notificationService: NzNotificationService
   ) {}
   
   ngOnInit() {
@@ -42,6 +44,12 @@ export class CustomersComponent implements OnInit {
       page: this.state.meta.currentPage,
       take: 10,
       searchTerm: e?.target?.value,
+    });
+  }
+
+  onDelete(id: string) {
+    this.userService.delete(id).subscribe(() => {
+      this.notificationService.success('Customer Deleted', '');
     });
   }
 }

@@ -44,6 +44,14 @@ export class UserService {
       tap((data) => {
         this.adminStore.update(data);
       })
-    );;
+    );
+  }
+
+  delete(id: string) {
+    return this.http.delete(`${this.END_POINT}${id}`, { responseType: 'text' }).pipe(
+      tap(() => {
+        this.adminStore.remove(id);
+      })
+    );
   }
 }

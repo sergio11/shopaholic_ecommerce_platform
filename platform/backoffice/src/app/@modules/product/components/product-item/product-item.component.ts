@@ -12,8 +12,8 @@ export class ProductItemComponent implements OnInit {
   @Input() data: any = {};
 
   constructor(
-    private productService: ProductService,
-    private nzNotificationService: NzNotificationService
+    private readonly productService: ProductService,
+    private readonly nzNotificationService: NzNotificationService
   ) {}
   
   ngOnInit(): void {}
