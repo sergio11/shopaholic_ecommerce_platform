@@ -5,6 +5,7 @@ import { UserResponseDto } from './dto/user-response.dto';
 import { RoleMapper } from '../roles/role.mapper';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ImageMapper } from '../images/image.mapper';
 
 /**
  * Mapper service for converting UserEntity and DTO objects.
@@ -14,9 +15,11 @@ export class UserMapper {
   /**
    * Creates an instance of UserMapper.
    * @param roleMapper - An instance of RoleMapper.
+   * @param imageMapper - An instance of ImageMapper
    */
   constructor(
     private readonly roleMapper: RoleMapper,
+    private readonly imageMapper: ImageMapper
   ) {}
 
   /**
@@ -30,6 +33,9 @@ export class UserMapper {
     });
     if(user.roles) {
       userDto.roles = this.roleMapper.mapRolesToResponseDtos(user.roles);
+    }
+    if (user.image) {
+      userDto.image = this.imageMapper.mapImageToResponseDto(user.image);
     }
     return userDto;
   }

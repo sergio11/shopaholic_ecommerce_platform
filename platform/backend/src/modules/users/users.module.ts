@@ -9,18 +9,20 @@ import { RolesModule } from '../roles/roles.module';
 import { FilesStorageModule } from '../storage/storage.module';
 import { AddressSubscriber } from './subscribers/address.subscriber';
 import { ProductReviewSubscriber } from './subscribers/product-review.subscriber';
+import { ImagesModule } from '../images/images.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity, RoleEntity]),
     RolesModule,
     FilesStorageModule,
+    ImagesModule
   ],
   providers: [
     UsersService,
     UserMapper,
     AddressSubscriber,
-    ProductReviewSubscriber,
+    ProductReviewSubscriber
   ],
   controllers: [UsersController],
   exports: [UsersService, UserMapper],
