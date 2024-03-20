@@ -10,7 +10,7 @@ import { ICategory } from 'src/app/@shared/interfaces/category.interface';
 })
 export class CategoryUpdateComponent implements OnInit {
   @Input() data: ICategory | undefined;
-  @Output() onUpdated = new EventEmitter<any>();
+  @Output() dataChange: EventEmitter<any> = new EventEmitter<any>();
 
   isModalOpen = false;
   categoryImageFileSelected: File | undefined;
@@ -45,9 +45,10 @@ export class CategoryUpdateComponent implements OnInit {
           description: this.categoryForm.value.description || '',
           image: this.categoryImageFileSelected,
         })
-        .subscribe((res: any) => {
-          console.log(res)
-          this.notificationService.success('Updated', '');
+        .subscribe((data: any) => {
+          this.notificationService.success('Category Updated', '');
+          this.isModalOpen = false;
+          this.dataChange.emit(data);
         });
     }
   }

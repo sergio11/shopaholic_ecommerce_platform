@@ -7,6 +7,7 @@ import { CategoryQuery } from '../../@shared/stores/categories/category.query';
 import { CategoryService } from './../../@shared/services/category.service';
 import { ICategoryState } from 'src/app/@shared/stores/categories/category.store';
 import { createInitialState } from 'src/app/@shared/stores/core/generic-crud-store';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   templateUrl: './category.component.html',
@@ -18,7 +19,8 @@ export class CategoryComponent implements OnInit {
 
   constructor(
     private readonly categoryService: CategoryService,
-    private readonly categoryQuery: CategoryQuery
+    private readonly categoryQuery: CategoryQuery,
+    private readonly notificationService: NzNotificationService
   ) {}
 
   ngOnInit() {
@@ -60,6 +62,8 @@ export class CategoryComponent implements OnInit {
 
   //* Delete
   onDelete(id: string) {
-    this.categoryService.delete(id).toPromise();
+    this.categoryService.delete(id).subscribe(() => {
+      this.notificationService.success('Category Deleted', '');
+    });
   }
 }
