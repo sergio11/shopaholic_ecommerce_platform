@@ -8,22 +8,24 @@ import { OrderHasProductsEntity } from './order_has_products.entity';
 import { AddressMapper } from '../address/address.mapper';
 import { ProductMapper } from '../products/product.mapper';
 import { CartItemDto, CreatePaymentDto, ShippingAddressDto } from '../payments/dto/create-payment.dto';
+import { StorageMixin } from '../storage/mixin/file-saving.mixin';
 
 @Injectable()
 export class OrderMapper {
   constructor(
     private readonly userMapper: UserMapper,
     private readonly addressMapper: AddressMapper,
-    private readonly productMapper: ProductMapper
+    private readonly productMapper: ProductMapper,
+    private readonly storageMixin: StorageMixin
   ) {}
 
-  mapOrderToResponseDto(order: OrderEntity): OrderResponseDto {
+  async mapOrderToResponseDto(order: OrderEntity): Promise<OrderResponseDto> {
     const orderDto = plainToClass(OrderResponseDto, order, {
       excludeExtraneousValues: true,
     });
 
     if (order.user) {
-      orderDto.client = this.userMapper.mapUserToResponseDto(order.user);
+      orderDto.client = await this.userMapper.mapUserToResponseDto(order.user);
     }
 
     if (order.address) {
@@ -33,7 +35,7 @@ export class OrderMapper {
     }
 
     if (order.orderHasProducts) {
-      orderDto.orderHasProducts = this.mapOrderHasProductsToResponseDtos(
+      orderDto.orderHasProducts = await this.mapOrderHasProductsToResponseDtos(
         order.orderHasProducts,
       );
     }
@@ -41,16 +43,21 @@ export class OrderMapper {
     return orderDto;
   }
 
-  mapOrdersToResponseDtos(orders: OrderEntity[]): OrderResponseDto[] {
-    return orders.map((order) => this.mapOrderToResponseDto(order));
+  async mapOrdersToResponseDtos(orders: OrderEntity[]): Promise<OrderResponseDto[]> {
+    const responseDtos: OrderResponseDto[] = [];
+    for (const order of orders) {
+      const orderResponseDto = await this.mapOrderToResponseDto(order);
+      responseDtos.push(orderResponseDto);
+    }
+    return responseDtos;
   }
 
-  mapOrderToPaymentDto(order: OrderEntity): CreatePaymentDto {
+  async mapOrderToPaymentDto(order: OrderEntity): Promise<CreatePaymentDto> {
     const paymentDto = new CreatePaymentDto();
     paymentDto.orderId = order.id;
     paymentDto.userId = order.user.id;
     paymentDto.language = order.user.language;
-
+  
     const shippingAddressDto = new ShippingAddressDto();
     shippingAddressDto.email = order.user.email;
     shippingAddressDto.fullName = `${order.user.name} ${order.user.lastname}`;
@@ -61,41 +68,46 @@ export class OrderMapper {
     shippingAddressDto.state = order.address.state;
     shippingAddressDto.postalCode = order.address.postalCode;
     paymentDto.shippingAddress = shippingAddressDto;
-
-    paymentDto.cartItems = order.orderHasProducts.map(lineOrder => {
+  
+    const cartItems = await Promise.all(order.orderHasProducts.map(async (lineOrder) => {
       const item = new CartItemDto();
       item.id = lineOrder.id;
       item.name = lineOrder.product.name;
       item.desc = lineOrder.product.description;
       item.price = lineOrder.product.price;
-      item.image = lineOrder.product.mainImage.url;
+      item.image = await this.storageMixin.getImageUrl(lineOrder.product.mainImage.storageId)
       item.cartQuantity = lineOrder.quantity;
       return item;
-    });
-
+    }));
+  
+    paymentDto.cartItems = cartItems;
+  
     return paymentDto;
   }
 
 
-  private mapOrderHasProductToResponseDto(
+  private async mapOrderHasProductToResponseDto(
     orderHasProduct: OrderHasProductsEntity,
-  ): OrderHasProductResponseDto {
+  ): Promise<OrderHasProductResponseDto> {
     const orderHasProductDto = plainToClass(
       OrderHasProductResponseDto,
       orderHasProduct,
       { excludeExtraneousValues: true },
     );
     if(orderHasProduct.product) {
-      orderHasProductDto.product = this.productMapper.mapProductToResponseDto(orderHasProduct.product);
+      orderHasProductDto.product = await this.productMapper.mapProductToResponseDto(orderHasProduct.product);
     }
     return orderHasProductDto;
   }
 
-  private mapOrderHasProductsToResponseDtos(
-    orderHasProducts: OrderHasProductsEntity[],
-  ): OrderHasProductResponseDto[] {
-    return orderHasProducts.map((orderHasProduct) =>
-      this.mapOrderHasProductToResponseDto(orderHasProduct),
-    );
+  private async mapOrderHasProductsToResponseDtos(
+    orderHasProducts: OrderHasProductsEntity[]
+  ): Promise<OrderHasProductResponseDto[]> {
+    const responseDtos: OrderHasProductResponseDto[] = [];
+    for (const orderHasProduct of orderHasProducts) {
+      const orderHasProductResponseDto = await this.mapOrderHasProductToResponseDto(orderHasProduct);
+      responseDtos.push(orderHasProductResponseDto);
+    }
+    return responseDtos;
   }
 }

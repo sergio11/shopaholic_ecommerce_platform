@@ -149,9 +149,7 @@ export class UsersService extends SupportService {
     console.log('Parameters:', parameters);
 
     const paginatedUser = await paginate(queryBuilder, { page, limit });
-    const items = paginatedUser.items.map((user) =>
-      this.userMapper.mapUserToResponseDto(user),
-    );
+    const items = await this.userMapper.mapUsersToResponseDtos(paginatedUser.items);
 
     return {
       ...paginatedUser,

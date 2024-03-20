@@ -4,30 +4,38 @@ import { CategoryEntity } from './category.entity';
 import { CategoryResponseDto } from './dto/category-response.dto';
 import CreateCategoryDTO from './dto/create-category.dto';
 import UpdateCategoryDTO from './dto/update-category.dto';
-import { ImageMapper } from '../images/image.mapper';
+import { StorageMixin } from '../storage/mixin/file-saving.mixin';
+import { ImageResponseDto } from '../images/dto/image-response.dto';
 
 @Injectable()
 export class CategoryMapper {
 
-  constructor(private readonly imageMapper: ImageMapper) {}
+  constructor(private readonly storageMixin: StorageMixin) {}
 
-  mapCategoryToResponseDto(category: CategoryEntity): CategoryResponseDto {
+  async mapCategoryToResponseDto(category: CategoryEntity): Promise<CategoryResponseDto> {
     const categoryResponseDto = plainToClass(CategoryResponseDto, category, {
       excludeExtraneousValues: true,
     });
     if (category.image) {
-      const imageDto = this.imageMapper.mapImageToResponseDto(category.image);
-      categoryResponseDto.image = imageDto;
+      const url = await this.storageMixin.getImageUrl(category.image.storageId);
+      if (url) {
+        const imageResponseDto = new ImageResponseDto();
+        imageResponseDto.url = url;
+        categoryResponseDto.image = imageResponseDto;
+      }
     }
     return categoryResponseDto;
   }
 
-  mapCategoriesToResponseDtos(
+  async mapCategoriesToResponseDtos(
     categories: CategoryEntity[],
-  ): CategoryResponseDto[] {
-    return categories.map((category) =>
-      this.mapCategoryToResponseDto(category),
-    );
+  ): Promise<CategoryResponseDto[]> {
+    const responseDtos: CategoryResponseDto[] = [];
+    for (const category of categories) {
+      const categoryResponseDto = await this.mapCategoryToResponseDto(category);
+      responseDtos.push(categoryResponseDto);
+    }
+    return responseDtos;
   }
 
   mapCreateCategoryDtoToEntity(

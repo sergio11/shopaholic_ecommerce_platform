@@ -22,7 +22,8 @@ import { ImagesModule } from '../images/images.module';
     UsersService,
     UserMapper,
     AddressSubscriber,
-    ProductReviewSubscriber
+    ProductReviewSubscriber,
+    FilesStorageModule
   ],
   controllers: [UsersController],
   exports: [UsersService, UserMapper],

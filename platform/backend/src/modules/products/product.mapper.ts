@@ -6,7 +6,8 @@ import { CategoryMapper } from '../categories/category.mapper';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { BrandsMapper } from '../brands/brands.mapper';
-import { ImageMapper } from '../images/image.mapper';
+import { StorageMixin } from '../storage/mixin/file-saving.mixin';
+import { ImageResponseDto } from '../images/dto/image-response.dto';
 
 @Injectable()
 export class ProductMapper {
@@ -14,12 +15,12 @@ export class ProductMapper {
    * Creates an instance of ProductMapper.
    * @param categoryMapper - An instance of CategoryMapper.
    * @param brandsMapper - An instance of BrandsMapper.
-   * @param imageMapper - An instance of ImageMapper
+   * @param storageMixin - An instance of StorageMixin
    */
   constructor(
     private readonly categoryMapper: CategoryMapper,
     private readonly brandsMapper: BrandsMapper,
-    private readonly imageMapper: ImageMapper
+    private readonly storageMixin: StorageMixin
   ) {}
 
   /**
@@ -27,24 +28,34 @@ export class ProductMapper {
    * @param product - The ProductEntity instance to map.
    * @returns The mapped ProductResponseDto instance.
    */
-  mapProductToResponseDto(product: ProductEntity): ProductResponseDto {
+  async mapProductToResponseDto(product: ProductEntity): Promise<ProductResponseDto> {
     const productDto = plainToClass(ProductResponseDto, product, {
       excludeExtraneousValues: true,
       exposeUnsetFields: false,
     });
     if (product.category) {
-      productDto.category = this.categoryMapper.mapCategoryToResponseDto(
+      productDto.category = await this.categoryMapper.mapCategoryToResponseDto(
         product.category,
       );
     }
     if (product.brand) {
-      productDto.brand = this.brandsMapper.mapBrandToResponseDto(product.brand);
+      productDto.brand = await this.brandsMapper.mapBrandToResponseDto(product.brand);
     }
     if (product.mainImage) {
-      productDto.mainImage = this.imageMapper.mapImageToResponseDto(product.mainImage);
+      const url = await this.storageMixin.getImageUrl(product.mainImage.storageId);
+      if (url) {
+        const imageResponseDto = new ImageResponseDto();
+        imageResponseDto.url = url;
+        productDto.mainImage = imageResponseDto;
+      }
     }
     if (product.secondaryImage) {
-      productDto.secondaryImage = this.imageMapper.mapImageToResponseDto(product.secondaryImage);
+      const url = await this.storageMixin.getImageUrl(product.secondaryImage.storageId);
+      if (url) {
+        const imageResponseDto = new ImageResponseDto();
+        imageResponseDto.url = url;
+        productDto.secondaryImage = imageResponseDto;
+      }
     }
     return productDto;
   }
@@ -54,8 +65,13 @@ export class ProductMapper {
    * @param products - The array of ProductEntity instances to map.
    * @returns The array of mapped ProductResponseDto instances.
    */
-  mapProductsToResponseDtos(products: ProductEntity[]): ProductResponseDto[] {
-    return products.map((product) => this.mapProductToResponseDto(product));
+  async mapProductsToResponseDtos(products: ProductEntity[]): Promise<ProductResponseDto[]> {
+    const responseDtos: ProductResponseDto[] = [];
+    for (const product of products) {
+      const productResponseDto = await this.mapProductToResponseDto(product);
+      responseDtos.push(productResponseDto);
+    }
+    return responseDtos;
   }
 
   /**
