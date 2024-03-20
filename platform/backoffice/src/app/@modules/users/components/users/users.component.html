@@ -29,6 +29,7 @@
   >
     <thead>
       <tr>
+        <th style="width: 60px">Image</th>
         <th>ID</th>
         <th>Name</th>
         <th>Email</th>
@@ -36,12 +37,14 @@
         <th>Country</th>
         <th>City</th>
         <th>Language</th>
-        <th>BirthDate</th>
+        <th>Birthdate</th>
         <th>Gender</th>
+        <th style="text-align: right">Actions</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of basicTable.data">
+        <td><img style="height: 45px" [src]="data.image?.url || 'N/A'" alt="" /></td>
         <td>{{ data.id }}</td>
         <td>{{ data.name }} {{ data.lastname }}</td>
         <td>{{ data.email }}</td>
@@ -51,6 +54,16 @@
         <td>{{ data.language ? data.language : 'Not Specified' }}</td>
         <td>{{ data.birthDate | date }}</td>
         <td>{{ data.gender ? data.gender : 'Not Specified' }}</td>
+        <td style="text-align: right; width: 200px">
+          <a
+            nz-popconfirm
+            nzPopconfirmTitle="Are you sure delete this?"
+            nzPopconfirmPlacement="top"
+            (nzOnConfirm)="onDelete(data.id)"
+          >
+            <button nz-button nzShape="circle" class="ant-btn-danger">
+              <i nz-icon nzType="delete" nzTheme="outline"></i></button
+          ></a>
       </tr>
     </tbody>
   </nz-table>
