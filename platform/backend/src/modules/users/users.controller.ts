@@ -192,14 +192,14 @@ export class UsersController {
   @Auth(JwtRole.ADMIN)
   @Version('1.0')
   @Post()
-  @DefaultUploadFileValidationDecorator()
+  @DefaultUploadFileValidationDecorator({ isOptional: true })
   @ApiOperation({ summary: 'Create new user' })
   async create(
     @UploadedFiles()
-    files: { imageFile: Express.Multer.File },
+    files: { imageFile?: Express.Multer.File },
     @Body() userData: CreateUserDto,
   ): Promise<UserResponseDto> {
-    const user = { ...userData, imageFile: files.imageFile };
+    const user = { ...userData, imageFile: files && files.imageFile ? files.imageFile[0] : undefined };
     return this.usersService.create(user);
   }
 
@@ -217,11 +217,11 @@ export class UsersController {
   @ApiOperation({ summary: 'Update user and profile picture' })
   async update(
     @UploadedFiles()
-    files: { imageFile: Express.Multer.File },
+    files: { imageFile?: Express.Multer.File },
     @Param('id') id: string,
     @Body() userData: UpdateUserDto,
   ): Promise<UserResponseDto> {
-    const user = { ...userData, imageFile: files.imageFile };
+    const user = { ...userData, imageFile:  files && files.imageFile ? files.imageFile[0] : undefined };
     return this.usersService.update(id, user);
   }
 
