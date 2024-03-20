@@ -1,4 +1,4 @@
-import { IBaseFilterQuery } from './base.interface';
+import { IBaseFilterQuery, IImage } from './base.interface';
 export interface IFChangePhoneNumber {
   oldPhoneNumber?: string;
   newPhoneNumber?: string;
@@ -42,6 +42,7 @@ export interface IUser {
   country: string | null;
   language: string;
   city: string | null;
+  image?: IImage;
   birthDate: string | null;
   gender: string | null;
 }

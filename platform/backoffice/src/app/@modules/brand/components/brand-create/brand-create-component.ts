@@ -46,7 +46,7 @@ export class BrandCreateComponent {
         })
         .subscribe((res: any) => {
           console.log(res);
-          this.notificationService.success('Created', '');
+          this.notificationService.success('Brand Created', '');
           this.onClose.emit();
           this.brandForm.reset();
           this.brandImageFileSelected = undefined;

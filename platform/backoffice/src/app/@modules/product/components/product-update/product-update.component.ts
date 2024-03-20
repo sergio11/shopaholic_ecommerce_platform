@@ -22,11 +22,11 @@ export class ProductUpdateComponent implements OnInit {
   secondaryImageFileSelected: File | undefined;
 
   constructor(
-    private productService: ProductService,
-    private fb: FormBuilder,
-    private notificationService: NzNotificationService,
-    private categoryService: CategoryService,
-    private brandService: BrandService
+    private readonly productService: ProductService,
+    private readonly fb: FormBuilder,
+    private readonly notificationService: NzNotificationService,
+    private readonly categoryService: CategoryService,
+    private readonly brandService: BrandService
   ) {
     this.productForm = this.fb.group({
       name: [''],
