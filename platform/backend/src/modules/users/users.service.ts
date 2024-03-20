@@ -44,9 +44,11 @@ export class UsersService extends SupportService {
    * @returns The created user.
    */
   async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
-    createUserDto.image = await this.fileSavingMixin.saveImageFile(
-      createUserDto.imageFile,
-    );
+    if(createUserDto.imageFile) {
+      createUserDto.image = await this.fileSavingMixin.saveImageFile(
+        createUserDto.imageFile,
+      );
+    }
     const newUser = this.userMapper.mapCreateUserDtoToEntity(createUserDto);
     const userCreated = await this.usersRepository.save(newUser);
     return this.userMapper.mapUserToResponseDto(userCreated);
@@ -186,8 +188,8 @@ export class UsersService extends SupportService {
    */
   async delete(id: string): Promise<string> {
     const userToDelete = await this.findUser(id);
-    await this.fileSavingMixin.removeImageFile(userToDelete.image);
     await this.usersRepository.remove(userToDelete);
+    await this.fileSavingMixin.removeImageFile(userToDelete.image);
     return this.resolveString('USER_DELETED_SUCCESSFULLY');
   }
 
