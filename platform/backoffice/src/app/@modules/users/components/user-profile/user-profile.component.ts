@@ -1,16 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  IBaseMetaSchema,
-  IBaseResponse,
-} from './../../../../@shared/interfaces/base.interface';
-
-import { IFUserInfo } from 'src/app/@shared/interfaces/userInfo.interface';
 import { UserInfoService } from './../../../../@shared/services/userInfo.service';
 import { routesConstant } from 'src/app/@constant/routes.constant';
-
-export interface UserInfoResponse extends IFUserInfo, IBaseMetaSchema {
-  phoneNumber?: string;
-}
+import { IUserInfoState } from 'src/app/@shared/stores/userinfo/userinfo.store';
+import { UserInfoQuery } from 'src/app/@shared/stores/userinfo/userinfo.query';
 
 @Component({
   templateUrl: './user-profile.component.html',
@@ -18,22 +10,22 @@ export interface UserInfoResponse extends IFUserInfo, IBaseMetaSchema {
 })
 export class UserProfileComponent implements OnInit {
   routesConstant = routesConstant;
-  userInfo: UserInfoResponse = {};
-  birthday = new Date(1988, 3, 15);
-  constructor(private userInfoService: UserInfoService) {}
+
+  data: any = {}
+
+  constructor(
+    private readonly userInfoService: UserInfoService,
+    private readonly userInfoQuery: UserInfoQuery
+    ) {}
 
   ngOnInit() {
     this.getUserInfo();
+    this.userInfoQuery.select().subscribe((state: IUserInfoState) => {
+      this.data = state;
+    }); 
   }
 
-  private getUserInfo() {
-    this.userInfoService
-      .getCurrentUserInfo()
-      .subscribe((res: IBaseResponse) => {
-        this.userInfo = {
-          ...res.data,
-          birthDate: new Date(res.data.birthDate),
-        };
-      });
+  private async getUserInfo() {
+    await this.userInfoService.getCurrentUserInfo().toPromise()
   }
 }

@@ -107,18 +107,18 @@ export class UsersController {
    * @param userData The updated user data.
    * @returns The updated user response DTO.
    */
-  @Auth(JwtRole.CLIENT)
+  @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
   @Version('1.0')
   @Post('self')
   @DefaultUploadFileValidationDecorator({ isOptional: true })
   @ApiOperation({ summary: 'Update authenticated client' })
   async updateSelf(
     @UploadedFiles()
-    files: { imageFile: Express.Multer.File },
+    files: { imageFile?: Express.Multer.File },
     @Body() userData: UpdateUserDto,
     @AuthUserId() userId: string,
   ): Promise<UserResponseDto> {
-    const updatedUser = { ...userData, imageFile: files.imageFile };
+    const updatedUser = { ...userData, imageFile: files && files.imageFile ? files.imageFile[0] : undefined };
     return this.usersService.update(userId, updatedUser);
   }
 
@@ -126,7 +126,7 @@ export class UsersController {
    * Delete the account of the authenticated client.
    * @param id The ID of the authenticated client.
    */
-  @Auth(JwtRole.CLIENT)
+  @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
   @Version('1.0')
   @Delete('self')
   @ApiOperation({ summary: 'Delete authenticated client account' })
@@ -156,7 +156,7 @@ export class UsersController {
    * @param {UpdatePasswordDto} updatePasswordData - The data for updating the password.
    * @returns {Promise<UserResponseDto>} - The updated user response DTO.
    */
-  @Auth(JwtRole.CLIENT)
+  @Auth(JwtRole.ADMIN, JwtRole.CLIENT)
   @Version('1.0')
   @Patch('self/update-password')
   @ApiOperation({ summary: 'Update authenticated client password' })

@@ -1,64 +1,56 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { IBaseResponse } from 'src/app/@shared/interfaces/base.interface';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Router } from '@angular/router';
 import { UserInfoService } from './../../../../@shared/services/userInfo.service';
 import { routesConstant } from './../../../../@constant/routes.constant';
+import { UserInfoQuery } from 'src/app/@shared/stores/userinfo/userinfo.query';
+import { IUserInfoState } from 'src/app/@shared/stores/userinfo/userinfo.store';
 
 @Component({
   templateUrl: './user-profile-update.component.html',
   styleUrls: ['./user-profile-update.component.scss'],
 })
 export class UserProfileUpdateComponent implements OnInit {
+
   userInfo: any = {};
   routesConstant = routesConstant;
+  userInfoForm: FormGroup;
+  
   constructor(
-    private fb: FormBuilder,
-    private userInfoService: UserInfoService,
-    private notification: NzNotificationService,
-    private router: Router
-  ) {}
-
-  userInfoForm = this.fb.group({
-    firstName: [this.userInfo?.firstName, Validators.required],
-    lastName: [this.userInfo?.lastName, Validators.required],
-    email: [this.userInfo?.email, Validators.required],
-    city: [this.userInfo?.city || 'Dhaka', Validators.required],
-    country: [this.userInfo?.country || 'Bangladesh', Validators.required],
-    birthDate: [this.userInfo?.birthDate, Validators.required],
-    gender: [this.userInfo?.gender, Validators.required],
-  });
+    private readonly fb: FormBuilder,
+    private readonly userInfoService: UserInfoService,
+    private readonly notification: NzNotificationService,
+    private readonly router: Router,
+    private readonly userInfoQuery: UserInfoQuery
+  ) {
+    this.userInfoForm = this.fb.group({});
+  }
 
   //* Life cycles
   ngOnInit(): void {
-    this.getUserInfo();
+    this.userInfoQuery.select().subscribe((state: IUserInfoState) => {
+      this.userInfo = state;
+      this.userInfoForm = this.fb.group({
+        name: [this.userInfo?.name, Validators.required],
+        lastname: [this.userInfo?.lastname, Validators.required],
+        email: [this.userInfo?.email, Validators.required],
+        city: [this.userInfo?.city, Validators.required],
+        country: [this.userInfo?.country, Validators.required],
+        birthDate: [this.userInfo?.birthDate, Validators.required],
+        gender: [this.userInfo?.gender, Validators.required],
+        language: [this.userInfo?.language, Validators.required]
+      })
+    }); 
   }
 
   onSubmit() {
-    this.userInfoService
+   this.userInfoService
       .updateCurrentUserInfo(this.userInfoForm.value)
-      .subscribe((res: any) => {
-        this.notification.success('Updated Successfully', '');
+      .subscribe((data: any) => {
+        this.notification.success('Profile Updated Successfully', '');
         this.router.navigate([routesConstant.userProfile]);
-      });
-  }
-
-  //* Get loggedIn user info
-  private getUserInfo() {
-    this.userInfoService
-      .getCurrentUserInfo()
-      .subscribe((res: IBaseResponse) => {
-        this.userInfoForm.patchValue({
-          firstName: res.data.firstName,
-          lastName: res.data.lastName,
-          email: res.data.email,
-          city: res.data.city,
-          country: res.data.country,
-          birthDate: res.data.birthDate,
-          gender: res.data.gender,
-        });
       });
   }
 }
