@@ -12,22 +12,27 @@ import { routesConstant } from 'src/app/@constant/routes.constant';
   styleUrls: ['./auth-admin-register.component.scss'],
 })
 export class AuthAdminRegisterComponent {
+
   readonly routesConstant = routesConstant;
   isLoading: boolean = false;
   validateForm!: FormGroup;
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private notification: NzNotificationService,
     private router: Router
   ) {}
+
   ngOnInit(): void {
     this.validateForm = this.fb.group({
-      phoneNumber: [null, [Validators.required]],
-      password: [null, [Validators.required]],
-      remember: [true],
+      name: [null, [Validators.required]],
+      lastname: [null, [Validators.required]],
+      email: [null, [Validators.email, Validators.required]],
+      password: ['123456', [Validators.required]]
     });
   }
+
   submitForm(): void {
     this.isLoading = true;
     for (const i in this.validateForm.controls) {
@@ -36,9 +41,8 @@ export class AuthAdminRegisterComponent {
     }
     this.authService.adminSignUp(this.validateForm.value).subscribe(
       (res: any) => {
-        if (res?.token?.token.length) {
-          this.isLoading = false;
-          localStorage.setItem('token', String(res.token.token));
+        if (res?.token?.length) {
+          localStorage.setItem('token', String(res.token.replace("Bearer ", "")));
           this.notification.success('Authentication Success', '');
           this.router.navigate([routesConstant.adminDashboard]);
         }

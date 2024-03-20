@@ -162,8 +162,15 @@ export class AuthController {
   private determineDefaultLanguage(request: Request): string {
     // Access the request headers from the Request object
     const acceptLanguageHeader = request.headers['accept-language'];
-    // Check if the Accept-Language header is present and return its value
-    // If not found or if you have other error handling logic, you can return a default value
-    return acceptLanguageHeader || 'en'; // Return the value of the Accept-Language header or 'en' as default
+    // Check if the Accept-Language header is present
+    if (acceptLanguageHeader) {
+      // Extract the language code 'es-ES' from the Accept-Language header
+      const languageCode = acceptLanguageHeader.split(',')[0].split(';')[0].trim();
+      // Return the extracted language code
+      return languageCode;
+    } else {
+      // If Accept-Language header is not present or cannot be parsed, return a default value
+      return 'en-US';
+    }
   }
 }
