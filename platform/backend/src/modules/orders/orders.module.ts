@@ -12,6 +12,7 @@ import { AddressModule } from '../address/address.module';
 import { UsersModule } from '../users/users.module';
 import { ProductsModule } from '../products/products.module';
 import { PaymentsModule } from '../payments/payments.module';
+import { FilesStorageModule } from '../storage/storage.module';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { PaymentsModule } from '../payments/payments.module';
     AddressModule,
     UsersModule,
     ProductsModule,
-    PaymentsModule
+    PaymentsModule,
+    FilesStorageModule
   ],
   providers: [OrdersService, OrderMapper],
   controllers: [OrdersController],

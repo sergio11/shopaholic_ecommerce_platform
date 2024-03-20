@@ -12,9 +12,9 @@ export interface IStorageService {
    * @param {Buffer} file - The content of the file.
    * @param {string} contentType - The content type of the file.
    * @param {number} length - The length of the file.
-   * @returns {Promise<{ id: string; url: string }>} - The information about the saved file.
+   * @returns {Promise<string>} - The storage id of the saved file.
    */
-  saveFile(file: Buffer, contentType: string, length: number): Promise<{ id: string; url: string }>;
+  saveFile(file: Buffer, contentType: string, length: number): Promise<string>;
 
   /**
    * Updates an existing file in the storage service.
@@ -22,9 +22,9 @@ export interface IStorageService {
    * @param {Buffer} newFile - The new content of the file.
    * @param {string} contentType - The content type of the file.
    * @param {number} length - The length of the file.
-   * @returns {Promise<{ id: string; url: string }>} - The information about the updated file.
+   * @returns {Promise<string>} - The storage id of the saved file.
    */
-  updateFile(id: string, newFile: Buffer, contentType: string, length: number): Promise<{ id: string; url: string }>;
+  updateFile(id: string, newFile: Buffer, contentType: string, length: number): Promise<string>;
 
   /**
    * Deletes a file from the storage service.
@@ -32,6 +32,13 @@ export interface IStorageService {
    * @returns {Promise<void>}
    */
   deleteFile(id: string): Promise<void>;
+
+  /**
+   * Retrieves the URL of a file from the storage service based on its ID.
+   * @param {string} id - The ID of the file.
+   * @returns {Promise<string>} - The URL of the file.
+   */
+  getFileUrl(id: string): Promise<string>;
 }
 
   

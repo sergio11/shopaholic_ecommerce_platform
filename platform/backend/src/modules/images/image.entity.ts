@@ -6,12 +6,6 @@ import { Entity, Column } from 'typeorm';
  */
 @Entity({ name: 'images' })
 export class ImageEntity extends AbstractEntity {
-  /**
-   * URL of the image.
-   * @example https://example.com/images/image.jpg
-   */
-  @Column({ type: 'varchar', length: 4000 })
-  url: string;
 
   /**
    * ID of the associated storage for the image.

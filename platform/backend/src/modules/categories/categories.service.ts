@@ -39,7 +39,7 @@ export class CategoriesService extends SupportService {
     }
     const categories = await this.categoriesRepository.find({relations: ["image"]});
     const categoryDtos =
-      this.categoryMapper.mapCategoriesToResponseDtos(categories);
+    await this.categoryMapper.mapCategoriesToResponseDtos(categories);
     await this.cacheService.set(
       this.CACHE_KEY,
       categoryDtos,
@@ -81,10 +81,7 @@ export class CategoriesService extends SupportService {
     }
 
     const paginatedCategories = await paginate(queryBuilder, options);
-    const items = paginatedCategories.items.map((category) =>
-      this.categoryMapper.mapCategoryToResponseDto(category),
-    );
-
+    const items = await this.categoryMapper.mapCategoriesToResponseDtos(paginatedCategories.items);
     return {
       ...paginatedCategories,
       items,
