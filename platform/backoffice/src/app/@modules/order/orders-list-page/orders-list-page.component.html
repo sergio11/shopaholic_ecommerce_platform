@@ -52,15 +52,18 @@
         <td>{{ data.totalProducts }}</td>
         <td>{{ data.address.address }}, {{ data.address.city }}, {{ data.address.state }}, {{ data.address.country }}</td>
         <td style="text-align: right; width: 200px">
-          <a
-            nz-popconfirm
-            nzPopconfirmTitle="Are you sure delete this?"
-            nzPopconfirmPlacement="top"
-            (nzOnConfirm)="onDelete(data.id)"
-          >
+          <ng-container *ngIf="data.status === 'PENDING'">
+            <a nz-popconfirm nzPopconfirmTitle="Are you sure cancel this?" nzPopconfirmPlacement="top" (nzOnConfirm)="onCancel(data.id)">
+              <button nz-button nzShape="circle" class="ant-btn-default" style="margin-right: 8px;">
+                <i nz-icon nzType="close" nzTheme="outline"></i>
+              </button>
+            </a>
+          </ng-container>
+          <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="top" (nzOnConfirm)="onDelete(data.id)">
             <button nz-button nzShape="circle" class="ant-btn-danger">
-              <i nz-icon nzType="delete" nzTheme="outline"></i></button
-          ></a>
+              <i nz-icon nzType="delete" nzTheme="outline"></i>
+            </button>
+          </a>
         </td>
       </tr>
     </tbody>

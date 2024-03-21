@@ -63,6 +63,12 @@ export class OrderListComponent implements OnInit {
     });
   }
 
+  onCancel(id: string) {
+    this.orderService.cancel(id).subscribe(() => {
+      this.notificationService.success('Order Cancelled', '');
+    });
+  }
+
   onDelete(id: string) {
     this.orderService.delete(id).subscribe(() => {
       this.notificationService.success('Order Deleted', '');
