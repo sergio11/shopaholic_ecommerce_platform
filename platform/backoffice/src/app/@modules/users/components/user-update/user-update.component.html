@@ -1,0 +1,110 @@
+<button
+  nz-button
+  nzType="primary"
+  style="margin-right: 15px"
+  (click)="isModalOpen = true"
+  nzShape="circle"
+>
+  <i nz-icon nzType="edit" nzTheme="outline"></i>
+</button>
+
+<nz-modal
+  [(nzVisible)]="isModalOpen"
+  nzTitle="Update User"
+  (nzOnCancel)="isModalOpen = false"
+  (nzOnOk)="onSubmit()"
+>
+  <ng-container *nzModalContent>
+    <form [formGroup]="userForm">
+      <div nz-row>
+        <div
+          nz-col
+          nzSpan="12"
+          nzXs="24"
+          nzSm="12"
+          nzMd="24"
+          nzLg="24"
+          nZXl="24"
+          nZXXl="24"
+        >
+        <nz-form-item nz-row [nzGutter]="16">
+          <nz-form-label class="lbl-mi-wdth" nz-col nzSpan="6">First Name</nz-form-label>
+          <nz-form-control nz-col nzSpan="18">
+            <input
+              nz-input
+              formControlName="name"
+              placeholder="First Name"
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-row [nzGutter]="16">
+          <nz-form-label class="lbl-mi-wdth" nz-col nzSpan="6">Last Name</nz-form-label>
+          <nz-form-control nz-col nzSpan="18">
+            <input
+              nz-input
+              formControlName="lastname"
+              placeholder="Last Name"
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-row [nzGutter]="16">
+          <nz-form-label class="lbl-mi-wdth" nz-col nzSpan="6">Email</nz-form-label>
+          <nz-form-control nz-col nzSpan="18">
+            <input
+              nz-input
+              type="email"
+              formControlName="email"
+              placeholder="Email"
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-row [nzGutter]="16">
+          <nz-form-label class="lbl-mi-wdth" nz-col nzSpan="6">City</nz-form-label>
+          <nz-form-control nz-col nzSpan="18">
+            <input nz-input formControlName="city" placeholder="City" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-row [nzGutter]="16">
+          <nz-form-label class="lbl-mi-wdth" nz-col nzSpan="6">Country</nz-form-label>
+          <nz-form-control nz-col nzSpan="18">
+            <input
+              nz-input
+              formControlName="country"
+              placeholder="Country"
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-row [nzGutter]="16">
+          <nz-form-label class="lbl-mi-wdth" nz-col nzSpan="6">Language</nz-form-label>
+          <nz-form-control nz-col nzSpan="18"> 
+            <input
+              nz-input
+              formControlName="language"
+              placeholder="Language"
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-row [nzGutter]="16">
+          <nz-form-label class="lbl-mi-wdth" nz-col nzSpan="6">BirthDate</nz-form-label>
+          <nz-form-control nz-col nzSpan="18">
+            <nz-date-picker formControlName="birthDate"></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-row [nzGutter]="16">
+          <nz-form-label class="lbl-mi-wdth" nz-col nzSpan="6">Gender</nz-form-label>
+          <nz-form-control nz-col nzSpan="18">
+            <nz-select id="gender" formControlName="gender">
+              <nz-option nzValue="Male" nzLabel="Male"></nz-option>
+              <nz-option nzValue="Female" nzLabel="Female"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <app-file-upload nz-row [nzGutter]="16"
+          [(fileSelected)]="imageFileSelected"
+          [selectImageText]="'Update user profile image'"
+        ></app-file-upload>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</nz-modal>
