@@ -33,6 +33,7 @@
         <th>CreatedAt</th>
         <th>UpdatedAt</th>
         <th>Client</th>
+        <th style="text-align: right">Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -44,6 +45,17 @@
         <td>{{ data.createdAt | date }}</td>
         <td>{{ data.updatedAt | date }}</td>
         <td>{{ data.client.name + ' ' + data.client.lastname }}</td>
+        <td style="text-align: right; width: 200px">
+          <a
+            nz-popconfirm
+            nzPopconfirmTitle="Are you sure delete this?"
+            nzPopconfirmPlacement="top"
+            (nzOnConfirm)="onDelete(data.id)"
+          >
+            <button nz-button nzShape="circle" class="ant-btn-danger">
+              <i nz-icon nzType="delete" nzTheme="outline"></i></button
+          ></a>
+        </td>
       </tr>
     </tbody>
   </nz-table>
