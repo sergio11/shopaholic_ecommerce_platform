@@ -27,4 +27,12 @@ export class OrderService {
       })
     );
   }
+
+  delete(id: string) {
+    return this.http.delete(`${this.END_POINT}${id}/delete`, { responseType: 'text' }).pipe(
+      tap(() => {
+        this.ordersStore.remove(id);
+      })
+    );
+  }
 }

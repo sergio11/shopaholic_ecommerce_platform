@@ -166,9 +166,6 @@ export class OrdersService extends SupportService {
     if (order.user.id !== idUser) {
       this.throwForbiddenException('INVALID_CREDENTIALS');
     }
-    if (order.status === OrderStatus.PENDING) { 
-      this.throwForbiddenException('INVALID_ORDER_STATUS');
-    }
     await this.ordersRepository.remove(order);
     return this.resolveString('ORDER_DELETED_SUCCESSFULLY');
   }
