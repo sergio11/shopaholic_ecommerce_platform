@@ -177,3 +177,19 @@ Welcome to the Shopaholic Rake tasks section! Here you'll find a collection of t
 ## Screenshots
 
 Here are some screenshots showcasing the platform and backoffice:
+
+
+## Contribution
+Contributions to Shopaholic are highly encouraged! If you're interested in adding new features, resolving bugs, or enhancing the project's functionality, please feel free to submit pull requests.
+
+## Credits
+Shopaholic is developed and maintained by Sergio Sánchez Sánchez (Dream Software). Special thanks to the open-source community and the contributors who have made this project possible. If you have any questions, feedback, or suggestions, feel free to reach out at dreamsoftware92@gmail.com.
+
+## Visitors Count
+
+<img width="auto" src="https://profile-counter.glitch.me/shopaholic_ecommerce_platform/count.svg" />
+ 
+ ## Please Share & Star the repository to keep me motivated.
+  <a href = "https://github.com/sergio11/shopaholic_ecommerce_platform/stargazers">
+     <img src = "https://img.shields.io/github/stars/sergio11/shopaholic_ecommerce_platform" />
+  </a>
