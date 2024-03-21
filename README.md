@@ -63,7 +63,7 @@ Our Angular-based backoffice provides administrators with powerful tools to effi
 - 👥 **User Account Management**: Access detailed user profiles, handle account-related requests, and maintain user data integrity with ease.
 - 🎨 **Intuitive Interface**: Design an intuitive and user-friendly interface with customizable dashboards and data visualization tools for easy navigation and efficient management tasks.
 
-## Technologies Used
+## BackEnd Technologies Used
 
 | Technology                  | Description                                                                 | Logo                                                                                   |
 |----------------------------|-----------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
@@ -75,6 +75,15 @@ Our Angular-based backoffice provides administrators with powerful tools to effi
 | MinIO Cluster              | High-performance object storage for handling media and assets.            | <img width="auto" height="100"  src="./doc/images/minio_logo.png" />                                                       |
 | Swagger Documentation     | Automatically generated API documentation using Swagger.                  | <img width="auto" height="100"  src="./doc/images/swagger_logo.png" />                                                         |
 | HaProxy Load Balancer      | Load balancer for distributing traffic among backend services.             | <img width="auto" height="100" src="./doc/images/haproxy_logo.png" />                                                         |
+
+### Backoffice Technologies Used
+
+| Technology  | Description                                                                | Logo                                                                                   |
+|-------------|----------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+| Angular     | Frontend framework for creating dynamic user interfaces.                   |  <img width="auto" height="100"   src="./doc/images/angular_logo.png" />              |
+| TypeScript  | Programming language for Angular application development.                  |  <img width="auto" height="100"   src="./doc/images/typescript_logo.png" />                                                     |
+| Akita   |  A Reactive State Management Tailored-Made for JS Applications          |  <img width="auto"   src="./doc/images/logo_akita.png" />                                                       |
+| NG Zorro   | An enterprise-class Angular UI component library based on Ant Design, all components are open source and free to use under MIT license.           |  <img width="auto" height="100"   src="./doc/images/ngzorro_logo.png" />         
 
 ## Technology Stack and Rationale 🛠️
 
@@ -105,31 +114,7 @@ Swagger Documentation is utilized in Shopaholic to automatically generate compre
 ### HaProxy Load Balancer 🔄
 HaProxy Load Balancer is employed to distribute traffic evenly among backend services, ensuring high availability, fault tolerance, and scalability for Shopaholic, particularly during peak traffic periods.
 
-
-
-
-### Backoffice Technologies Used
-
-| Technology  | Description                                                                | Logo                                                                                   |
-|-------------|----------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
-| Angular     | Frontend framework for creating dynamic user interfaces.                   |  <img width="auto" height="100"   src="./doc/images/angular_logo.png" />              |
-| TypeScript  | Programming language for Angular application development.                  |  <img width="auto" height="100"   src="./doc/images/typescript_logo.png" />                                                     |
-| Akita   |  A Reactive State Management Tailored-Made for JS Applications          |  <img width="auto"   src="./doc/images/logo_akita.png" />                                                       |
-| NG Zorro   | An enterprise-class Angular UI component library based on Ant Design, all components are open source and free to use under MIT license.           |  <img width="auto" height="100"   src="./doc/images/ngzorro_logo.png" />                                                       |
-
-## Docker Deployment
-
-We offer Docker Compose-based deployment for easy scaling and management:
-
-1. Clone the repository.
-2. Navigate to the deployment folder using `cd deployment`.
-3. Modify the configuration files as needed.
-4. Run `docker-compose up -d` to deploy the services.
-
-For detailed instructions on setting up and deploying using Docker, please check our [Docker Deployment Guide](link_to_docker_guide).
-
-
-## Shopaholic Rake Tasks 🚀
+## Shopaholic Deployment Rake Tasks 🚀
 
 Welcome to the Shopaholic Rake tasks section! Here you'll find a collection of tasks tailored to streamline the development and deployment processes of the Shopaholic platform.
 
