@@ -46,7 +46,19 @@ export class OrderMapper {
   async mapOrdersToResponseDtos(orders: OrderEntity[]): Promise<OrderResponseDto[]> {
     const responseDtos: OrderResponseDto[] = [];
     for (const order of orders) {
+      // Calculating total amount
+      const totalAmount = order.orderHasProducts.reduce((total, orderLine) => {
+        return total + orderLine.entryPrice;
+      }, 0);
+  
+      // Calculating total products
+      const totalProducts = order.orderHasProducts.length;
+  
+      // Map the order to response DTO and assign totalAmount and totalProducts
       const orderResponseDto = await this.mapOrderToResponseDto(order);
+      orderResponseDto.totalAmount = totalAmount;
+      orderResponseDto.totalProducts = totalProducts;
+  
       responseDtos.push(orderResponseDto);
     }
     return responseDtos;

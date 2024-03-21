@@ -10,6 +10,13 @@ import { AbstractEntity } from 'src/core/abstract.entity';
 export class OrderHasProductsEntity extends AbstractEntity {
 
   /**
+   * Represents the entry price of a product in the order.
+   * Stored as a decimal with precision 10 and scale 2.
+   */
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  entryPrice: number;
+
+  /**
    * Quantity of the product in the order.
    * @type {number}
    */

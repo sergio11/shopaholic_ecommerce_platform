@@ -53,4 +53,26 @@ export class OrderResponseDto extends AbstractDto {
   })
   @Expose()
   orderHasProducts: OrderHasProductResponseDto[];
+
+  /**
+   * Total amount of the order.
+   * @type {number}
+   */
+  @ApiProperty({
+    description: 'Total amount of the order',
+    example: 100.50,
+  })
+  @Expose()
+  totalAmount: number;
+
+  /**
+   * Total number of products in the order.
+   * @type {number}
+   */
+  @ApiProperty({
+    description: 'Total number of products in the order',
+    example: 5,
+  })
+  @Expose()
+  totalProducts: number;
 }

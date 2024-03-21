@@ -71,6 +71,8 @@ export class OrdersService extends SupportService {
     const queryBuilder = this.ordersRepository
       .createQueryBuilder('order')
       .leftJoinAndSelect('order.user', 'client')
+      .leftJoinAndSelect('order.orderHasProducts', 'orderHasProducts')
+      .leftJoinAndSelect('order.address', 'address')
       .orderBy('order.createdAt', 'DESC');
 
     if (term) {
@@ -186,8 +188,10 @@ export class OrdersService extends SupportService {
     newOrder.address = clientAddress;
     newOrder.orderHasProducts = await Promise.all(createOrderDto.products.map(async product =>  {
       const orderHasProduct = new OrderHasProductsEntity();
-      orderHasProduct.product = await this.findProduct(product.id, ["mainImage"]);
+      const foundProduct = await this.findProduct(product.id, ["mainImage"]);
+      orderHasProduct.product = foundProduct;
       orderHasProduct.quantity = product.quantity;
+      orderHasProduct.entryPrice = foundProduct.price * product.quantity;
       return orderHasProduct;
     }));
     var savedOrder = await this.ordersRepository.save(newOrder);

@@ -41,4 +41,16 @@ export class OrderHasProductResponseDto extends AbstractDto {
   })
   @Expose()
   quantity: number;
+
+  /**
+   * Entry price of the product in the order.
+   * @type {number}
+   * @example 10.99
+   */
+  @ApiProperty({
+    description: 'Entry price of the product in the order',
+    example: 10.99,
+  })
+  @Expose()
+  entryPrice: number;
 }

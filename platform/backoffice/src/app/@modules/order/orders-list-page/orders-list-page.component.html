@@ -33,6 +33,9 @@
         <th>CreatedAt</th>
         <th>UpdatedAt</th>
         <th>Client</th>
+        <th>Total Amount</th>
+        <th>Total Products</th>
+        <th>Address</th>
         <th style="text-align: right">Actions</th>
       </tr>
     </thead>
@@ -45,6 +48,9 @@
         <td>{{ data.createdAt | date }}</td>
         <td>{{ data.updatedAt | date }}</td>
         <td>{{ data.client.name + ' ' + data.client.lastname }}</td>
+        <td>{{ data.totalAmount }}</td>
+        <td>{{ data.totalProducts }}</td>
+        <td>{{ data.address.address }}, {{ data.address.city }}, {{ data.address.state }}, {{ data.address.country }}</td>
         <td style="text-align: right; width: 200px">
           <a
             nz-popconfirm
