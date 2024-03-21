@@ -3,10 +3,10 @@ import { EntityState, GenericCrudStore } from '../core/generic-crud-store';
 import { StoreConfig } from '@datorama/akita';
 import { IUser } from '../../interfaces/user.interface';
 
-export interface IAdminState extends EntityState<IUser> {}
+export interface IUserState extends EntityState<IUser> {}
 
 @Injectable({
   providedIn: 'root',
 })
-@StoreConfig({ name: 'admins' })
-export class AdminStore extends GenericCrudStore<IUser> {}
+@StoreConfig({ name: 'users' })
+export class UsersStore extends GenericCrudStore<IUser> {}

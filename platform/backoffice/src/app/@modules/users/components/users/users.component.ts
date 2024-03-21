@@ -3,9 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { IFilterUser } from './../../../../@shared/interfaces/user.interface';
 import { UserService } from 'src/app/@shared/services/user.service';
 import { createInitialState } from 'src/app/@shared/stores/core/generic-crud-store';
-import { AdminsQuery } from 'src/app/@shared/stores/admins/admins.query';
-import { IAdminState } from 'src/app/@shared/stores/admins/admins.store';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { UsersQuery } from 'src/app/@shared/stores/users/users.query';
+import { IUserState } from 'src/app/@shared/stores/users/users.store';
 
 @Component({
   templateUrl: './users.component.html',
@@ -14,17 +14,17 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 export class UsersComponent implements OnInit {
 
   loading = false;
-  state: IAdminState = createInitialState();
+  state: IUserState = createInitialState();
   
   constructor(
     private readonly userService: UserService,
-    private readonly adminsQuery: AdminsQuery,
+    private readonly usersQuery: UsersQuery,
     private readonly notificationService: NzNotificationService
     ) {}
 
   ngOnInit() {
     this.filterData({ page: 1, take: 10 });
-    this.adminsQuery.select().subscribe((state: IAdminState) => {
+    this.usersQuery.select().subscribe((state: IUserState) => {
       console.log(state)
       this.state = state;
     }); 

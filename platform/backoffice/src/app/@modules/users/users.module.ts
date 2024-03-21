@@ -10,6 +10,8 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
 import { UserProfileUpdateComponent } from './components/user-profile-update/user-profile-update.component';
 import { UsersComponent } from './components/users/users.component';
 import { UsersRoutingModule } from './users-routing.module';
+import { UserUpdateComponent } from './components/user-update/user-update.component';
+import { SharedModule } from 'src/app/@shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -17,9 +19,11 @@ import { UsersRoutingModule } from './users-routing.module';
     UserProfileUpdateComponent,
     UserProfileChangePassword,
     UsersComponent,
-    CustomersComponent
+    CustomersComponent,
+    UserUpdateComponent
   ],
   imports: [
+    SharedModule,
     CommonModule,
     UsersRoutingModule,
     AntDesignModule,

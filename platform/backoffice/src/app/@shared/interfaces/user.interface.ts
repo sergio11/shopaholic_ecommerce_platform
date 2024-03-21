@@ -4,8 +4,6 @@ export interface IFChangePhoneNumber {
   newPhoneNumber?: string;
 }
 
-type RoleName = 'ADMIN' | 'CLIENT';
-
 export interface IFilterUser extends IBaseFilterQuery {}
 
 export interface IFUserInfo {
@@ -43,6 +41,20 @@ export interface IUser {
   language: string;
   city: string | null;
   image?: IImage;
+  birthDate: string | null;
+  gender: string | null;
+}
+
+export interface ISaveUser {
+  id: string;
+  name: string;
+  lastname: string;
+  email: string;
+  phone: string | null;
+  country: string | null;
+  language: string;
+  city: string | null;
+  image?: File;
   birthDate: string | null;
   gender: string | null;
 }
