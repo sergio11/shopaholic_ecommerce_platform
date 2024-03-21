@@ -19,11 +19,6 @@ export const content: Routes = [
       ),
   },
   {
-    path: 'banner',
-    loadChildren: () =>
-      import('../../@modules/banner/banner.module').then((m) => m.BannerModule),
-  },
-  {
     path: 'brand',
     loadChildren: () =>
       import('../../@modules/brand/brand.module').then((m) => m.BrandModule),

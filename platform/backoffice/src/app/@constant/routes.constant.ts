@@ -11,7 +11,6 @@ export const routesConstant = {
   userSecurity: `${LAYOUT_PATH}users/security`,
   category: `${LAYOUT_PATH}category`,
   categoryList: `${LAYOUT_PATH}category/list`,
-  bannerList: `${LAYOUT_PATH}banner/list`,
   brandList: `${LAYOUT_PATH}brand/list`,
   productsList: `${LAYOUT_PATH}products/list`,
   defaultDashboard: `${LAYOUT_PATH}dashboard/default`,
