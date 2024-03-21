@@ -1,7 +1,8 @@
 import {
+  ICreateUser,
   IFChangePhoneNumber,
   IFilterUser,
-  ISaveUser,
+  IUpdateUser,
   IUser,
 } from '../interfaces/user.interface';
 
@@ -23,6 +24,7 @@ export class UserService {
   private readonly USER_COUNTRY_FIELD = "country";
   private readonly USER_LANGUAGE_FIELD = "language";
   private readonly USER_CITY_FIELD = "city";
+  private readonly USER_PASSWORD_FIELD = "password";
   private readonly USER_BIRTH_DATE_FIELD = "birthDate";
   private readonly USER_GENDER_FIELD = "gender";
   private readonly USER_MAIN_IMAGE_FIELD = "imageFile";
@@ -58,9 +60,18 @@ export class UserService {
     );
   }
 
-  updateUser(payload: ISaveUser) {
+  updateUser(id: string, payload: IUpdateUser) {
     const formData = this.createFormData(payload);
-    return this.http.post(`${this.END_POINT}${payload.id}`, formData).pipe(
+    return this.http.post(`${this.END_POINT}${id}`, formData).pipe(
+      tap((data) => {
+        this.usersStore.update(data);
+      })
+    );
+  }
+
+  createUser(payload: ICreateUser) {
+    const formData = this.createFormData(payload);
+    return this.http.post(`${this.END_POINT}`, formData).pipe(
       tap((data) => {
         this.usersStore.update(data);
       })
@@ -75,7 +86,7 @@ export class UserService {
     );
   }
 
-  private createFormData(payload: ISaveUser): FormData {
+  private createFormData(payload: any): FormData {
     const formData = new FormData();
     if (payload.name && payload.name !== undefined) {
       formData.append(this.USER_NAME_FIELD, payload.name);
@@ -103,6 +114,9 @@ export class UserService {
     }
     if (payload.language && payload.language !== undefined) {
       formData.append(this.USER_LANGUAGE_FIELD, payload.language);
+    }
+    if (payload.password && payload.language !== undefined) {
+      formData.append(this.USER_PASSWORD_FIELD, payload.password);
     }
     if (payload.image && payload.image instanceof File) {
       formData.append(this.USER_MAIN_IMAGE_FIELD, payload.image);

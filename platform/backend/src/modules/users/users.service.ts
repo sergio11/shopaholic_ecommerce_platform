@@ -50,6 +50,21 @@ export class UsersService extends SupportService {
       );
     }
     const newUser = this.userMapper.mapCreateUserDtoToEntity(createUserDto);
+    const { email } = newUser;
+    // Check if the email is already registered in the database
+    const emailExist = await this.usersRepository.findOneBy({ email });
+    if (emailExist) {
+      this.throwConflictException('EMAIL_ALREADY_REGISTERED');
+    }
+    const roles = await this.rolesRepository.findBy({
+      name: "ADMIN",
+    });
+    // If no roles are found, throw an exception
+    if (roles.length === 0) {
+      this.throwConflictException('NO_ROLES_FOUND');
+    }
+    // Assign the found roles to the new user
+    newUser.roles = roles;
     const userCreated = await this.usersRepository.save(newUser);
     return this.userMapper.mapUserToResponseDto(userCreated);
   }

@@ -2,19 +2,18 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { IUpdateUser } from 'src/app/@shared/interfaces/user.interface';
+import { ICreateUser } from 'src/app/@shared/interfaces/user.interface';
 import { UserService } from 'src/app/@shared/services/user.service';
 
 @Component({
-  selector: 'app-user-update',
-  templateUrl: './user-update.component.html',
+  selector: 'app-create-user',
+  templateUrl: './create-user-component.html',
 })
-export class UserUpdateComponent implements OnInit {
+export class CreateUserComponent implements OnInit {
 
-  @Input() data: any = {};
-  @Output() dataChange: EventEmitter<any> = new EventEmitter<any>();
-
-  isModalOpen = false;
+  @Input() isOpen: boolean = false;
+  @Output() onClose = new EventEmitter<void>();
+  
   userForm: FormGroup;
   imageFileSelected: File | undefined;
 
@@ -26,6 +25,7 @@ export class UserUpdateComponent implements OnInit {
     this.userForm = this.fb.group({
       name: ['', Validators.required],
       lastname: ['', Validators.required],
+      password: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       city: ['', Validators.required],
       country: ['', Validators.required],
@@ -35,27 +35,17 @@ export class UserUpdateComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    this.userForm.patchValue({
-      name: this.data.name,
-      lastname: this.data.lastname,
-      email: this.data.email,
-      city: this.data.city,
-      country: this.data.country,
-      birthDate: this.data.birthDate,
-      gender: this.data.gender,
-      language: this.data.language
-    });
-  }
+  ngOnInit(): void {}
 
   onSubmit() {
     if (!this.userForm.valid) {
       this.notificationService.error('Data Invalid', '');
     } else {
-      const userData: IUpdateUser = {
+      const userData: ICreateUser = {
         name: this.userForm.value.name || '',
         lastname: this.userForm.value.lastname || '',
         email: this.userForm.value.email || '',
+        password: this.userForm.value.password || '',
         phone: this.userForm.value.phone || '',
         language: this.userForm.value.language || '',
         country: this.userForm.value.country || '',
@@ -66,11 +56,11 @@ export class UserUpdateComponent implements OnInit {
       };
 
       this.userService
-      .updateUser(this.data.id, userData)
+      .createUser(userData)
       .subscribe((data: any) => {
-          this.notificationService.success('User Updated successfully', '');
-          this.isModalOpen = false;
-          this.dataChange.emit(data);
+          this.notificationService.success('User Created successfully', '');
+          this.userForm.reset();
+          this.onClose.emit();
       });
     }
   }

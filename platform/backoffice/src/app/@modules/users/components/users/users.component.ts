@@ -15,6 +15,7 @@ export class UsersComponent implements OnInit {
 
   loading = false;
   state: IUserState = createInitialState();
+  isOpenCreateModal = false;
   
   constructor(
     private readonly userService: UserService,
@@ -52,5 +53,13 @@ export class UsersComponent implements OnInit {
     this.userService.delete(id).subscribe(() => {
       this.notificationService.success('Admin Deleted', '');
     });
+  }
+
+  onCloseCreateModal() {
+    this.isOpenCreateModal = false;
+  }
+  
+  onOpenCreateModal() {
+    this.isOpenCreateModal = true;
   }
 }

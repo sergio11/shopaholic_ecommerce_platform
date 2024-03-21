@@ -16,6 +16,14 @@
   </nz-page-header-extra>
 </nz-page-header>
 <ng-container>
+  <button
+    (click)="onOpenCreateModal()"
+    nz-button
+    nzType="primary"
+    style="margin-bottom: 15px"
+  >
+    <i nz-icon nzType="edit" nzTheme="outline"></i>Create
+  </button>
   <nz-table
     #basicTable
     [nzData]="state.items"
@@ -69,3 +77,9 @@
     </tbody>
   </nz-table>
 </ng-container>
+
+<app-create-user
+  (onClose)="onCloseCreateModal()"
+  [isOpen]="isOpenCreateModal"
+></app-create-user>
+
