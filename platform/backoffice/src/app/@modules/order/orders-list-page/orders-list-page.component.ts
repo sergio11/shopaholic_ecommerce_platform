@@ -7,6 +7,7 @@ import { OrderService } from './../../../@shared/services/order.service';
 import { OrdersQuery } from 'src/app/@shared/stores/orders/orders.query';
 import { IOrderState } from 'src/app/@shared/stores/orders/orders.store';
 import { createInitialState } from 'src/app/@shared/stores/core/generic-crud-store';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   templateUrl: './orders-list-page.component.html',
@@ -17,8 +18,9 @@ export class OrderListComponent implements OnInit {
   state: IOrderState = createInitialState();
 
   constructor(
-    private orderService: OrderService,
-    private productQuery: OrdersQuery
+    private readonly orderService: OrderService,
+    private readonly productQuery: OrdersQuery,
+    private readonly notificationService: NzNotificationService
   ) {}
 
   ngOnInit(): void {
@@ -58,6 +60,12 @@ export class OrderListComponent implements OnInit {
       page: this.state.meta.currentPage,
       take: 10,
       searchTerm: e?.target?.value,
+    });
+  }
+
+  onDelete(id: string) {
+    this.orderService.delete(id).subscribe(() => {
+      this.notificationService.success('Order Deleted', '');
     });
   }
 }
