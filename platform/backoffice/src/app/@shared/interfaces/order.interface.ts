@@ -16,10 +16,21 @@ interface IClient {
     gender: string | null;
   }
   
-  export interface IOrder extends IBaseFilterQuery {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-    client: IClient;
-    status: string;
-  }
+export interface IOrder extends IBaseFilterQuery {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  client: IClient;
+  status: string;
+  totalAmount: number;
+  totalProducts: number;
+  address: {
+    address: string;
+    neighborhood: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+    idUser: string;
+  };
+}
