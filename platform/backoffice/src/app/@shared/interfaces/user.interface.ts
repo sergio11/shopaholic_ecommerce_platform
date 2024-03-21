@@ -45,10 +45,23 @@ export interface IUser {
   gender: string | null;
 }
 
-export interface ISaveUser {
-  id: string;
+export interface IUpdateUser {
   name: string;
   lastname: string;
+  email: string;
+  phone: string | null;
+  country: string | null;
+  language: string;
+  city: string | null;
+  image?: File;
+  birthDate: string | null;
+  gender: string | null;
+}
+
+export interface ICreateUser {
+  name: string;
+  lastname: string;
+  password: string;
   email: string;
   phone: string | null;
   country: string | null;

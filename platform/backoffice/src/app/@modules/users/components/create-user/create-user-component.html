@@ -1,18 +1,8 @@
-<button
-  nz-button
-  nzType="primary"
-  style="margin-right: 15px"
-  (click)="isModalOpen = true"
-  nzShape="circle"
->
-  <i nz-icon nzType="edit" nzTheme="outline"></i>
-</button>
-
 <nz-modal
-  [(nzVisible)]="isModalOpen"
-  nzTitle="Update User"
-  (nzOnCancel)="isModalOpen = false"
+  [(nzVisible)]="isOpen"
+  (nzOnCancel)="onClose.emit()"
   (nzOnOk)="onSubmit()"
+  nzTitle="Create User"
 >
   <ng-container *nzModalContent>
     <form [formGroup]="userForm">
@@ -44,6 +34,17 @@
               nz-input
               formControlName="lastname"
               placeholder="Last Name"
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-row [nzGutter]="16">
+          <nz-form-label class="lbl-mi-wdth" nz-col nzSpan="6">Password</nz-form-label>
+          <nz-form-control nz-col nzSpan="18">
+            <input
+              nz-input
+              type="password"
+              formControlName="password"
+              placeholder="Password"
             />
           </nz-form-control>
         </nz-form-item>
@@ -101,7 +102,7 @@
         </nz-form-item>
         <app-file-upload nz-row [nzGutter]="16"
           [(fileSelected)]="imageFileSelected"
-          [selectImageText]="'Update user profile image'"
+          [selectImageText]="'Uuser profile image'"
         ></app-file-upload>
         </div>
       </div>
