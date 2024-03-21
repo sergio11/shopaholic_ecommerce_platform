@@ -35,4 +35,8 @@ export class OrderService {
       })
     );
   }
+
+  cancel(id: string) {
+    return this.http.delete(`${this.END_POINT}${id}/cancel`, { responseType: 'text' });
+  }
 }
