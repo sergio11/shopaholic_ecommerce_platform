@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { IFilterUser } from '../../../../@shared/interfaces/user.interface';
 import { UserService } from 'src/app/@shared/services/user.service';
-import { ICustomerState } from 'src/app/@shared/stores/customer/customers.store';
+import { IUserState } from 'src/app/@shared/stores/users/users.store';
 import { createInitialState } from 'src/app/@shared/stores/core/generic-crud-store';
-import { CustomersQuery } from 'src/app/@shared/stores/customer/customers.query';
+import { UsersQuery } from 'src/app/@shared/stores/users/users.query';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
@@ -13,17 +13,17 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 export class CustomersComponent implements OnInit {
   
   loading = false;
-  state: ICustomerState = createInitialState();
+  state: IUserState = createInitialState();
 
   constructor(
     private readonly userService: UserService,
-    private readonly customerQuery: CustomersQuery,
+    private readonly userQuery: UsersQuery,
     private readonly notificationService: NzNotificationService
   ) {}
   
   ngOnInit() {
     this.filterData({ page: 1, take: 10 });
-    this.customerQuery.select().subscribe((state: ICustomerState) => {
+    this.userQuery.select().subscribe((state: IUserState) => {
       console.log(state)
       this.state = state;
     }); 

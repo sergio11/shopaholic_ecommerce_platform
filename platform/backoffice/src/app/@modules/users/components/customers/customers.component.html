@@ -55,6 +55,7 @@
         <td>{{ data.birthDate | date }}</td>
         <td>{{ data.gender ? data.gender : 'Not Specified' }}</td>
         <td style="text-align: right; width: 200px">
+          <app-user-update [data]="data"></app-user-update>
           <a
             nz-popconfirm
             nzPopconfirmTitle="Are you sure delete this?"
