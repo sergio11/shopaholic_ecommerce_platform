@@ -12,6 +12,7 @@ import { UsersComponent } from './components/users/users.component';
 import { UsersRoutingModule } from './users-routing.module';
 import { UserUpdateComponent } from './components/user-update/user-update.component';
 import { SharedModule } from 'src/app/@shared/shared.module';
+import { CreateUserComponent } from './components/create-user/create-user-component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { SharedModule } from 'src/app/@shared/shared.module';
     UserProfileChangePassword,
     UsersComponent,
     CustomersComponent,
-    UserUpdateComponent
+    UserUpdateComponent,
+    CreateUserComponent
   ],
   imports: [
     SharedModule,
