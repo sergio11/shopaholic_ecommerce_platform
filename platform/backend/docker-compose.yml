@@ -1,6 +1,27 @@
 version: '3.6'
 
+# Define a custom network for services to communicate
+networks:
+  backend_network:
+    driver: bridge
+
 services:
+
+  # HAProxy Load Balancer Proxy
+  haproxy_backend:
+    image: haproxytech/haproxy-alpine:2.7
+    container_name: haproxy_backend
+    volumes:
+      - ./haproxy:/usr/local/etc/haproxy:ro
+    links:
+      - nestjs_service_1
+      - nestjs_service_2
+      - nestjs_service_3
+    ports:
+      - "9098:9090"
+      - "9199:9191"
+    networks:
+      - backend_network
 
   nestjs_service_1:
     container_name: nestjs_service_1
@@ -12,6 +33,32 @@ services:
           memory: 500M
     cap_add:
       - SYS_TIME
-    ports:
-      - 3000:3000
+    networks:
+      - backend_network
+
+  nestjs_service_2:
+    container_name: nestjs_service_2
+    image: ssanchez11/shopaholic_api_service:0.0.1
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+    cap_add:
+      - SYS_TIME
+    networks:
+      - backend_network
+
+  nestjs_service_3:
+    container_name: nestjs_service_3
+    image: ssanchez11/shopaholic_api_service:0.0.1
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+    cap_add:
+      - SYS_TIME
+    networks:
+      - backend_network
 
