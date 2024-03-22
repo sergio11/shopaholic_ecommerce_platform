@@ -54,7 +54,7 @@ export class BrandService {
     const formData = this.createFormData(payload);
     return this.http.post(`${this.END_POINT}`, formData).pipe(
       tap((data: any) => {
-        this.brandStore.add(data)
+        this.brandStore.addItem(data)
       })
     );
   }
@@ -63,7 +63,7 @@ export class BrandService {
     const formData = this.createFormData(payload);
     return this.http.post(`${this.END_POINT}${id}`, formData).pipe(
       tap((data: any) => {
-        this.brandStore.update(data);
+        this.brandStore.updateItem(data);
       })
     );
   }
@@ -71,7 +71,7 @@ export class BrandService {
   delete(id: string) {
     return this.http.delete(`${this.END_POINT}${id}`, { responseType: 'text' }).pipe(
       tap(() => {
-        this.brandStore.remove(id);
+        this.brandStore.removeItem(id);
       })
     );
   }
@@ -83,13 +83,13 @@ export class BrandService {
    */
   private createFormData(payload: ISaveBrand): FormData {
     const formData = new FormData();
-    if (payload.name !== undefined) {
+    if (payload.name && payload.name !== undefined) {
       formData.append(this.BRAND_NAME_FIELD, payload.name);
     }
-    if (payload.slug !== undefined) {
+    if (payload.slug && payload.slug !== undefined) {
       formData.append(this.BRAND_SLUG_FIELD, payload.slug);
     }
-    if (payload.image instanceof File) {
+    if (payload.image && payload.image instanceof File) {
       formData.append(this.BRAND_IMAGE_FIELD, payload.image);
     }
     return formData;

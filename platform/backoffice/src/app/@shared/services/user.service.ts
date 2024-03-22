@@ -38,50 +38,76 @@ export class UserService {
     return this.http.put(`${this.END_POINT}changePhoneNumber`, payload);
   }
 
+  /**
+   * Searches for customers based on the provided filters.
+   * @param option - The filter options.
+   * @returns An observable with the search results.
+   */
   searchCustomers(option: IFilterUser) {
     const url = `${this.END_POINT}search?${baseFilterQueryUtils(
       option
     )}&role=CLIENT`;
     return this.http.get(url).pipe(
-      tap((data) => {
+      tap((data: any) => {
         this.usersStore.update(data);
       })
     );
   }
 
+  /**
+   * Searches for administrators based on the provided filters.
+   * @param option - The filter options.
+   * @returns An observable with the search results.
+   */
   searchAdmins(option: IFilterUser) {
     const url = `${this.END_POINT}search?${baseFilterQueryUtils(
       option
     )}&role=ADMIN`;
     return this.http.get(url).pipe(
-      tap((data) => {
+      tap((data: any) => {
         this.usersStore.update(data);
       })
     );
   }
 
+  /**
+   * Updates an existing user.
+   * @param id - The ID of the user to update.
+   * @param payload - The updated user data.
+   * @returns An observable with the updated user data.
+   */
   updateUser(id: string, payload: IUpdateUser) {
     const formData = this.createFormData(payload);
     return this.http.post(`${this.END_POINT}${id}`, formData).pipe(
-      tap((data) => {
-        this.usersStore.update(data);
+      tap((data: any) => {
+        this.usersStore.updateItem(data);
       })
     );
   }
 
+  /**
+   * Creates a new user.
+   * @param payload - The data of the user to create.
+   * @returns An observable with the created user data.
+   */
   createUser(payload: ICreateUser) {
     const formData = this.createFormData(payload);
     return this.http.post(`${this.END_POINT}`, formData).pipe(
-      tap((data) => {
-        this.usersStore.update(data);
+      tap((data: any) => {
+        this.usersStore.addItem(data);
       })
     );
   }
 
+  /**
+   * Deletes a user by ID.
+   * @param id - The ID of the user to delete.
+   * @returns An observable with the HTTP response.
+   */
   delete(id: string) {
     return this.http.delete(`${this.END_POINT}${id}`, { responseType: 'text' }).pipe(
       tap(() => {
-        this.usersStore.remove(id);
+        this.usersStore.removeItem(id);
       })
     );
   }

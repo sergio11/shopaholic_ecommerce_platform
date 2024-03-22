@@ -80,7 +80,6 @@ export class ProductService {
       .get(`${this.END_POINT}search?${baseAttributeFilterQueryUtils(option)}`)
       .pipe(
         tap((data) => {
-          console.log("search products", data);
           this.productsStore.update(data);
         })
       );
@@ -95,7 +94,7 @@ export class ProductService {
     const formData = this.createFormData(payload);
     return this.http.post(`${this.END_POINT}`, formData).pipe(
       tap((data: any) => {
-        this.productsStore.add(data);
+        this.productsStore.addItem(data);
       })
     );
   }
@@ -110,7 +109,7 @@ export class ProductService {
     const formData = this.createFormData(payload);
     return this.http.post(`${this.END_POINT}${id}`, formData).pipe(
       tap((data: any) => {
-        this.productsStore.update(data);
+        this.productsStore.updateItem(data);
       })
     );
   }
@@ -123,7 +122,7 @@ export class ProductService {
   delete(id: string) {
     return this.http.delete(`${this.END_POINT}${id}`, { responseType: 'text' }).pipe(
       tap(() => {
-        this.productsStore.remove(id);
+        this.productsStore.removeItem(id);
       })
     );
   }
@@ -135,31 +134,31 @@ export class ProductService {
    */
   private createFormData(payload: ICreateProduct): FormData {
     const formData = new FormData();
-    if (payload.name !== undefined) {
+    if (payload.name && payload.name !== undefined) {
       formData.append(this.PRODUCT_NAME_FIELD, payload.name);
     }
-    if (payload.description !== undefined) {
+    if (payload.description && payload.description !== undefined) {
       formData.append(this.PRODUCT_DESCRIPTION_FIELD, payload.description);
     }
-    if (payload.brandId !== undefined) {
+    if (payload.brandId && payload.brandId !== undefined) {
       formData.append(this.PRODUCT_BRAND_FIELD, payload.brandId);
     }
-    if (payload.categoryId !== undefined) {
+    if (payload.categoryId && payload.categoryId !== undefined) {
       formData.append(this.PRODUCT_CATEGORY_FIELD, payload.categoryId);
     }
-    if (payload.price !== undefined) {
+    if (payload.price && payload.price !== undefined) {
       formData.append(this.PRODUCT_PRICE_FIELD, payload.price.toString());
     }
-    if (payload.productCode !== undefined) {
+    if (payload.productCode && payload.productCode !== undefined) {
       formData.append(this.PRODUCT_CODE_FIELD, payload.productCode);
     }
-    if (payload.mainImage instanceof File) {
+    if (payload.mainImage && payload.mainImage instanceof File) {
       formData.append(this.PRODUCT_MAIN_IMAGE_FIELD, payload.mainImage);
     }
-    if (payload.stock !== undefined) {
+    if (payload.stock && payload.stock !== undefined) {
       formData.append(this.PRODUCT_STOCK_FIELD, payload.stock.toString());
     }
-    if (payload.secondaryImage instanceof File) {
+    if (payload.secondaryImage && payload.secondaryImage instanceof File) {
       formData.append(this.PRODUCT_SECONDARY_IMAGE_FIELD, payload.secondaryImage);
     }
     return formData;

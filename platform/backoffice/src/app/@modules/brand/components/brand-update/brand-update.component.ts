@@ -47,7 +47,7 @@ export class BrandUpdateComponent implements OnInit {
         })
         .subscribe((res: any) => {
           console.log(res);
-          this.notificationService.success('Updated', '');
+          this.notificationService.success('Brand Updated successfully', '');
           this.onClose.emit();
         });
     }
