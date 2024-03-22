@@ -27,18 +27,43 @@ Explore Shopaholic now for a modern, seamless, and delightful shopping experienc
   <img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white" />
 </p>
 
-## Features
+## Main Features
 
-- 👗 **Fashion Product Catalog**
-- 🔍 **Product Search and Filtering**
-- 🛒 **Shopping Cart and Checkout Process**
-- 💳 **Integration with Stripe and MercadoPago for Secure Payments**
-- 🛍️ **Collaborative Filtering-Based Recommendation System to Suggest Products**
-- 👤 **User Account and Profile Management**
-- 📱 **Social Media Integration for Sharing Products**
-- 🖥️ **Administration Panel for Managing Products, Orders, and Users**
+- 👗 **Fashion Product Catalog**: Explore a diverse collection of fashion products ranging from clothing to accessories.
+- 🔍 **Product Search and Filtering**: Effortlessly find products using advanced search filters such as category, price range, size, color, and more.
+- 🛒 **Shopping Cart and Checkout Process**: Enjoy a smooth shopping experience with the ability to add items to your cart and securely complete the checkout process.
+- 💳 **Secure Payments with Stripe and MercadoPago**: Ensure peace of mind with secure payment processing through trusted payment gateways like Stripe and MercadoPago.
+- 🛍️ **Personalized Product Recommendations**: Receive tailored product recommendations based on your browsing history and preferences, enhancing your shopping experience.
+- 👤 **User Account Management**: Manage your account details, track order history, and update personal information effortlessly.
+- 📱 **Social Media Integration**: Share your favorite products with friends and followers on popular social media platforms like Facebook, Twitter, and Instagram.
+- 🖥️ **Administration Panel**: Empower administrators with a comprehensive panel to oversee and manage various aspects of the platform.
 
-## Technologies Used
+## BackEnd Development
+
+Our robust BackEnd infrastructure powers the platform's functionality, ensuring smooth operations and seamless integration of features. Key highlights include:
+
+- 🚀 **Scalable Architecture**: Built on a scalable architecture to accommodate growing user demands and evolving business needs.
+- 🌐 **RESTful APIs**: Utilize RESTful APIs to facilitate communication between the FrontEnd and BackEnd, enabling seamless data exchange.
+- 💾 **Database Management**: Employ efficient database management techniques to organize and store product, user, and order data securely.
+- 💳 **Payment Gateway Integration**: Seamlessly integrate with Stripe and MercadoPago for secure and reliable payment processing, ensuring a hassle-free checkout experience.
+- 🔒 **User Authentication and Authorization**: Implement robust user authentication and authorization mechanisms to safeguard user data and restrict access to sensitive information.
+- 🛡️ **Data Security and Privacy**: Prioritize data security and privacy by adhering to industry best practices and compliance standards to protect user information.
+- 🚀 **Performance Optimization**: Continuously optimize BackEnd performance to ensure fast response times and a seamless user experience.
+- 🌐 **Clustered MariaDB Galera**: Leverage the power of clustered MariaDB Galera for high availability and fault tolerance, ensuring data consistency and reliability.
+- 🔑 **Redis Cluster**: Utilize a Redis cluster for distributed caching and session management, improving performance and scalability.
+- 📦 **MinIO Cluster**: Deploy a MinIO cluster for scalable object storage, enabling efficient handling of multimedia content and large files.
+
+## Backoffice Administration
+
+Our Angular-based backoffice provides administrators with powerful tools to efficiently manage the platform's operations. Key features include:
+
+- 🔒 **Secure Administrator Login System**: Implement a secure login system with multi-factor authentication and role-based access control to protect sensitive administrative functionalities.
+- 📊 **Comprehensive Product Management**: Admins can add, edit, and delete products from the catalog, manage inventory, and update product details effortlessly.
+- 📦 **Efficient Order Processing**: Streamline order processing workflows by viewing, managing, and updating order statuses in real-time, ensuring timely fulfillment and delivery.
+- 👥 **User Account Management**: Access detailed user profiles, handle account-related requests, and maintain user data integrity with ease.
+- 🎨 **Intuitive Interface**: Design an intuitive and user-friendly interface with customizable dashboards and data visualization tools for easy navigation and efficient management tasks.
+
+## BackEnd Technologies Used
 
 | Technology                  | Description                                                                 | Logo                                                                                   |
 |----------------------------|-----------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
@@ -50,6 +75,15 @@ Explore Shopaholic now for a modern, seamless, and delightful shopping experienc
 | MinIO Cluster              | High-performance object storage for handling media and assets.            | <img width="auto" height="100"  src="./doc/images/minio_logo.png" />                                                       |
 | Swagger Documentation     | Automatically generated API documentation using Swagger.                  | <img width="auto" height="100"  src="./doc/images/swagger_logo.png" />                                                         |
 | HaProxy Load Balancer      | Load balancer for distributing traffic among backend services.             | <img width="auto" height="100" src="./doc/images/haproxy_logo.png" />                                                         |
+
+### Backoffice Technologies Used
+
+| Technology  | Description                                                                | Logo                                                                                   |
+|-------------|----------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+| Angular     | Frontend framework for creating dynamic user interfaces.                   |  <img width="auto" height="100"   src="./doc/images/angular_logo.png" />              |
+| TypeScript  | Programming language for Angular application development.                  |  <img width="auto" height="100"   src="./doc/images/typescript_logo.png" />                                                     |
+| Akita   |  A Reactive State Management Tailored-Made for JS Applications          |  <img width="auto"   src="./doc/images/logo_akita.png" />                                                       |
+| NG Zorro   | An enterprise-class Angular UI component library based on Ant Design, all components are open source and free to use under MIT license.           |  <img width="auto" height="100"   src="./doc/images/ngzorro_logo.png" />         
 
 ## Technology Stack and Rationale 🛠️
 
@@ -80,47 +114,7 @@ Swagger Documentation is utilized in Shopaholic to automatically generate compre
 ### HaProxy Load Balancer 🔄
 HaProxy Load Balancer is employed to distribute traffic evenly among backend services, ensuring high availability, fault tolerance, and scalability for Shopaholic, particularly during peak traffic periods.
 
-## Installation and Usage
-
-1. Clone this repository.
-2. Install dependencies using `npm install`.
-3. Configure environment variables in a `.env` file.
-4. Run the application using `npm start`.
-
-## Backoffice Administration
-
-I have developed an Angular-based backoffice for administrators to easily manage the product catalog, orders, and users of the platform.
-
-### Backoffice Features
-
-- Secure administrator login.
-- Product management: Add, edit, and delete products from the catalog.
-- Order viewing and processing.
-- User account management: View and manage user profiles.
-- Intuitive and user-friendly interface for easy navigation and management.
-
-### Backoffice Technologies Used
-
-| Technology  | Description                                                                | Logo                                                                                   |
-|-------------|----------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
-| Angular     | Frontend framework for creating dynamic user interfaces.                   |  <img width="auto" height="100"   src="./doc/images/angular_logo.png" />              |
-| TypeScript  | Programming language for Angular application development.                  |  <img width="auto" height="100"   src="./doc/images/typescript_logo.png" />                                                     |
-| Akita   |  A Reactive State Management Tailored-Made for JS Applications          |  <img width="auto"   src="./doc/images/logo_akita.png" />                                                       |
-| NG Zorro   | An enterprise-class Angular UI component library based on Ant Design, all components are open source and free to use under MIT license.           |  <img width="auto" height="100"   src="./doc/images/ngzorro_logo.png" />                                                       |
-
-## Docker Deployment
-
-We offer Docker Compose-based deployment for easy scaling and management:
-
-1. Clone the repository.
-2. Navigate to the deployment folder using `cd deployment`.
-3. Modify the configuration files as needed.
-4. Run `docker-compose up -d` to deploy the services.
-
-For detailed instructions on setting up and deploying using Docker, please check our [Docker Deployment Guide](link_to_docker_guide).
-
-
-## Shopaholic Rake Tasks 🚀
+## Shopaholic Deployment Rake Tasks 🚀
 
 Welcome to the Shopaholic Rake tasks section! Here you'll find a collection of tasks tailored to streamline the development and deployment processes of the Shopaholic platform.
 
@@ -183,3 +177,19 @@ Welcome to the Shopaholic Rake tasks section! Here you'll find a collection of t
 ## Screenshots
 
 Here are some screenshots showcasing the platform and backoffice:
+
+
+## Contribution
+Contributions to Shopaholic are highly encouraged! If you're interested in adding new features, resolving bugs, or enhancing the project's functionality, please feel free to submit pull requests.
+
+## Credits
+Shopaholic is developed and maintained by Sergio Sánchez Sánchez (Dream Software). Special thanks to the open-source community and the contributors who have made this project possible. If you have any questions, feedback, or suggestions, feel free to reach out at dreamsoftware92@gmail.com.
+
+## Visitors Count
+
+<img width="auto" src="https://profile-counter.glitch.me/shopaholic_ecommerce_platform/count.svg" />
+ 
+ ## Please Share & Star the repository to keep me motivated.
+  <a href = "https://github.com/sergio11/shopaholic_ecommerce_platform/stargazers">
+     <img src = "https://img.shields.io/github/stars/sergio11/shopaholic_ecommerce_platform" />
+  </a>
