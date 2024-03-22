@@ -1,8 +1,45 @@
-version: '3'
+version: '3.6'
+
+# Define a custom network for services to communicate
+networks:
+  backoffice_network:
+    driver: bridge
+
 services:
-  backoffice:
-    container_name: backoffice
-    image: ssanchez11/shopaholic_backoffice:0.0.1
+
+  # HAProxy Load Balancer Proxy
+  haproxy_backoffice:
+    image: haproxytech/haproxy-alpine:2.7
+    container_name: haproxy_backoffice
+    volumes:
+      - ./haproxy:/usr/local/etc/haproxy:ro
+    links:
+      - backoffice_1
+      - backoffice_2
+      - backoffice_3
     ports:
-      - '80:80'
+      - "9095:9090"
+      - "9198:9191"
+    networks:
+      - backoffice_network
+
+  backoffice_1:
+    container_name: backoffice_1
+    image: ssanchez11/shopaholic_backoffice:0.0.1
     restart: always
+    networks:
+      - backoffice_network
+
+  backoffice_2:
+    container_name: backoffice_2
+    image: ssanchez11/shopaholic_backoffice:0.0.1
+    restart: always
+    networks:
+      - backoffice_network
+
+  backoffice_3:
+    container_name: backoffice_3
+    image: ssanchez11/shopaholic_backoffice:0.0.1
+    restart: always
+    networks:
+      - backoffice_network
