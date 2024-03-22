@@ -42,7 +42,6 @@ export class ProductUpdateComponent implements OnInit {
   ngOnInit(): void {
     this.loadMoreCategory();
     this.loadMoreBrands();
-    console.log("Product update data", this.data);
     this.productForm.patchValue({
       name: this.data?.name,
       description: this.data?.description,
@@ -66,6 +65,8 @@ export class ProductUpdateComponent implements OnInit {
         price: Number(this.productForm.value.price),
         productCode: this.productForm.value.productCode || '',
         brandId: this.productForm.value.brand || '',
+        mainImage: this.mainImageFileSelected,
+        secondaryImage: this.secondaryImageFileSelected
       };
 
       this.productService
