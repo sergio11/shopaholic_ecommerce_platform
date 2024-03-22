@@ -46,7 +46,7 @@ export class GenericCrudStore<T extends { id: string }> extends Store<EntityStat
    * Adds a new item to the store.
    * @param item - The item to add.
    */
-  public add(item: T) {
+  public addItem(item: T) {
     this.update((state) => {
       return {
         ...state,
@@ -59,7 +59,7 @@ export class GenericCrudStore<T extends { id: string }> extends Store<EntityStat
    * Removes an item from the store by its ID.
    * @param id - The ID of the item to remove.
    */
-  public remove(id: string) {
+  public removeItem(id: string) {
     this.update((state) => {
       return {
         ...state,
