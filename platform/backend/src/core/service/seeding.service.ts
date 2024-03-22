@@ -10,7 +10,6 @@ export class SeedingService {
     ) {}
 
     async seed(): Promise<void> {
-        // Replace with your own seeds
         await Promise.all([
           this.entityManager.upsert(RoleEntity, rolesSeed, ['name']),
         ]);
