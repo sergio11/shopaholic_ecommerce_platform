@@ -56,15 +56,17 @@ export class UsersService extends SupportService {
     if (emailExist) {
       this.throwConflictException('EMAIL_ALREADY_REGISTERED');
     }
-    const roles = await this.rolesRepository.findBy({
-      name: "ADMIN",
-    });
-    // If no roles are found, throw an exception
-    if (roles.length === 0) {
-      this.throwConflictException('NO_ROLES_FOUND');
+    // Fetch both "ADMIN" and "CLIENT" roles from the database
+    const adminRole = await this.rolesRepository.findOneBy({ name: "ADMIN" });
+    const clientRole = await this.rolesRepository.findOneBy({ name: "CLIENT" });
+
+    // If any of the roles is missing, throw an exception
+    if (!adminRole || !clientRole) {
+      this.throwConflictException('ROLES_NOT_FOUND');
     }
-    // Assign the found roles to the new user
-    newUser.roles = roles;
+
+    // Assign both "ADMIN" and "CLIENT" roles to the new user
+    newUser.roles = [adminRole, clientRole];
     const userCreated = await this.usersRepository.save(newUser);
     return this.userMapper.mapUserToResponseDto(userCreated);
   }
