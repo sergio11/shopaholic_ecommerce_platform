@@ -48,6 +48,7 @@ export class CategoryUpdateComponent implements OnInit {
         .subscribe((data: any) => {
           this.notificationService.success('Category Updated', '');
           this.isModalOpen = false;
+          this.categoryImageFileSelected = undefined;
           this.dataChange.emit(data);
         });
     }

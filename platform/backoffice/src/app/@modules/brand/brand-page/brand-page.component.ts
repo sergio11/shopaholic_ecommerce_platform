@@ -2,7 +2,6 @@ import { BrandQuery } from './../../../@shared/stores/brands/brand.query';
 import { BrandService } from './../../../@shared/services/brand.service';
 import { Component } from '@angular/core';
 import { IFBannerFilter } from 'src/app/@shared/interfaces/banner.interface';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { IBrandState } from 'src/app/@shared/stores/brands/brand.store';
 import { createInitialState } from 'src/app/@shared/stores/core/generic-crud-store';
 
@@ -14,13 +13,12 @@ export class BrandPageComponent {
   state: IBrandState = createInitialState();
 
   constructor(
-    private brandService: BrandService,
-    private brandQuery: BrandQuery,
-    private nzNotificationService: NzNotificationService
+    private readonly brandService: BrandService,
+    private readonly brandQuery: BrandQuery
   ) {}
   
   ngOnInit() {
-    this.filterData({ page: 1, take: 10 });
+    this.filterData({ page: 1, take: 20 });
     this.brandQuery.select().subscribe((state: IBrandState) => {
       console.log(state)
       this.state = state;
