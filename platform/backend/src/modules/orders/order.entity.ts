@@ -20,14 +20,14 @@ export class OrderEntity extends AbstractEntity {
   /**
    * User associated with the order.
    */
-  @ManyToOne(() => UserEntity, (user) => user.id)
+  @ManyToOne(() => UserEntity, (user) => user.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'id_client' })
   user: UserEntity;
 
   /**
    * Delivery address associated with the order.
    */
-  @ManyToOne(() => AddressEntity, (address) => address.id)
+  @ManyToOne(() => AddressEntity, (address) => address.id, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'id_address' })
   address: AddressEntity;
 
