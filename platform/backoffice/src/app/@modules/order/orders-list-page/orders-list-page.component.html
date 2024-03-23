@@ -50,7 +50,7 @@
         <td>{{ data.client.name + ' ' + data.client.lastname }}</td>
         <td>{{ data.totalAmount }}</td>
         <td>{{ data.totalProducts }}</td>
-        <td>{{ data.address.address }}, {{ data.address.city }}, {{ data.address.state }}, {{ data.address.country }}</td>
+        <td>{{ data.address.neighborhood }}, {{ data.address.city }}, {{ data.address.state }}, {{ data.address.country }}</td>
         <td style="text-align: right; width: 200px">
           <ng-container *ngIf="data.status === 'PENDING'">
             <a nz-popconfirm nzPopconfirmTitle="Are you sure cancel this?" nzPopconfirmPlacement="top" (nzOnConfirm)="onCancel(data.id)">

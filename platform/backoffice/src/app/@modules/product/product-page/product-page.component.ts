@@ -4,6 +4,8 @@ import { ProductService } from './../../../@shared/services/product.service';
 import { ProductsQuery } from 'src/app/@shared/stores/products/products.query';
 import { IProductState } from 'src/app/@shared/stores/products/products.store';
 import { createInitialState } from 'src/app/@shared/stores/core/generic-crud-store';
+import { CategoryService } from 'src/app/@shared/services/category.service';
+import { BrandService } from 'src/app/@shared/services/brand.service';
 
 @Component({
   templateUrl: './product-page.component.html',
@@ -15,11 +17,15 @@ export class ProductPageComponent {
 
   constructor(
     private readonly productService: ProductService,
-    private readonly productQuery: ProductsQuery
+    private readonly productQuery: ProductsQuery,
+    private readonly categoryService: CategoryService,
+    private readonly brandService: BrandService
   ) {}
 
   ngOnInit() {
-    this.filterData({ page: 1, take: 12 });
+    this.loadMoreCategory();
+    this.loadMoreBrands();
+    this.filterData({ page: 1, take: 20 });
     this.productQuery.select().subscribe((state: IProductState) => {
       console.log(state)
       this.state = state;
@@ -52,5 +58,17 @@ export class ProductPageComponent {
 
   onChangePage(page: any) {
     this.filterData({ page, take: 10 });
+  }
+
+  loadMoreCategory(): void {
+    this.categoryService
+      .search({ page: 1, take: 30 })
+      .toPromise()
+  }
+
+  loadMoreBrands(): void {
+    this.brandService
+      .filter({ page: 1, take: 30 })
+      .toPromise()
   }
 }

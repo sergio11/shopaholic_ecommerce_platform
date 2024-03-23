@@ -48,7 +48,7 @@ export class OrderMapper {
     for (const order of orders) {
       // Calculating total amount
       const totalAmount = order.orderHasProducts.reduce((total, orderLine) => {
-        return total + orderLine.entryPrice;
+        return total + Number(orderLine.entryPrice) * orderLine.quantity;
       }, 0);
   
       // Calculating total products
