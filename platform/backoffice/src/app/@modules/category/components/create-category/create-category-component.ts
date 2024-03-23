@@ -45,6 +45,7 @@ export class CreateCategoryComponent implements OnInit {
         })
         .subscribe((res: any) => {
           console.log(res);
+          this.categoryImageFileSelected = undefined;
           this.categoryForm.reset();
           this.onClose.emit();
           this.notificationService.success('Category created successfully!', '');
