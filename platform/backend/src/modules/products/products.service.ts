@@ -74,8 +74,8 @@ export class ProductsService extends SupportService {
    */
   async findByCategory(idCategory: string): Promise<ProductResponseDto[]> {
     const products = await this.productsRepository.find({
-      where: { idCategory },
-      relations: ["mainImage", "secondaryImage", "brand", "category"]
+      where: { category: { id: idCategory } },
+      relations: ['mainImage', 'secondaryImage', 'brand', 'category'],
     });
     return this.mapper.mapProductsToResponseDtos(products);
   }
