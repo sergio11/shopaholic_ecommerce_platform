@@ -6,6 +6,7 @@ export const routesConstant = {
   adminDashboard: '/content',
   admins: `${LAYOUT_PATH}users/admins`,
   customers: `${LAYOUT_PATH}users/customers`,
+  addressList: `${LAYOUT_PATH}address/list`,
   userProfile: `${LAYOUT_PATH}users/profile`,
   userProfileUpdate: `${LAYOUT_PATH}users/profile-update`,
   userSecurity: `${LAYOUT_PATH}users/security`,
