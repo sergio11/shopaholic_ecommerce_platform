@@ -75,4 +75,14 @@ export class OrderResponseDto extends AbstractDto {
   })
   @Expose()
   totalProducts: number;
+
+  /**
+   * URL of the payment checkout.
+   * @type {string}
+   */
+  @ApiProperty({
+    description: 'URL of the payment checkout',
+  })
+  @Expose()
+  paymentCheckoutUrl: string;
 }

@@ -34,6 +34,7 @@
         <th>State</th>
         <th>PostalCode</th>
         <th>Country</th>
+        <th>Client</th>
         <th>CreatedAt</th>
         <th>UpdatedAt</th>
         <th style="text-align: right">Actions</th>
@@ -47,6 +48,7 @@
         <td>{{ data.state }}</td>
         <td>{{ data.postalCode }}</td>
         <td>{{ data.country }}</td>
+        <td>{{ data.user.name + ' ' + data.user.lastname }}</td>
         <td>{{ data.createdAt | date }}</td>
         <td>{{ data.updatedAt | date }}</td>
         <td style="text-align: right; width: 200px">
