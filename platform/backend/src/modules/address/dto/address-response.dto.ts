@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { AbstractDto } from 'src/core/abstract.dto';
+import { UserResponseDto } from 'src/modules/users/dto/user-response.dto';
 
 export class AddressResponseDto extends AbstractDto {
   /**
@@ -46,9 +47,9 @@ export class AddressResponseDto extends AbstractDto {
   country: string;
 
   /**
-   * The user ID associated with the address.
+   * The user associated with the address.
    */
-  @ApiProperty({ description: 'User ID associated with the address' })
+  @ApiProperty({ description: 'User associated with the address' })
   @Expose()
-  idUser: string;
+  user: UserResponseDto;
 }

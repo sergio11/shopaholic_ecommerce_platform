@@ -1,13 +1,14 @@
-import { Put, Param, Body, Post, Get, Delete, Version } from '@nestjs/common';
+import { Put, Param, Body, Post, Get, Delete, Version, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
 import { JwtRole } from '../auth/jwt/jwt-role';
 import { AddressService } from './address.service';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { AddressResponseDto } from './dto/address-response.dto';
 import { Auth } from '../auth/decorator/auth.decorator';
 import { ApiController } from 'src/core/decorator/default-api.decorator';
 import { AuthUserId } from '../auth/decorator/auth-user-id.decorator';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 @ApiController('address')
 export class AddressController {
@@ -34,6 +35,55 @@ export class AddressController {
   ): Promise<AddressResponseDto> {
     return this.addressService.create(address, userId);
   }
+
+  /**
+   * Search for address based on a search term and paginate the results.
+   *
+   * @param {string} term - The search term to filter categories by.
+   * @param {number} page - The page number for pagination (default is 1).
+   * @param {number} limit - The number of items per page (default is 10).
+   * @returns {Promise<Pagination<AddressResponseDto>>} - A paginated result of address response DTOs.
+   */
+  @Auth(JwtRole.CLIENT, JwtRole.ADMIN)
+  @Version('1.0')
+  @Get('search')
+  @ApiQuery({
+    name: 'term',
+    required: false,
+    description: 'Search term for filtering address',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number (1 .. )',
+    example: 1,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Items per page (1 - 100)',
+    example: 10,
+    type: Number,
+  })
+  @ApiOperation({
+    summary:
+      'Search for address based on a search term and paginate the results',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Filtered and paginated address',
+    type: AddressResponseDto,
+    isArray: true,
+  })
+  async searchAndPaginate(
+    @Query('term') term: string,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ): Promise<Pagination<AddressResponseDto>> {
+    return this.addressService.searchAndPaginate(term, page, limit);
+  }
+
 
   /**
    * Return all addresses that have been registered.

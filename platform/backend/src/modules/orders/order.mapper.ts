@@ -29,7 +29,7 @@ export class OrderMapper {
     }
 
     if (order.address) {
-      orderDto.address = this.addressMapper.mapAddressToResponseDto(
+      orderDto.address = await this.addressMapper.mapAddressToResponseDto(
         order.address,
       );
     }

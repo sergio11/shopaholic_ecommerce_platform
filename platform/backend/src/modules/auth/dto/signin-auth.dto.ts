@@ -5,11 +5,11 @@ export class SignInAuthDto {
 
     /**
      * The email of the user
-     * @example 'test@gmail.com1'
+     * @example 'admin@shopaholic.com'
      */
     @ApiProperty({
         description: `The email of the user`,
-        example: 'test@gmail.com'
+        example: 'admin@shopaholic.com'
     })
     @IsNotEmpty()
     @IsString()
@@ -18,11 +18,11 @@ export class SignInAuthDto {
 
     /**
      * The password of the user
-     * @example 'dsds4343dsd'
+     * @example '123456'
      */
     @ApiProperty({
         description: `The password of the user`,
-        example: 'dsds4343dsd'
+        example: '123456'
     })
     @IsNotEmpty()
     @IsString()
