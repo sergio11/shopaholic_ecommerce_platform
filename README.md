@@ -173,6 +173,42 @@ Welcome to the Shopaholic Rake tasks section! Here you'll find a collection of t
 - `show_docker_compose_version`: Displays the version of Docker Compose.
 - `which`: Finds an executable in the system's `$PATH`.
 
+## Containers Ports
+
+In this table, you can view the ports assigned to each service for accessing web tools or other monitoring purposes.
+
+| Service              | Description                                       | Ports                                                                                   |
+|----------------------|---------------------------------------------------|-----------------------------------------------------------------------------------------|
+| mariadb_master_1    | MariaDB Master 1                                  | (No specific ports)                                                                     |
+| mariadb_master_2    | MariaDB Master 2                                  | (No specific ports)                                                                     |
+| mariadb_master_3    | MariaDB Master 3                                  | (No specific ports)                                                                     |
+| mariadb_slave_1     | MariaDB Slave 1                                   | (No specific ports)                                                                     |
+| mariadb_slave_2     | MariaDB Slave 2                                   | (No specific ports)                                                                     |
+| mariadb_slave_3     | MariaDB Slave 3                                   | (No specific ports)                                                                     |
+| mariadb_haproxy     | HAProxy for MariaDB Galera Cluster                | 8404:8404, 3306:3306, 3307:3307                                                         |
+| mariadb_web_admin   | phpMyAdmin for MariaDB Galera Cluster             | 8081:80                                                                                 |
+| minio1              | MinIO Server 1                                    | (No specific ports)                                                                     |
+| minio2              | MinIO Server 2                                    | (No specific ports)                                                                     |
+| minio-console       | MinIO Console                                     | 9001:9001, 9090:9090                                                                    |
+| minio_haproxy       | HAProxy for MinIO Servers                         | 9000:9000, 1936:1936                                                                   |
+| redis-node-1        | Redis Node 1                                      | (No specific ports)                                                                     |
+| redis-node-2        | Redis Node 2                                      | (No specific ports)                                                                     |
+| redis-node-3        | Redis Node 3                                      | (No specific ports)                                                                     |
+| redis-node-4        | Redis Node 4                                      | (No specific ports)                                                                     |
+| redis-node-5        | Redis Node 5                                      | (No specific ports)                                                                     |
+| redis-node-6        | Redis Node 6                                      | (No specific ports)                                                                     |
+| redis-node-7        | Redis Node 7                                      | (No specific ports)                                                                     |
+| redis-node-8        | Redis Node 8                                      | (No specific ports)                                                                     |
+| redis_haproxy       | HAProxy for Redis Cluster                         | 6379:6379, 6380:6380, 6381:6381, 6382:6382, 6383:6383, 6384:6384, 6385:6385, 6386:6386, 6390:6390 |
+| haproxy_backend     | HAProxy Load Balancer Proxy for Backend Services  | 9098:9090, 9199:9191                                                                    |
+| nestjs_service_1    | NestJS Service 1                                  | (No specific ports)                                                                     |
+| nestjs_service_2    | NestJS Service 2                                  | (No specific ports)                                                                     |
+| nestjs_service_3    | NestJS Service 3                                  | (No specific ports)                                                                     |
+| haproxy_backoffice  | HAProxy Load Balancer Proxy for Backoffice        | 9095:9090, 9198:9191                                                                    |
+| backoffice_1        | Backoffice Service 1                              | (No specific ports)                                                                     |
+| backoffice_2        | Backoffice Service 2                              | (No specific ports)                                                                     |
+| backoffice_3        | Backoffice Service 3                              | (No specific ports)                                                                     |
+
 
 ## Screenshots
 
