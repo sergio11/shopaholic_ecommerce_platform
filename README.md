@@ -210,31 +210,50 @@ In this table, you can view the ports assigned to each service for accessing web
 | backoffice_3        | Backoffice Service 3                              | (No specific ports)                                                                     |
 
 
+## Configuring Stripe for Payments
+
+To enable payments in the application, it's necessary to configure a Stripe API key. This API key is used to authenticate requests made to the Stripe API and ensure the security of financial transactions.
+
+### Step 1: Configuring Checkout Success and Cancelled Endpoints
+
+To properly process payments and manage success and cancellation cases, it's important to configure the checkout success and cancelled endpoints in your application. These endpoints should be configured correctly based on the IP, port, and domain of your server.
+
+Below is an example of how the endpoint URLs could look:
+
+- **Checkout Success URL**: `http://your_ip:your_port/api/v1/orders/:id/checkout/success?token=:token`
+- **Checkout Cancelled URL**: `http://your_ip:your_port/api/v1/orders/:id/checkout/cancelled?token=:token`
+
+Replace `your_ip`, `your_port`, and `your_domain` with the IP address, port, and domain of your server respectively.
+
+Remember, these endpoints must be available and properly configured for Stripe to send notifications about the status of payments.
+
+### Step 2: Providing Stripe API Key
+
+Ensure that you provide your Stripe API key in the application. You can set it up as follows:
+
+```typescript
+export const STRIPE_API_KEY = "YOUR_STRIPE_KEY";
+export const ORDER_CHECKOUT_SUCCESS_URL = "http://192.168.1.39:9098/api/v1/orders/:id/checkout/success?token=:token";
+export const ORDER_CHECKOUT_CANCELLED_URL = "http://192.168.1.39:9098/api/v1/orders/:id/checkout/cancelled?token=:token";
+```
+
 ## Screenshots
 
 Here are some screenshots showcasing the platform and backoffice:
 
 <img width="auto"  src="./doc/images/backend_picture_1.PNG" /> 
-
 <img width="auto" src="./doc/images/backend_picture_2.PNG" /> 
-
 <img width="auto"  src="./doc/images/backend_picture_3.PNG" />
-
 <img width="auto"  src="./doc/images/backoffice_picture_7.PNG" />
-
 <img width="auto"  src="./doc/images/backoffice_picture_8.PNG" />
-
 <img width="auto"  src="./doc/images/backoffice_picture_1.PNG" />
-
 <img width="auto"  src="./doc/images/backoffice_picture_2.PNG" />
-
 <img width="auto"  src="./doc/images/backoffice_picture_3.PNG" />
-
 <img width="auto"  src="./doc/images/backoffice_picture_4.PNG" />
-
 <img width="auto"  src="./doc/images/backoffice_picture_5.PNG" />
-
 <img width="auto"  src="./doc/images/backoffice_picture_6.PNG" />
+<img width="auto"  src="./doc/images/backoffice_picture_9.PNG" />
+<img width="auto"  src="./doc/images/backoffice_picture_10.PNG" />
 
 
 ## Contribution
