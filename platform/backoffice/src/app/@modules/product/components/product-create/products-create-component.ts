@@ -1,13 +1,15 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-import { BrandService } from 'src/app/@shared/services/brand.service';
-import { CategoryService } from '../../../../@shared/services/category.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProductService } from '../../../../@shared/services/product.service';
 import { ICreateProduct } from 'src/app/@shared/interfaces/product.interface';
 import { ICategory } from 'src/app/@shared/interfaces/category.interface';
 import { IBrand } from 'src/app/@shared/interfaces/brand.interface';
+import { CategoryQuery } from 'src/app/@shared/stores/categories/category.query';
+import { BrandQuery } from '../../../../@shared/stores/brands/brand.query';
+import { ICategoryState } from 'src/app/@shared/stores/categories/category.store';
+import { IBrandState } from 'src/app/@shared/stores/brands/brand.store';
 
 @Component({
   selector: 'app-products-create',
@@ -23,16 +25,14 @@ export class ProductsCreateComponent {
   isLoading = false;
   categoryOptionList: ICategory[] = [];
   brandOptionList: IBrand[] = [];
-  cPage = 1;
-  bPage = 1;
   productForm: FormGroup;
 
   constructor(
     private readonly productService: ProductService,
     private readonly fb: FormBuilder,
     private readonly notificationService: NzNotificationService,
-    private readonly categoryService: CategoryService,
-    private readonly brandService: BrandService
+    private readonly categoryQuery: CategoryQuery,
+    private readonly brandQuery: BrandQuery
   ) {
     this.productForm = this.fb.group({
       name: [''],
@@ -46,13 +46,21 @@ export class ProductsCreateComponent {
   }
 
   ngOnInit(): void {
-    this.loadMoreCategory();
-    this.loadMoreBrands();
+    this.categoryQuery.select().subscribe((state: ICategoryState) => {
+      this.categoryOptionList = state.items;
+    }); 
+    this.brandQuery.select().subscribe((state: IBrandState) => {
+      this.brandOptionList = state.items;
+    }); 
   }
 
   onSubmitCreate() {
     if (!this.mainImageFileSelected) {
       this.notificationService.error('You must select a main product image', '');
+    } else if (!this.productForm.value.category) {
+      this.notificationService.error('You must select a category', '');
+    } else if (!this.productForm.value.brand) {
+      this.notificationService.error('You must select a brand', '');
     } else if (!this.secondaryImageFileSelected) {
       this.notificationService.error('You must select a secondary product image', '');
     } else if (!this.productForm.value.name) {
@@ -75,27 +83,5 @@ export class ProductsCreateComponent {
         this.productForm.reset();
       });
     }
-  }
-
-  loadMoreCategory(): void {
-    this.isLoading = true;
-    this.categoryService
-      .search({ page: this.cPage, take: 10 })
-      .subscribe((data: any) => {
-        this.isLoading = false;
-        this.categoryOptionList = data.items;
-        this.cPage++;
-      });
-  }
-
-  loadMoreBrands(): void {
-    this.isLoading = true;
-    this.brandService
-      .filter({ page: this.bPage, take: 10 })
-      .subscribe((data: any) => {
-        this.isLoading = false;
-        this.brandOptionList = data.items;
-        this.bPage++;
-      });
   }
 }
