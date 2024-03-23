@@ -215,26 +215,18 @@ In this table, you can view the ports assigned to each service for accessing web
 Here are some screenshots showcasing the platform and backoffice:
 
 <img width="auto"  src="./doc/images/backend_picture_1.PNG" /> 
-
 <img width="auto" src="./doc/images/backend_picture_2.PNG" /> 
-
 <img width="auto"  src="./doc/images/backend_picture_3.PNG" />
-
 <img width="auto"  src="./doc/images/backoffice_picture_7.PNG" />
-
 <img width="auto"  src="./doc/images/backoffice_picture_8.PNG" />
-
 <img width="auto"  src="./doc/images/backoffice_picture_1.PNG" />
-
 <img width="auto"  src="./doc/images/backoffice_picture_2.PNG" />
-
 <img width="auto"  src="./doc/images/backoffice_picture_3.PNG" />
-
 <img width="auto"  src="./doc/images/backoffice_picture_4.PNG" />
-
 <img width="auto"  src="./doc/images/backoffice_picture_5.PNG" />
-
 <img width="auto"  src="./doc/images/backoffice_picture_6.PNG" />
+<img width="auto"  src="./doc/images/backoffice_picture_9.PNG" />
+<img width="auto"  src="./doc/images/backoffice_picture_10.PNG" />
 
 
 ## Contribution
