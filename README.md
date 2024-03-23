@@ -85,7 +85,9 @@ Our Angular-based backoffice provides administrators with powerful tools to effi
 | Akita   |  A Reactive State Management Tailored-Made for JS Applications          |  <img width="auto"   src="./doc/images/logo_akita.png" />                                                       |
 | NG Zorro   | An enterprise-class Angular UI component library based on Ant Design, all components are open source and free to use under MIT license.           |  <img width="auto" height="100"   src="./doc/images/ngzorro_logo.png" />         
 
-## Technology Stack and Rationale 🛠️
+## 🛠️ Architecture Overview 🏰
+
+<img width="auto"  src="./doc/ShopaholicArchitecture.drawio.svg" />  
 
 ### NestJS (Typescript) 🚀
 NestJS was selected as the foundation of Shopaholic's backend due to its versatility, scalability, and robustness. With TypeScript support, NestJS ensures strong typing and enhanced tooling, leading to cleaner and more maintainable code. Its modular architecture facilitates seamless integration with other libraries and frameworks, making it an ideal choice for building sophisticated ecommerce applications like Shopaholic.
