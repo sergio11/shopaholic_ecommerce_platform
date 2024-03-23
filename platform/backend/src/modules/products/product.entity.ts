@@ -1,5 +1,4 @@
 import {
-  AfterLoad,
   Column,
   Entity,
   JoinColumn,
@@ -69,18 +68,6 @@ export class ProductEntity extends AbstractEntity {
   secondaryImage: ImageEntity;
 
   /**
-   * ID of the category to which the product belongs.
-   */
-  @Column({ name: 'id_category' })
-  readonly idCategory: string;
-
-  /**
-   * ID of the brand associated with the product.
-   */
-  @Column({ name: 'id_brand' })
-  readonly idBrand: string;
-
-  /**
    * Price of the product.
    */
   @Column({ name: 'price', type: 'decimal', precision: 10, scale: 2 })
@@ -89,14 +76,14 @@ export class ProductEntity extends AbstractEntity {
   /**
    * ID of the brand associated with the product.
    */
-  @ManyToOne(() => BrandsEntity, (brand) => brand.products)
+  @ManyToOne(() => BrandsEntity, (brand) => brand.products, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'id_brand' })
   brand: BrandsEntity;
 
   /**
    * Category to which the product belongs.
    */
-  @ManyToOne(() => CategoryEntity, (category) => category.id)
+  @ManyToOne(() => CategoryEntity, (category) => category.id, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'id_category' })
   category: CategoryEntity;
 
