@@ -12,13 +12,14 @@ import { CacheConfigModule } from './modules/cache/cache.module';
 import { ProductsModule } from './modules/products/products.module';
 import { TypeOrmConfigService } from './core/service/typeorm.service';
 import { getEnvPath } from './core/helper/env.helper';
-import { SeedingService } from './core/service/seeding.service';
+import { SeedingService } from './modules/seed/seeding.service';
 import { FilesStorageModule } from './modules/storage/storage.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ImagesModule } from './modules/images/images.module';
 import { BrandModule } from './modules/brands/brand.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { OrdersModule } from './modules/orders/orders.module';
+import { SeedModule } from './modules/seed/seed.module';
 
 const envFilePath: string = getEnvPath(`${__dirname}/env`);
 
@@ -53,10 +54,10 @@ const envFilePath: string = getEnvPath(`${__dirname}/env`);
     ImagesModule,
     BrandModule,
     PaymentsModule,
-    OrdersModule
+    OrdersModule,
+    SeedModule
   ],
   providers: [
-    SeedingService,
     {
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
