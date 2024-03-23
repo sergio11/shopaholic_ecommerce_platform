@@ -19,6 +19,13 @@ export const content: Routes = [
       ),
   },
   {
+    path: 'address',
+    loadChildren: () =>
+      import('../../@modules/address/address.module').then(
+        (m) => m.AddressModule
+      ),
+  },
+  {
     path: 'brand',
     loadChildren: () =>
       import('../../@modules/brand/brand.module').then((m) => m.BrandModule),

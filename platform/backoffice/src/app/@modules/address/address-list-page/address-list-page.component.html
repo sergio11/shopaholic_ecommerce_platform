@@ -1,0 +1,62 @@
+<nz-page-header nzBackIcon [nzGhost]="false">
+  <nz-page-header-title>Address</nz-page-header-title>
+  <nz-page-header-extra>
+    <nz-input-group nzSize="large" nzSearch [nzAddOnAfter]="suffixIconButton">
+      <input
+        type="text"
+        (keyup)="onChangeSearch($event)"
+        nz-input
+        placeholder="Search..."
+      />
+    </nz-input-group>
+    <ng-template #suffixIconButton>
+      <button nz-button nzType="primary" nzSearch>Search</button>
+    </ng-template>
+  </nz-page-header-extra>
+</nz-page-header>
+<ng-container>
+  <nz-table
+    #basicTable
+    [nzData]="state.items"
+    [nzBordered]="true"
+    [nzFrontPagination]="false"
+    nzShowPagination
+    [nzTotal]="state.meta.totalItems"
+    [nzPageSize]="state.meta.itemsPerPage"
+    [nzLoading]="loading"
+    (nzPageIndexChange)="onChangePage($event)"
+  >
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Neighborhood</th>
+        <th>City</th>
+        <th>State</th>
+        <th>PostalCode</th>
+        <th>Country</th>
+        <th>CreatedAt</th>
+        <th>UpdatedAt</th>
+        <th style="text-align: right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td>{{ data.id }}</td>
+        <td>{{ data.neighborhood }}</td>
+        <td>{{ data.city }}</td>
+        <td>{{ data.state }}</td>
+        <td>{{ data.postalCode }}</td>
+        <td>{{ data.country }}</td>
+        <td>{{ data.createdAt | date }}</td>
+        <td>{{ data.updatedAt | date }}</td>
+        <td style="text-align: right; width: 200px">
+          <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="top" (nzOnConfirm)="onDelete(data.id)">
+            <button nz-button nzShape="circle" class="ant-btn-danger">
+              <i nz-icon nzType="delete" nzTheme="outline"></i>
+            </button>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</ng-container>
