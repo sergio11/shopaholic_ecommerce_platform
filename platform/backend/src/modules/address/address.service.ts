@@ -10,6 +10,7 @@ import { AddressResponseDto } from './dto/address-response.dto';
 import { AddressMapper } from './address.mapper';
 import { UserEntity } from '../users/user.entity';
 import { CacheService } from '../cache/cache.service';
+import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class AddressService extends SupportService {
@@ -58,6 +59,50 @@ export class AddressService extends SupportService {
   }
 
   /**
+   * Search for address based on a search term and paginate the results.
+   *
+   * @param {string} term - The search term to filter address by.
+   * @param {number} page - The page number for pagination (default is 1).
+   * @param {number} limit - The number of items per page (default is 10).
+   * @returns {Promise<Pagination<AddressResponseDto>>} - A paginated result of address response DTOs.
+   */
+  async searchAndPaginate(
+    term: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<Pagination<AddressResponseDto>> {
+    if (page < 1) {
+      this.throwBadRequestException('PAGE_NUMBER_NOT_VALID');
+    }
+
+    if (limit < 1 || limit > 100) {
+      this.throwBadRequestException('LIMIT_NUMBER_NOT_VALID');
+    }
+    const options = { page, limit };
+    const queryBuilder = this.addressRepository
+      .createQueryBuilder('address')
+      .leftJoinAndSelect('address.user', 'user')
+      .orderBy('address.country');
+
+    if (term) {
+      queryBuilder
+        .where('LOWER(address.name) LIKE LOWER(:term)', { term: `%${term}%` })
+        .orWhere('LOWER(address.neighborhood) LIKE LOWER(:term)', { term: `%${term}%` })
+        .orWhere('LOWER(address.city) LIKE LOWER(:term)', { term: `%${term}%` })
+        .orWhere('LOWER(address.state) LIKE LOWER(:term)', { term: `%${term}%` })
+        .orWhere('LOWER(address.postalCode) LIKE LOWER(:term)', { term: `%${term}%` })
+        .orWhere('LOWER(address.country) LIKE LOWER(:term)', { term: `%${term}%` });
+    }
+
+    const paginatedAddress = await paginate(queryBuilder, options);
+    const items = await this.mapper.mapAddressesToResponseDtos(paginatedAddress.items);
+    return {
+      ...paginatedAddress,
+      items,
+    };
+  }
+
+  /**
    * Find and return all registered addresses.
    * @returns {Promise<AddressResponseDto[]>} A list of registered addresses.
    */
@@ -81,7 +126,7 @@ export class AddressService extends SupportService {
         where: { idUser: id },
       });
       console.log(`findByUser - ${id} - address count: ${addresses.length}`)
-      addressesByUser = this.mapper.mapAddressesToResponseDtos(addresses);
+      addressesByUser = await this.mapper.mapAddressesToResponseDtos(addresses);
       await this.cacheService.set(
         this.ADDRESSES_BY_USER_CACHE_KEY + id,
         addressesByUser,
