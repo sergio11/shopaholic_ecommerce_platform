@@ -1,3 +1,4 @@
+import { IUser } from "./user.interface";
 
 export interface IAddress {
   id: string;
@@ -8,5 +9,5 @@ export interface IAddress {
   state: string;
   postalCode: string;
   country: string;
-  idUser: string;
+  user: IUser;
 }
