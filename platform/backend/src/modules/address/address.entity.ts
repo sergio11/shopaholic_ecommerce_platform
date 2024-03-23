@@ -60,7 +60,7 @@ export class AddressEntity extends AbstractEntity {
   /**
    * User associated with this address.
    */
-  @ManyToOne(() => UserEntity, (user) => user.addresses)
+  @ManyToOne(() => UserEntity, (user) => user.addresses, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'id_user' })
   user: UserEntity;
 
