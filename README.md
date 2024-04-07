@@ -264,6 +264,20 @@ Contributions to Shopaholic are highly encouraged! If you're interested in addin
 ## Credits
 Shopaholic is developed and maintained by Sergio Sánchez Sánchez (Dream Software). Special thanks to the open-source community and the contributors who have made this project possible. If you have any questions, feedback, or suggestions, feel free to reach out at dreamsoftware92@gmail.com.
 
+## Acknowledgements 🙏
+
+- We express our deep appreciation to [Freepik](https://www.freepik.es/) for generously providing the resources used in this project.
+- I would like to express my sincere gratitude to [Jonathan Goyes](https://www.udemy.com/user/jonathan-goyes/) for his invaluable contribution through his Udemy course on "Kotlin NestJS y MySQL: E-Commerce App MVVM + Jetpack + Room" ([Course Link](https://www.udemy.com/course/kotlin-nestjs-y-mysql-ecommerce-app-mvvm-jetpack-room-pagos/)). 
+
+This course has provided me with essential knowledge and served as a pivotal starting point for the development of my project. Specifically, I am immensely grateful for the insights and expertise shared by Jonathan Goyes on NestJS, which have been instrumental in shaping my understanding and approach to building robust applications.
+
+The comprehensive and well-structured content of the course has empowered me to apply advanced techniques and best practices in my project, enabling me to deliver high-quality solutions effectively.
+
+Once again, I extend my heartfelt appreciation to Jonathan Goyes for his dedication to sharing knowledge and expertise, which has significantly contributed to my growth as a developer.
+
+Thank you, Jonathan Goyes!
+
+
 ## Visitors Count
 
 <img width="auto" src="https://profile-counter.glitch.me/shopaholic_ecommerce_platform/count.svg" />
