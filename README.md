@@ -27,6 +27,11 @@ Explore Shopaholic now for a modern, seamless, and delightful shopping experienc
   <img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white" />
 </p>
 
+## ⚠️ Disclaimer
+
+**Shopaholic Ecommerce Platform** is an **experimental project** created for **educational and learning purposes**. 
+**Shopaholic** is designed to showcase the capabilities of modern web technologies like **NestJS**, **Angular**, and **Docker**, and it should be viewed as a learning tool
+
 ## Main Features
 
 - 👗 **Fashion Product Catalog**: Explore a diverse collection of fashion products ranging from clothing to accessories.
@@ -246,8 +251,6 @@ Here are some screenshots showcasing the platform and backoffice:
 <img width="auto"  src="./doc/images/backend_picture_1.PNG" /> 
 <img width="auto" src="./doc/images/backend_picture_2.PNG" /> 
 <img width="auto"  src="./doc/images/backend_picture_3.PNG" />
-<img width="auto"  src="./doc/images/backoffice_picture_7.PNG" />
-<img width="auto"  src="./doc/images/backoffice_picture_8.PNG" />
 <img width="auto"  src="./doc/images/backoffice_picture_1.PNG" />
 <img width="auto"  src="./doc/images/backoffice_picture_2.PNG" />
 <img width="auto"  src="./doc/images/backoffice_picture_3.PNG" />
