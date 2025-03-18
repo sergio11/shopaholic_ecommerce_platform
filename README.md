@@ -13,6 +13,8 @@ I would like to express my sincere gratitude to [Jonathan Goyes](https://www.ude
 It provided essential knowledge and a solid starting point. Since then, I have significantly enhanced and expanded the project, improving it with new features and a deeper understanding of modern web technologies.  
 I am especially grateful for the insights shared by Jonathan Goyes on NestJS, which have greatly influenced my approach to building robust applications.
 
+This app, **Shopaholic**, includes images and resources designed by [Freepik](https://www.freepik.com). We would like to thank Freepik for their incredible design resources. The images used in the app are provided with attribution, as required by Freepik's licensing terms. For more information on Freepik's resources, visit [www.freepik.com](https://www.freepik.com).
+
 <p align="center">
   <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
   <img src="https://img.shields.io/badge/Visual_Studio_Code-0078D4?style=for-the-badge&logo=visual%20studio%20code&logoColor=white" />
