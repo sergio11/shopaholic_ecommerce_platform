@@ -1,6 +1,6 @@
 # 🛍️ Shopaholic Ecommerce Platform 🛒
 
-<img width="auto" height="250" align="left" src="./doc/images/logo.png" />
+<img width="auto" height="250" align="left" src="./doc/shopaholic_logo.webp" />
 
 Welcome to Shopaholic! 🎉 Your ultimate destination for fashion ecommerce. This state-of-the-art platform, powered by NestJS (Typescript) 🚀, brings you a curated selection of clothing items. With robust features like intuitive product search 🔍, secure payment processing through Stripe and MercadoPago 💳💰, and a collaborative filtering recommendation system 🤝, shopping here is a breeze.
 
@@ -8,6 +8,11 @@ Not only does Shopaholic cater to customers, but it also empowers administrators
 
 Explore Shopaholic now for a modern, seamless, and delightful shopping experience! 😊👗👠
 
+I would like to express my sincere gratitude to [Jonathan Goyes](https://www.udemy.com/user/jonathan-goyes/) for his invaluable contribution through his Udemy course on  
+**"Kotlin NestJS y MySQL: E-Commerce App MVVM + Jetpack + Room"** ([Course Link](https://www.udemy.com/course/kotlin-nestjs-y-mysql-ecommerce-app-mvvm-jetpack-room-pagos/)).
+
+It provided essential knowledge and a solid starting point. Since then, I have significantly enhanced and expanded the project, improving it with new features and a deeper understanding of modern web technologies.  
+I am especially grateful for the insights shared by Jonathan Goyes on NestJS, which have greatly influenced my approach to building robust applications.
 
 <p align="center">
   <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
@@ -31,6 +36,8 @@ Explore Shopaholic now for a modern, seamless, and delightful shopping experienc
 
 **Shopaholic Ecommerce Platform** is an **experimental project** created for **educational and learning purposes**. 
 **Shopaholic** is designed to showcase the capabilities of modern web technologies like **NestJS**, **Angular**, and **Docker**, and it should be viewed as a learning tool
+
+The Shopaholic name and logo were conceived during a brainstorming session using ChatGPT and are completely free of copyright restrictions. They are intended purely for demonstration purposes.
 
 ## Main Features
 
