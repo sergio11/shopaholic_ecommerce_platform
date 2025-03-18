@@ -8,8 +8,7 @@ Not only does Shopaholic cater to customers, but it also empowers administrators
 
 Explore Shopaholic now for a modern, seamless, and delightful shopping experience! 😊👗👠
 
-I would like to express my sincere gratitude to [Jonathan Goyes](https://www.udemy.com/user/jonathan-goyes/) for his invaluable contribution through his Udemy course on  
-**"Kotlin NestJS y MySQL: E-Commerce App MVVM + Jetpack + Room"** ([Course Link](https://www.udemy.com/course/kotlin-nestjs-y-mysql-ecommerce-app-mvvm-jetpack-room-pagos/)).
+I would like to express my sincere gratitude to [Jonathan Goyes](https://www.udemy.com/user/jonathan-goyes/) for his invaluable contribution through his Udemy course on  **"Kotlin NestJS y MySQL: E-Commerce App MVVM + Jetpack + Room"** ([Course Link](https://www.udemy.com/course/kotlin-nestjs-y-mysql-ecommerce-app-mvvm-jetpack-room-pagos/)).
 
 It provided essential knowledge and a solid starting point. Since then, I have significantly enhanced and expanded the project, improving it with new features and a deeper understanding of modern web technologies.  
 I am especially grateful for the insights shared by Jonathan Goyes on NestJS, which have greatly influenced my approach to building robust applications.
